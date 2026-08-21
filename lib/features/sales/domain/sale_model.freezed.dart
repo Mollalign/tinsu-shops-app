@@ -559,7 +559,7 @@ as String,
 /// @nodoc
 mixin _$SaleModel {
 
- String get id; String get shopId; String get paymentMethod; String get totalAmount; List<SaleItemModel> get items; SoldByModel get soldBy; DateTime get createdAt;
+ String get id; String get shopId; String get totalAmount; List<SaleItemModel> get items; SoldByModel get soldBy; DateTime get createdAt;
 /// Create a copy of SaleModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -572,16 +572,16 @@ $SaleModelCopyWith<SaleModel> get copyWith => _$SaleModelCopyWithImpl<SaleModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaleModel&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.paymentMethod, paymentMethod) || other.paymentMethod == paymentMethod)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.soldBy, soldBy) || other.soldBy == soldBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaleModel&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.soldBy, soldBy) || other.soldBy == soldBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,shopId,paymentMethod,totalAmount,const DeepCollectionEquality().hash(items),soldBy,createdAt);
+int get hashCode => Object.hash(runtimeType,id,shopId,totalAmount,const DeepCollectionEquality().hash(items),soldBy,createdAt);
 
 @override
 String toString() {
-  return 'SaleModel(id: $id, shopId: $shopId, paymentMethod: $paymentMethod, totalAmount: $totalAmount, items: $items, soldBy: $soldBy, createdAt: $createdAt)';
+  return 'SaleModel(id: $id, shopId: $shopId, totalAmount: $totalAmount, items: $items, soldBy: $soldBy, createdAt: $createdAt)';
 }
 
 
@@ -592,7 +592,7 @@ abstract mixin class $SaleModelCopyWith<$Res>  {
   factory $SaleModelCopyWith(SaleModel value, $Res Function(SaleModel) _then) = _$SaleModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String shopId, String paymentMethod, String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
+ String id, String shopId, String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
 });
 
 
@@ -609,11 +609,10 @@ class _$SaleModelCopyWithImpl<$Res>
 
 /// Create a copy of SaleModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? shopId = null,Object? paymentMethod = null,Object? totalAmount = null,Object? items = null,Object? soldBy = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? shopId = null,Object? totalAmount = null,Object? items = null,Object? soldBy = null,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,shopId: null == shopId ? _self.shopId : shopId // ignore: cast_nullable_to_non_nullable
-as String,paymentMethod: null == paymentMethod ? _self.paymentMethod : paymentMethod // ignore: cast_nullable_to_non_nullable
 as String,totalAmount: null == totalAmount ? _self.totalAmount : totalAmount // ignore: cast_nullable_to_non_nullable
 as String,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<SaleItemModel>,soldBy: null == soldBy ? _self.soldBy : soldBy // ignore: cast_nullable_to_non_nullable
@@ -712,10 +711,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String paymentMethod,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SaleModel() when $default != null:
-return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
+return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
   return orElse();
 
 }
@@ -733,10 +732,10 @@ return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String paymentMethod,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _SaleModel():
-return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
+return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -753,10 +752,10 @@ return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String paymentMethod,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SaleModel() when $default != null:
-return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
+return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
   return null;
 
 }
@@ -768,12 +767,11 @@ return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_tha
 @JsonSerializable()
 
 class _SaleModel implements SaleModel {
-  const _SaleModel({required this.id, required this.shopId, required this.paymentMethod, required this.totalAmount, required final  List<SaleItemModel> items, required this.soldBy, required this.createdAt}): _items = items;
+  const _SaleModel({required this.id, required this.shopId, required this.totalAmount, required final  List<SaleItemModel> items, required this.soldBy, required this.createdAt}): _items = items;
   factory _SaleModel.fromJson(Map<String, dynamic> json) => _$SaleModelFromJson(json);
 
 @override final  String id;
 @override final  String shopId;
-@override final  String paymentMethod;
 @override final  String totalAmount;
  final  List<SaleItemModel> _items;
 @override List<SaleItemModel> get items {
@@ -798,16 +796,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaleModel&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.paymentMethod, paymentMethod) || other.paymentMethod == paymentMethod)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.soldBy, soldBy) || other.soldBy == soldBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaleModel&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.soldBy, soldBy) || other.soldBy == soldBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,shopId,paymentMethod,totalAmount,const DeepCollectionEquality().hash(_items),soldBy,createdAt);
+int get hashCode => Object.hash(runtimeType,id,shopId,totalAmount,const DeepCollectionEquality().hash(_items),soldBy,createdAt);
 
 @override
 String toString() {
-  return 'SaleModel(id: $id, shopId: $shopId, paymentMethod: $paymentMethod, totalAmount: $totalAmount, items: $items, soldBy: $soldBy, createdAt: $createdAt)';
+  return 'SaleModel(id: $id, shopId: $shopId, totalAmount: $totalAmount, items: $items, soldBy: $soldBy, createdAt: $createdAt)';
 }
 
 
@@ -818,7 +816,7 @@ abstract mixin class _$SaleModelCopyWith<$Res> implements $SaleModelCopyWith<$Re
   factory _$SaleModelCopyWith(_SaleModel value, $Res Function(_SaleModel) _then) = __$SaleModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String shopId, String paymentMethod, String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
+ String id, String shopId, String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
 });
 
 
@@ -835,11 +833,10 @@ class __$SaleModelCopyWithImpl<$Res>
 
 /// Create a copy of SaleModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? shopId = null,Object? paymentMethod = null,Object? totalAmount = null,Object? items = null,Object? soldBy = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? shopId = null,Object? totalAmount = null,Object? items = null,Object? soldBy = null,Object? createdAt = null,}) {
   return _then(_SaleModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,shopId: null == shopId ? _self.shopId : shopId // ignore: cast_nullable_to_non_nullable
-as String,paymentMethod: null == paymentMethod ? _self.paymentMethod : paymentMethod // ignore: cast_nullable_to_non_nullable
 as String,totalAmount: null == totalAmount ? _self.totalAmount : totalAmount // ignore: cast_nullable_to_non_nullable
 as String,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<SaleItemModel>,soldBy: null == soldBy ? _self.soldBy : soldBy // ignore: cast_nullable_to_non_nullable
@@ -864,7 +861,7 @@ $SoldByModelCopyWith<$Res> get soldBy {
 /// @nodoc
 mixin _$SaleListItem {
 
- String get id; String get shopId; String get paymentMethod; String get totalAmount; String get soldByType; String get soldById; DateTime get createdAt;
+ String get id; String get shopId; String get totalAmount; int get itemsCount; String get soldByName; DateTime get createdAt;
 /// Create a copy of SaleListItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -877,16 +874,16 @@ $SaleListItemCopyWith<SaleListItem> get copyWith => _$SaleListItemCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaleListItem&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.paymentMethod, paymentMethod) || other.paymentMethod == paymentMethod)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.soldByType, soldByType) || other.soldByType == soldByType)&&(identical(other.soldById, soldById) || other.soldById == soldById)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaleListItem&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.itemsCount, itemsCount) || other.itemsCount == itemsCount)&&(identical(other.soldByName, soldByName) || other.soldByName == soldByName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,shopId,paymentMethod,totalAmount,soldByType,soldById,createdAt);
+int get hashCode => Object.hash(runtimeType,id,shopId,totalAmount,itemsCount,soldByName,createdAt);
 
 @override
 String toString() {
-  return 'SaleListItem(id: $id, shopId: $shopId, paymentMethod: $paymentMethod, totalAmount: $totalAmount, soldByType: $soldByType, soldById: $soldById, createdAt: $createdAt)';
+  return 'SaleListItem(id: $id, shopId: $shopId, totalAmount: $totalAmount, itemsCount: $itemsCount, soldByName: $soldByName, createdAt: $createdAt)';
 }
 
 
@@ -897,7 +894,7 @@ abstract mixin class $SaleListItemCopyWith<$Res>  {
   factory $SaleListItemCopyWith(SaleListItem value, $Res Function(SaleListItem) _then) = _$SaleListItemCopyWithImpl;
 @useResult
 $Res call({
- String id, String shopId, String paymentMethod, String totalAmount, String soldByType, String soldById, DateTime createdAt
+ String id, String shopId, String totalAmount, int itemsCount, String soldByName, DateTime createdAt
 });
 
 
@@ -914,14 +911,13 @@ class _$SaleListItemCopyWithImpl<$Res>
 
 /// Create a copy of SaleListItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? shopId = null,Object? paymentMethod = null,Object? totalAmount = null,Object? soldByType = null,Object? soldById = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? shopId = null,Object? totalAmount = null,Object? itemsCount = null,Object? soldByName = null,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,shopId: null == shopId ? _self.shopId : shopId // ignore: cast_nullable_to_non_nullable
-as String,paymentMethod: null == paymentMethod ? _self.paymentMethod : paymentMethod // ignore: cast_nullable_to_non_nullable
 as String,totalAmount: null == totalAmount ? _self.totalAmount : totalAmount // ignore: cast_nullable_to_non_nullable
-as String,soldByType: null == soldByType ? _self.soldByType : soldByType // ignore: cast_nullable_to_non_nullable
-as String,soldById: null == soldById ? _self.soldById : soldById // ignore: cast_nullable_to_non_nullable
+as String,itemsCount: null == itemsCount ? _self.itemsCount : itemsCount // ignore: cast_nullable_to_non_nullable
+as int,soldByName: null == soldByName ? _self.soldByName : soldByName // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
@@ -1008,10 +1004,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String paymentMethod,  String totalAmount,  String soldByType,  String soldById,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SaleListItem() when $default != null:
-return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_that.soldByType,_that.soldById,_that.createdAt);case _:
+return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.soldByName,_that.createdAt);case _:
   return orElse();
 
 }
@@ -1029,10 +1025,10 @@ return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String paymentMethod,  String totalAmount,  String soldByType,  String soldById,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _SaleListItem():
-return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_that.soldByType,_that.soldById,_that.createdAt);case _:
+return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.soldByName,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1049,10 +1045,10 @@ return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String paymentMethod,  String totalAmount,  String soldByType,  String soldById,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SaleListItem() when $default != null:
-return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_that.soldByType,_that.soldById,_that.createdAt);case _:
+return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.soldByName,_that.createdAt);case _:
   return null;
 
 }
@@ -1064,15 +1060,14 @@ return $default(_that.id,_that.shopId,_that.paymentMethod,_that.totalAmount,_tha
 @JsonSerializable()
 
 class _SaleListItem implements SaleListItem {
-  const _SaleListItem({required this.id, required this.shopId, required this.paymentMethod, required this.totalAmount, required this.soldByType, required this.soldById, required this.createdAt});
+  const _SaleListItem({required this.id, required this.shopId, required this.totalAmount, required this.itemsCount, required this.soldByName, required this.createdAt});
   factory _SaleListItem.fromJson(Map<String, dynamic> json) => _$SaleListItemFromJson(json);
 
 @override final  String id;
 @override final  String shopId;
-@override final  String paymentMethod;
 @override final  String totalAmount;
-@override final  String soldByType;
-@override final  String soldById;
+@override final  int itemsCount;
+@override final  String soldByName;
 @override final  DateTime createdAt;
 
 /// Create a copy of SaleListItem
@@ -1088,16 +1083,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaleListItem&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.paymentMethod, paymentMethod) || other.paymentMethod == paymentMethod)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.soldByType, soldByType) || other.soldByType == soldByType)&&(identical(other.soldById, soldById) || other.soldById == soldById)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaleListItem&&(identical(other.id, id) || other.id == id)&&(identical(other.shopId, shopId) || other.shopId == shopId)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.itemsCount, itemsCount) || other.itemsCount == itemsCount)&&(identical(other.soldByName, soldByName) || other.soldByName == soldByName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,shopId,paymentMethod,totalAmount,soldByType,soldById,createdAt);
+int get hashCode => Object.hash(runtimeType,id,shopId,totalAmount,itemsCount,soldByName,createdAt);
 
 @override
 String toString() {
-  return 'SaleListItem(id: $id, shopId: $shopId, paymentMethod: $paymentMethod, totalAmount: $totalAmount, soldByType: $soldByType, soldById: $soldById, createdAt: $createdAt)';
+  return 'SaleListItem(id: $id, shopId: $shopId, totalAmount: $totalAmount, itemsCount: $itemsCount, soldByName: $soldByName, createdAt: $createdAt)';
 }
 
 
@@ -1108,7 +1103,7 @@ abstract mixin class _$SaleListItemCopyWith<$Res> implements $SaleListItemCopyWi
   factory _$SaleListItemCopyWith(_SaleListItem value, $Res Function(_SaleListItem) _then) = __$SaleListItemCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String shopId, String paymentMethod, String totalAmount, String soldByType, String soldById, DateTime createdAt
+ String id, String shopId, String totalAmount, int itemsCount, String soldByName, DateTime createdAt
 });
 
 
@@ -1125,14 +1120,13 @@ class __$SaleListItemCopyWithImpl<$Res>
 
 /// Create a copy of SaleListItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? shopId = null,Object? paymentMethod = null,Object? totalAmount = null,Object? soldByType = null,Object? soldById = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? shopId = null,Object? totalAmount = null,Object? itemsCount = null,Object? soldByName = null,Object? createdAt = null,}) {
   return _then(_SaleListItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,shopId: null == shopId ? _self.shopId : shopId // ignore: cast_nullable_to_non_nullable
-as String,paymentMethod: null == paymentMethod ? _self.paymentMethod : paymentMethod // ignore: cast_nullable_to_non_nullable
 as String,totalAmount: null == totalAmount ? _self.totalAmount : totalAmount // ignore: cast_nullable_to_non_nullable
-as String,soldByType: null == soldByType ? _self.soldByType : soldByType // ignore: cast_nullable_to_non_nullable
-as String,soldById: null == soldById ? _self.soldById : soldById // ignore: cast_nullable_to_non_nullable
+as String,itemsCount: null == itemsCount ? _self.itemsCount : itemsCount // ignore: cast_nullable_to_non_nullable
+as int,soldByName: null == soldByName ? _self.soldByName : soldByName // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));

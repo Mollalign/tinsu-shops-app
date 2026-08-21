@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
 import '../cart_provider.dart';
+import '../../../products/domain/product_model.dart';
 import '../../domain/cart_item_model.dart';
 
 class CartScreen extends ConsumerWidget {

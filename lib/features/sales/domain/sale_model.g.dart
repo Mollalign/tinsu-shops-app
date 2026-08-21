@@ -40,7 +40,6 @@ Map<String, dynamic> _$SoldByModelToJson(_SoldByModel instance) =>
 _SaleModel _$SaleModelFromJson(Map<String, dynamic> json) => _SaleModel(
   id: json['id'] as String,
   shopId: json['shopId'] as String,
-  paymentMethod: json['paymentMethod'] as String,
   totalAmount: json['totalAmount'] as String,
   items: (json['items'] as List<dynamic>)
       .map((e) => SaleItemModel.fromJson(e as Map<String, dynamic>))
@@ -53,7 +52,6 @@ Map<String, dynamic> _$SaleModelToJson(_SaleModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'shopId': instance.shopId,
-      'paymentMethod': instance.paymentMethod,
       'totalAmount': instance.totalAmount,
       'items': instance.items,
       'soldBy': instance.soldBy,
@@ -64,10 +62,9 @@ _SaleListItem _$SaleListItemFromJson(Map<String, dynamic> json) =>
     _SaleListItem(
       id: json['id'] as String,
       shopId: json['shopId'] as String,
-      paymentMethod: json['paymentMethod'] as String,
       totalAmount: json['totalAmount'] as String,
-      soldByType: json['soldByType'] as String,
-      soldById: json['soldById'] as String,
+      itemsCount: (json['itemsCount'] as num).toInt(),
+      soldByName: json['soldByName'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
@@ -75,9 +72,8 @@ Map<String, dynamic> _$SaleListItemToJson(_SaleListItem instance) =>
     <String, dynamic>{
       'id': instance.id,
       'shopId': instance.shopId,
-      'paymentMethod': instance.paymentMethod,
       'totalAmount': instance.totalAmount,
-      'soldByType': instance.soldByType,
-      'soldById': instance.soldById,
+      'itemsCount': instance.itemsCount,
+      'soldByName': instance.soldByName,
       'createdAt': instance.createdAt.toIso8601String(),
     };

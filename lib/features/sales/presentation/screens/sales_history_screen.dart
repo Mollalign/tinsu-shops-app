@@ -73,13 +73,6 @@ class _SaleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final payLabel = switch (sale.paymentMethod) {
-      'CASH' => 'Cash',
-      'TELEBIRR' => 'Telebirr',
-      'CBE_BIRR' => 'CBE Birr',
-      _ => 'Other',
-    };
-
     return Material(
       color: AppTheme.surface,
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -109,11 +102,11 @@ class _SaleRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      Formatters.time(sale.createdAt),
+                      '${Formatters.time(sale.createdAt)} • ${sale.soldByName}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
-                      payLabel,
+                      '${sale.itemsCount} item${sale.itemsCount == 1 ? '' : 's'}',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),

@@ -34,7 +34,6 @@ abstract class SaleModel with _$SaleModel {
   const factory SaleModel({
     required String id,
     required String shopId,
-    required String paymentMethod,
     required String totalAmount,
     required List<SaleItemModel> items,
     required SoldByModel soldBy,
@@ -55,10 +54,9 @@ abstract class SaleListItem with _$SaleListItem {
   const factory SaleListItem({
     required String id,
     required String shopId,
-    required String paymentMethod,
     required String totalAmount,
-    required String soldByType,
-    required String soldById,
+    required int itemsCount,
+    required String soldByName,
     required DateTime createdAt,
   }) = _SaleListItem;
 

@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
+
 /// API endpoint constants — single source of truth
 class ApiConstants {
   ApiConstants._();
 
-  static const String baseUrl = 'http://10.0.2.2:8000'; // Android emulator
+  static String get baseUrl {
+    return 'http://127.0.0.1:8000';
+  }
   static const String apiV1 = '/api/v1';
 
   // Auth

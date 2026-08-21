@@ -14,6 +14,8 @@ import '../../../auth/presentation/session_provider.dart';
 import '../../../products/data/products_repository.dart';
 import '../../../products/domain/product_model.dart';
 import '../../../sales/data/sales_repository.dart';
+import '../../domain/sale_model.dart';
+import '../../domain/cart_item_model.dart';
 import '../cart_provider.dart';
 
 part 'sell_screen.g.dart';

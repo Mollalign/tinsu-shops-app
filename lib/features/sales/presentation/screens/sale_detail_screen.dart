@@ -51,13 +51,6 @@ class _SaleDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final payLabel = switch (sale.paymentMethod) {
-      'CASH' => 'Cash',
-      'TELEBIRR' => 'Telebirr',
-      'CBE_BIRR' => 'CBE Birr',
-      _ => 'Other',
-    };
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -148,7 +141,7 @@ class _SaleDetailBody extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Payment + Sold by
+          // Sold by + Date
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -158,8 +151,6 @@ class _SaleDetailBody extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _InfoRow('Payment', payLabel),
-                const SizedBox(height: 8),
                 _InfoRow('Sold by', sale.soldBy.name),
                 const SizedBox(height: 8),
                 _InfoRow('Date', Formatters.date(sale.createdAt)),
