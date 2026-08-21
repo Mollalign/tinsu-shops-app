@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../core/utils/formatters.dart';
-import '../features/auth/presentation/session_provider.dart';
 import '../features/sales/domain/cart_item_model.dart';
 import '../features/sales/presentation/cart_provider.dart';
 import 'theme/app_theme.dart';
