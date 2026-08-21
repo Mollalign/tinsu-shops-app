@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import '../../../../core/storage/preferences.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../auth/domain/user_model.dart';
 import '../../../../app/locale_provider.dart';

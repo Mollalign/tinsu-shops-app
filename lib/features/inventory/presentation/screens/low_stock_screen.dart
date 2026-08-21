@@ -4,10 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
-import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../auth/presentation/session_provider.dart';
-import '../../../products/data/products_repository.dart';
 import '../../../products/domain/product_model.dart';
 import '../../../products/presentation/screens/products_screen.dart';
 

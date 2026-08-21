@@ -11,7 +11,6 @@ import '../../../../core/widgets/states.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/products_repository.dart';
 import '../../domain/product_model.dart';
-import 'products_screen.dart';
 
 part 'product_detail_screen.g.dart';
 

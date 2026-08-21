@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// API endpoint constants — single source of truth
 class ApiConstants {
   ApiConstants._();

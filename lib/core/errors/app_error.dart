@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// Application-level error hierarchy.
 /// Never expose raw DioException or SocketException to users.
 sealed class AppError {

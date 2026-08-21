@@ -7,7 +7,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/app_error.dart';
-import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/components.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../auth/presentation/session_provider.dart';

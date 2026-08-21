@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/constants/api_constants.dart';
-import '../../../core/errors/app_error.dart';
 import '../../../core/network/api_client.dart';
 import '../domain/sale_model.dart';
 
