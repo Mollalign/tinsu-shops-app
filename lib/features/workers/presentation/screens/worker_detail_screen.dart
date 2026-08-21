@@ -69,10 +69,12 @@ class _WorkerDetailBodyState extends ConsumerState<_WorkerDetailBody> {
       final pin = await ref
           .read(workersRepositoryProvider)
           .resetPin(widget.shopId, widget.worker.id);
+      if (!mounted) return;
       setState(() => _newPin = pin);
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('PIN has been reset')));
     } on AppError catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toUserMessage())),
       );
@@ -102,6 +104,7 @@ class _WorkerDetailBodyState extends ConsumerState<_WorkerDetailBody> {
         context.pop();
       }
     } on AppError catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toUserMessage())));
     } finally {

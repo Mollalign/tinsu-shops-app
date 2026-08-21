@@ -100,7 +100,7 @@ class PaymentButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: color?.withOpacity(0.08) ?? AppTheme.surfaceVariant,
+      color: color?.withValues(alpha: 0.08) ?? AppTheme.surfaceVariant,
       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: InkWell(
         onTap: onTap,
@@ -112,7 +112,7 @@ class PaymentButton extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: (color ?? AppTheme.primary).withOpacity(0.12),
+                  color: (color ?? AppTheme.primary).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: color ?? AppTheme.primary, size: 24),

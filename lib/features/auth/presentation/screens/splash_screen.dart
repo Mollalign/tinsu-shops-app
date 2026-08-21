@@ -83,7 +83,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   'ቀላል ሽያጭ፣ ሃይለኛ ውጤት',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.75),
+                    color: Colors.white.withValues(alpha: 0.75),
                   ),
                 ),
                 const SizedBox(height: 60),

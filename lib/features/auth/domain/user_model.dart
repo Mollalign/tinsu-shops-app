@@ -5,7 +5,7 @@ part 'user_model.g.dart';
 
 enum UserRole { owner, worker }
 
-enum PaymentMethod { CASH, TELEBIRR, CBE_BIRR, OTHER }
+enum PaymentMethod { cash, telebirr, cbeBirr, other }
 
 @freezed
 abstract class UserModel with _$UserModel {

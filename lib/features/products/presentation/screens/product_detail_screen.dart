@@ -133,7 +133,7 @@ class _ProductDetailBody extends StatelessWidget {
                   label: 'Restock',
                   icon: Icons.add_circle_outline,
                   onPressed: () =>
-                      context.push('/owner/products/${'${product.id}'}/restock'),
+                      context.push('/owner/products/${product.id}/restock'),
                 ),
                 const SizedBox(height: 12),
                 SecondaryButton(
