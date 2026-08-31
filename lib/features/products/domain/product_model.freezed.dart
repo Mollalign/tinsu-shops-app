@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductModel {
 
- String get id; String get shopId; String get name; String? get photoUrl; String get sellingPrice; int get stockQuantity; int get lowStockThreshold; String? get category; bool get isActive;
+ String get id; String get shopId; String get name; String? get photoUrl;@JsonKey(fromJson: _numToString) String get sellingPrice; int get stockQuantity; int get lowStockThreshold; String? get category; bool get isActive;
 /// Create a copy of ProductModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ProductModelCopyWith<$Res>  {
   factory $ProductModelCopyWith(ProductModel value, $Res Function(ProductModel) _then) = _$ProductModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String shopId, String name, String? photoUrl, String sellingPrice, int stockQuantity, int lowStockThreshold, String? category, bool isActive
+ String id, String shopId, String name, String? photoUrl,@JsonKey(fromJson: _numToString) String sellingPrice, int stockQuantity, int lowStockThreshold, String? category, bool isActive
 });
 
 
@@ -161,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String name,  String? photoUrl,  String sellingPrice,  int stockQuantity,  int lowStockThreshold,  String? category,  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String name,  String? photoUrl, @JsonKey(fromJson: _numToString)  String sellingPrice,  int stockQuantity,  int lowStockThreshold,  String? category,  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductModel() when $default != null:
 return $default(_that.id,_that.shopId,_that.name,_that.photoUrl,_that.sellingPrice,_that.stockQuantity,_that.lowStockThreshold,_that.category,_that.isActive);case _:
@@ -182,7 +182,7 @@ return $default(_that.id,_that.shopId,_that.name,_that.photoUrl,_that.sellingPri
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String name,  String? photoUrl,  String sellingPrice,  int stockQuantity,  int lowStockThreshold,  String? category,  bool isActive)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String name,  String? photoUrl, @JsonKey(fromJson: _numToString)  String sellingPrice,  int stockQuantity,  int lowStockThreshold,  String? category,  bool isActive)  $default,) {final _that = this;
 switch (_that) {
 case _ProductModel():
 return $default(_that.id,_that.shopId,_that.name,_that.photoUrl,_that.sellingPrice,_that.stockQuantity,_that.lowStockThreshold,_that.category,_that.isActive);case _:
@@ -202,7 +202,7 @@ return $default(_that.id,_that.shopId,_that.name,_that.photoUrl,_that.sellingPri
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String name,  String? photoUrl,  String sellingPrice,  int stockQuantity,  int lowStockThreshold,  String? category,  bool isActive)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String name,  String? photoUrl, @JsonKey(fromJson: _numToString)  String sellingPrice,  int stockQuantity,  int lowStockThreshold,  String? category,  bool isActive)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductModel() when $default != null:
 return $default(_that.id,_that.shopId,_that.name,_that.photoUrl,_that.sellingPrice,_that.stockQuantity,_that.lowStockThreshold,_that.category,_that.isActive);case _:
@@ -214,17 +214,17 @@ return $default(_that.id,_that.shopId,_that.name,_that.photoUrl,_that.sellingPri
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _ProductModel implements ProductModel {
-  const _ProductModel({required this.id, required this.shopId, required this.name, this.photoUrl, required this.sellingPrice, required this.stockQuantity, this.lowStockThreshold = 5, this.category, this.isActive = true});
+  const _ProductModel({required this.id, required this.shopId, required this.name, this.photoUrl, @JsonKey(fromJson: _numToString) required this.sellingPrice, required this.stockQuantity, this.lowStockThreshold = 5, this.category, this.isActive = true});
   factory _ProductModel.fromJson(Map<String, dynamic> json) => _$ProductModelFromJson(json);
 
 @override final  String id;
 @override final  String shopId;
 @override final  String name;
 @override final  String? photoUrl;
-@override final  String sellingPrice;
+@override@JsonKey(fromJson: _numToString) final  String sellingPrice;
 @override final  int stockQuantity;
 @override@JsonKey() final  int lowStockThreshold;
 @override final  String? category;
@@ -263,7 +263,7 @@ abstract mixin class _$ProductModelCopyWith<$Res> implements $ProductModelCopyWi
   factory _$ProductModelCopyWith(_ProductModel value, $Res Function(_ProductModel) _then) = __$ProductModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String shopId, String name, String? photoUrl, String sellingPrice, int stockQuantity, int lowStockThreshold, String? category, bool isActive
+ String id, String shopId, String name, String? photoUrl,@JsonKey(fromJson: _numToString) String sellingPrice, int stockQuantity, int lowStockThreshold, String? category, bool isActive
 });
 
 

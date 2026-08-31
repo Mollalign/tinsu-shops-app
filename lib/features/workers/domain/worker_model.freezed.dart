@@ -209,8 +209,8 @@ return $default(_that.id,_that.shopId,_that.name,_that.isActive);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _WorkerModel implements WorkerModel {
   const _WorkerModel({required this.id, required this.shopId, required this.name, this.isActive = true});
   factory _WorkerModel.fromJson(Map<String, dynamic> json) => _$WorkerModelFromJson(json);
@@ -283,7 +283,6 @@ as bool,
 
 }
 
-
 /// @nodoc
 mixin _$WorkerCreatedModel {
 
@@ -294,8 +293,6 @@ mixin _$WorkerCreatedModel {
 @pragma('vm:prefer-inline')
 $WorkerCreatedModelCopyWith<WorkerCreatedModel> get copyWith => _$WorkerCreatedModelCopyWithImpl<WorkerCreatedModel>(this as WorkerCreatedModel, _$identity);
 
-  /// Serializes this WorkerCreatedModel to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -303,7 +300,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkerCreatedModel&&(identical(other.worker, worker) || other.worker == worker)&&(identical(other.pin, pin) || other.pin == pin));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,worker,pin);
 
@@ -488,11 +485,11 @@ return $default(_that.worker,_that.pin);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _WorkerCreatedModel implements WorkerCreatedModel {
   const _WorkerCreatedModel({required this.worker, required this.pin});
-  factory _WorkerCreatedModel.fromJson(Map<String, dynamic> json) => _$WorkerCreatedModelFromJson(json);
+  
 
 @override final  WorkerModel worker;
 @override final  String pin;
@@ -503,17 +500,14 @@ class _WorkerCreatedModel implements WorkerCreatedModel {
 @pragma('vm:prefer-inline')
 _$WorkerCreatedModelCopyWith<_WorkerCreatedModel> get copyWith => __$WorkerCreatedModelCopyWithImpl<_WorkerCreatedModel>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$WorkerCreatedModelToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkerCreatedModel&&(identical(other.worker, worker) || other.worker == worker)&&(identical(other.pin, pin) || other.pin == pin));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,worker,pin);
 

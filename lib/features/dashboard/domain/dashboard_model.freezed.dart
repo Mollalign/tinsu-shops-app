@@ -209,8 +209,8 @@ return $default(_that.cash,_that.telebirr,_that.cbeBirr,_that.other);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _PaymentBreakdown implements PaymentBreakdown {
   const _PaymentBreakdown({this.cash = '0', this.telebirr = '0', this.cbeBirr = '0', this.other = '0'});
   factory _PaymentBreakdown.fromJson(Map<String, dynamic> json) => _$PaymentBreakdownFromJson(json);
@@ -287,7 +287,8 @@ as String,
 /// @nodoc
 mixin _$TodayReport {
 
- String get date; String get totalSales; int get numberOfSales; int get itemsSold; PaymentBreakdown get paymentBreakdown; int get lowStockCount;
+ String get date;@JsonKey(fromJson: _numToString) String get totalSales; int get numberOfSales; int get itemsSold;// paymentBreakdown is not returned by the backend — kept for UI compat only.
+@JsonKey(includeFromJson: false, includeToJson: false) PaymentBreakdown get paymentBreakdown; int get lowStockCount;
 /// Create a copy of TodayReport
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -320,7 +321,7 @@ abstract mixin class $TodayReportCopyWith<$Res>  {
   factory $TodayReportCopyWith(TodayReport value, $Res Function(TodayReport) _then) = _$TodayReportCopyWithImpl;
 @useResult
 $Res call({
- String date, String totalSales, int numberOfSales, int itemsSold, PaymentBreakdown paymentBreakdown, int lowStockCount
+ String date,@JsonKey(fromJson: _numToString) String totalSales, int numberOfSales, int itemsSold,@JsonKey(includeFromJson: false, includeToJson: false) PaymentBreakdown paymentBreakdown, int lowStockCount
 });
 
 
@@ -439,7 +440,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date,  String totalSales,  int numberOfSales,  int itemsSold,  PaymentBreakdown paymentBreakdown,  int lowStockCount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date, @JsonKey(fromJson: _numToString)  String totalSales,  int numberOfSales,  int itemsSold, @JsonKey(includeFromJson: false, includeToJson: false)  PaymentBreakdown paymentBreakdown,  int lowStockCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayReport() when $default != null:
 return $default(_that.date,_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.paymentBreakdown,_that.lowStockCount);case _:
@@ -460,7 +461,7 @@ return $default(_that.date,_that.totalSales,_that.numberOfSales,_that.itemsSold,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date,  String totalSales,  int numberOfSales,  int itemsSold,  PaymentBreakdown paymentBreakdown,  int lowStockCount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date, @JsonKey(fromJson: _numToString)  String totalSales,  int numberOfSales,  int itemsSold, @JsonKey(includeFromJson: false, includeToJson: false)  PaymentBreakdown paymentBreakdown,  int lowStockCount)  $default,) {final _that = this;
 switch (_that) {
 case _TodayReport():
 return $default(_that.date,_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.paymentBreakdown,_that.lowStockCount);case _:
@@ -480,7 +481,7 @@ return $default(_that.date,_that.totalSales,_that.numberOfSales,_that.itemsSold,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date,  String totalSales,  int numberOfSales,  int itemsSold,  PaymentBreakdown paymentBreakdown,  int lowStockCount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date, @JsonKey(fromJson: _numToString)  String totalSales,  int numberOfSales,  int itemsSold, @JsonKey(includeFromJson: false, includeToJson: false)  PaymentBreakdown paymentBreakdown,  int lowStockCount)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayReport() when $default != null:
 return $default(_that.date,_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.paymentBreakdown,_that.lowStockCount);case _:
@@ -492,17 +493,18 @@ return $default(_that.date,_that.totalSales,_that.numberOfSales,_that.itemsSold,
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _TodayReport implements TodayReport {
-  const _TodayReport({required this.date, required this.totalSales, required this.numberOfSales, required this.itemsSold, required this.paymentBreakdown, required this.lowStockCount});
+  const _TodayReport({required this.date, @JsonKey(fromJson: _numToString) required this.totalSales, required this.numberOfSales, required this.itemsSold, @JsonKey(includeFromJson: false, includeToJson: false) this.paymentBreakdown = const PaymentBreakdown(), required this.lowStockCount});
   factory _TodayReport.fromJson(Map<String, dynamic> json) => _$TodayReportFromJson(json);
 
 @override final  String date;
-@override final  String totalSales;
+@override@JsonKey(fromJson: _numToString) final  String totalSales;
 @override final  int numberOfSales;
 @override final  int itemsSold;
-@override final  PaymentBreakdown paymentBreakdown;
+// paymentBreakdown is not returned by the backend — kept for UI compat only.
+@override@JsonKey(includeFromJson: false, includeToJson: false) final  PaymentBreakdown paymentBreakdown;
 @override final  int lowStockCount;
 
 /// Create a copy of TodayReport
@@ -538,7 +540,7 @@ abstract mixin class _$TodayReportCopyWith<$Res> implements $TodayReportCopyWith
   factory _$TodayReportCopyWith(_TodayReport value, $Res Function(_TodayReport) _then) = __$TodayReportCopyWithImpl;
 @override @useResult
 $Res call({
- String date, String totalSales, int numberOfSales, int itemsSold, PaymentBreakdown paymentBreakdown, int lowStockCount
+ String date,@JsonKey(fromJson: _numToString) String totalSales, int numberOfSales, int itemsSold,@JsonKey(includeFromJson: false, includeToJson: false) PaymentBreakdown paymentBreakdown, int lowStockCount
 });
 
 
@@ -583,7 +585,8 @@ $PaymentBreakdownCopyWith<$Res> get paymentBreakdown {
 /// @nodoc
 mixin _$WorkerTodayReport {
 
- String get totalSales; int get numberOfSales; int get itemsSold; PaymentBreakdown get paymentBreakdown;
+@JsonKey(fromJson: _numToString) String get totalSales; int get numberOfSales; int get itemsSold;// paymentBreakdown is not returned by the backend — kept for UI compat only.
+@JsonKey(includeFromJson: false, includeToJson: false) PaymentBreakdown get paymentBreakdown;
 /// Create a copy of WorkerTodayReport
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -616,7 +619,7 @@ abstract mixin class $WorkerTodayReportCopyWith<$Res>  {
   factory $WorkerTodayReportCopyWith(WorkerTodayReport value, $Res Function(WorkerTodayReport) _then) = _$WorkerTodayReportCopyWithImpl;
 @useResult
 $Res call({
- String totalSales, int numberOfSales, int itemsSold, PaymentBreakdown paymentBreakdown
+@JsonKey(fromJson: _numToString) String totalSales, int numberOfSales, int itemsSold,@JsonKey(includeFromJson: false, includeToJson: false) PaymentBreakdown paymentBreakdown
 });
 
 
@@ -733,7 +736,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String totalSales,  int numberOfSales,  int itemsSold,  PaymentBreakdown paymentBreakdown)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _numToString)  String totalSales,  int numberOfSales,  int itemsSold, @JsonKey(includeFromJson: false, includeToJson: false)  PaymentBreakdown paymentBreakdown)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WorkerTodayReport() when $default != null:
 return $default(_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.paymentBreakdown);case _:
@@ -754,7 +757,7 @@ return $default(_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.payme
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String totalSales,  int numberOfSales,  int itemsSold,  PaymentBreakdown paymentBreakdown)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _numToString)  String totalSales,  int numberOfSales,  int itemsSold, @JsonKey(includeFromJson: false, includeToJson: false)  PaymentBreakdown paymentBreakdown)  $default,) {final _that = this;
 switch (_that) {
 case _WorkerTodayReport():
 return $default(_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.paymentBreakdown);case _:
@@ -774,7 +777,7 @@ return $default(_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.payme
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String totalSales,  int numberOfSales,  int itemsSold,  PaymentBreakdown paymentBreakdown)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: _numToString)  String totalSales,  int numberOfSales,  int itemsSold, @JsonKey(includeFromJson: false, includeToJson: false)  PaymentBreakdown paymentBreakdown)?  $default,) {final _that = this;
 switch (_that) {
 case _WorkerTodayReport() when $default != null:
 return $default(_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.paymentBreakdown);case _:
@@ -786,16 +789,17 @@ return $default(_that.totalSales,_that.numberOfSales,_that.itemsSold,_that.payme
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _WorkerTodayReport implements WorkerTodayReport {
-  const _WorkerTodayReport({required this.totalSales, required this.numberOfSales, required this.itemsSold, required this.paymentBreakdown});
+  const _WorkerTodayReport({@JsonKey(fromJson: _numToString) required this.totalSales, required this.numberOfSales, required this.itemsSold, @JsonKey(includeFromJson: false, includeToJson: false) this.paymentBreakdown = const PaymentBreakdown()});
   factory _WorkerTodayReport.fromJson(Map<String, dynamic> json) => _$WorkerTodayReportFromJson(json);
 
-@override final  String totalSales;
+@override@JsonKey(fromJson: _numToString) final  String totalSales;
 @override final  int numberOfSales;
 @override final  int itemsSold;
-@override final  PaymentBreakdown paymentBreakdown;
+// paymentBreakdown is not returned by the backend — kept for UI compat only.
+@override@JsonKey(includeFromJson: false, includeToJson: false) final  PaymentBreakdown paymentBreakdown;
 
 /// Create a copy of WorkerTodayReport
 /// with the given fields replaced by the non-null parameter values.
@@ -830,7 +834,7 @@ abstract mixin class _$WorkerTodayReportCopyWith<$Res> implements $WorkerTodayRe
   factory _$WorkerTodayReportCopyWith(_WorkerTodayReport value, $Res Function(_WorkerTodayReport) _then) = __$WorkerTodayReportCopyWithImpl;
 @override @useResult
 $Res call({
- String totalSales, int numberOfSales, int itemsSold, PaymentBreakdown paymentBreakdown
+@JsonKey(fromJson: _numToString) String totalSales, int numberOfSales, int itemsSold,@JsonKey(includeFromJson: false, includeToJson: false) PaymentBreakdown paymentBreakdown
 });
 
 
@@ -873,7 +877,7 @@ $PaymentBreakdownCopyWith<$Res> get paymentBreakdown {
 /// @nodoc
 mixin _$ShopDailySummary {
 
- String get shopId; String get shopName; String get todaySales; int get numberOfSales;
+ String get shopId; String get shopName;@JsonKey(fromJson: _numToString) String get todaySales; int get numberOfSales;
 /// Create a copy of ShopDailySummary
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -906,7 +910,7 @@ abstract mixin class $ShopDailySummaryCopyWith<$Res>  {
   factory $ShopDailySummaryCopyWith(ShopDailySummary value, $Res Function(ShopDailySummary) _then) = _$ShopDailySummaryCopyWithImpl;
 @useResult
 $Res call({
- String shopId, String shopName, String todaySales, int numberOfSales
+ String shopId, String shopName,@JsonKey(fromJson: _numToString) String todaySales, int numberOfSales
 });
 
 
@@ -1014,7 +1018,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String shopId,  String shopName,  String todaySales,  int numberOfSales)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String shopId,  String shopName, @JsonKey(fromJson: _numToString)  String todaySales,  int numberOfSales)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShopDailySummary() when $default != null:
 return $default(_that.shopId,_that.shopName,_that.todaySales,_that.numberOfSales);case _:
@@ -1035,7 +1039,7 @@ return $default(_that.shopId,_that.shopName,_that.todaySales,_that.numberOfSales
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String shopId,  String shopName,  String todaySales,  int numberOfSales)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String shopId,  String shopName, @JsonKey(fromJson: _numToString)  String todaySales,  int numberOfSales)  $default,) {final _that = this;
 switch (_that) {
 case _ShopDailySummary():
 return $default(_that.shopId,_that.shopName,_that.todaySales,_that.numberOfSales);case _:
@@ -1055,7 +1059,7 @@ return $default(_that.shopId,_that.shopName,_that.todaySales,_that.numberOfSales
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String shopId,  String shopName,  String todaySales,  int numberOfSales)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String shopId,  String shopName, @JsonKey(fromJson: _numToString)  String todaySales,  int numberOfSales)?  $default,) {final _that = this;
 switch (_that) {
 case _ShopDailySummary() when $default != null:
 return $default(_that.shopId,_that.shopName,_that.todaySales,_that.numberOfSales);case _:
@@ -1067,15 +1071,15 @@ return $default(_that.shopId,_that.shopName,_that.todaySales,_that.numberOfSales
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _ShopDailySummary implements ShopDailySummary {
-  const _ShopDailySummary({required this.shopId, required this.shopName, required this.todaySales, required this.numberOfSales});
+  const _ShopDailySummary({required this.shopId, required this.shopName, @JsonKey(fromJson: _numToString) required this.todaySales, required this.numberOfSales});
   factory _ShopDailySummary.fromJson(Map<String, dynamic> json) => _$ShopDailySummaryFromJson(json);
 
 @override final  String shopId;
 @override final  String shopName;
-@override final  String todaySales;
+@override@JsonKey(fromJson: _numToString) final  String todaySales;
 @override final  int numberOfSales;
 
 /// Create a copy of ShopDailySummary
@@ -1111,7 +1115,7 @@ abstract mixin class _$ShopDailySummaryCopyWith<$Res> implements $ShopDailySumma
   factory _$ShopDailySummaryCopyWith(_ShopDailySummary value, $Res Function(_ShopDailySummary) _then) = __$ShopDailySummaryCopyWithImpl;
 @override @useResult
 $Res call({
- String shopId, String shopName, String todaySales, int numberOfSales
+ String shopId, String shopName,@JsonKey(fromJson: _numToString) String todaySales, int numberOfSales
 });
 
 
@@ -1145,7 +1149,7 @@ as int,
 /// @nodoc
 mixin _$OwnerDashboard {
 
- List<ShopDailySummary> get shops; String get totalTodaySales;
+ List<ShopDailySummary> get shops;@JsonKey(fromJson: _numToString) String get totalTodaySales;
 /// Create a copy of OwnerDashboard
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1178,7 +1182,7 @@ abstract mixin class $OwnerDashboardCopyWith<$Res>  {
   factory $OwnerDashboardCopyWith(OwnerDashboard value, $Res Function(OwnerDashboard) _then) = _$OwnerDashboardCopyWithImpl;
 @useResult
 $Res call({
- List<ShopDailySummary> shops, String totalTodaySales
+ List<ShopDailySummary> shops,@JsonKey(fromJson: _numToString) String totalTodaySales
 });
 
 
@@ -1284,7 +1288,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ShopDailySummary> shops,  String totalTodaySales)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ShopDailySummary> shops, @JsonKey(fromJson: _numToString)  String totalTodaySales)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OwnerDashboard() when $default != null:
 return $default(_that.shops,_that.totalTodaySales);case _:
@@ -1305,7 +1309,7 @@ return $default(_that.shops,_that.totalTodaySales);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ShopDailySummary> shops,  String totalTodaySales)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ShopDailySummary> shops, @JsonKey(fromJson: _numToString)  String totalTodaySales)  $default,) {final _that = this;
 switch (_that) {
 case _OwnerDashboard():
 return $default(_that.shops,_that.totalTodaySales);case _:
@@ -1325,7 +1329,7 @@ return $default(_that.shops,_that.totalTodaySales);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ShopDailySummary> shops,  String totalTodaySales)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ShopDailySummary> shops, @JsonKey(fromJson: _numToString)  String totalTodaySales)?  $default,) {final _that = this;
 switch (_that) {
 case _OwnerDashboard() when $default != null:
 return $default(_that.shops,_that.totalTodaySales);case _:
@@ -1337,10 +1341,10 @@ return $default(_that.shops,_that.totalTodaySales);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _OwnerDashboard implements OwnerDashboard {
-  const _OwnerDashboard({required final  List<ShopDailySummary> shops, required this.totalTodaySales}): _shops = shops;
+  const _OwnerDashboard({required final  List<ShopDailySummary> shops, @JsonKey(fromJson: _numToString) required this.totalTodaySales}): _shops = shops;
   factory _OwnerDashboard.fromJson(Map<String, dynamic> json) => _$OwnerDashboardFromJson(json);
 
  final  List<ShopDailySummary> _shops;
@@ -1350,7 +1354,7 @@ class _OwnerDashboard implements OwnerDashboard {
   return EqualUnmodifiableListView(_shops);
 }
 
-@override final  String totalTodaySales;
+@override@JsonKey(fromJson: _numToString) final  String totalTodaySales;
 
 /// Create a copy of OwnerDashboard
 /// with the given fields replaced by the non-null parameter values.
@@ -1385,7 +1389,7 @@ abstract mixin class _$OwnerDashboardCopyWith<$Res> implements $OwnerDashboardCo
   factory _$OwnerDashboardCopyWith(_OwnerDashboard value, $Res Function(_OwnerDashboard) _then) = __$OwnerDashboardCopyWithImpl;
 @override @useResult
 $Res call({
- List<ShopDailySummary> shops, String totalTodaySales
+ List<ShopDailySummary> shops,@JsonKey(fromJson: _numToString) String totalTodaySales
 });
 
 

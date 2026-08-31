@@ -210,8 +210,8 @@ return $default(_that.id,_that.name,_that.location,_that.phone,_that.isActive);c
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _ShopModel implements ShopModel {
   const _ShopModel({required this.id, required this.name, this.location, this.phone, this.isActive = true});
   factory _ShopModel.fromJson(Map<String, dynamic> json) => _$ShopModelFromJson(json);

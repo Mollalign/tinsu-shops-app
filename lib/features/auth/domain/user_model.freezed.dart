@@ -209,8 +209,8 @@ return $default(_that.id,_that.role,_that.name,_that.shopId);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _UserModel implements UserModel {
   const _UserModel({required this.id, required this.role, required this.name, this.shopId});
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
@@ -489,8 +489,8 @@ return $default(_that.accessToken,_that.tokenType,_that.user);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _AuthResponse implements AuthResponse {
   const _AuthResponse({required this.accessToken, required this.tokenType, required this.user});
   factory _AuthResponse.fromJson(Map<String, dynamic> json) => _$AuthResponseFromJson(json);

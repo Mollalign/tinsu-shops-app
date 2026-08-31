@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SaleItemModel {
 
- String get productId; String get productName; int get quantity; String get unitPrice; String get subtotal;
+ String get productId; String get productName; int get quantity;@JsonKey(fromJson: _numToString) String get unitPrice;@JsonKey(fromJson: _numToString) String get subtotal;
 /// Create a copy of SaleItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $SaleItemModelCopyWith<$Res>  {
   factory $SaleItemModelCopyWith(SaleItemModel value, $Res Function(SaleItemModel) _then) = _$SaleItemModelCopyWithImpl;
 @useResult
 $Res call({
- String productId, String productName, int quantity, String unitPrice, String subtotal
+ String productId, String productName, int quantity,@JsonKey(fromJson: _numToString) String unitPrice,@JsonKey(fromJson: _numToString) String subtotal
 });
 
 
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String productId,  String productName,  int quantity,  String unitPrice,  String subtotal)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String productId,  String productName,  int quantity, @JsonKey(fromJson: _numToString)  String unitPrice, @JsonKey(fromJson: _numToString)  String subtotal)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SaleItemModel() when $default != null:
 return $default(_that.productId,_that.productName,_that.quantity,_that.unitPrice,_that.subtotal);case _:
@@ -178,7 +178,7 @@ return $default(_that.productId,_that.productName,_that.quantity,_that.unitPrice
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String productId,  String productName,  int quantity,  String unitPrice,  String subtotal)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String productId,  String productName,  int quantity, @JsonKey(fromJson: _numToString)  String unitPrice, @JsonKey(fromJson: _numToString)  String subtotal)  $default,) {final _that = this;
 switch (_that) {
 case _SaleItemModel():
 return $default(_that.productId,_that.productName,_that.quantity,_that.unitPrice,_that.subtotal);case _:
@@ -198,7 +198,7 @@ return $default(_that.productId,_that.productName,_that.quantity,_that.unitPrice
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String productId,  String productName,  int quantity,  String unitPrice,  String subtotal)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String productId,  String productName,  int quantity, @JsonKey(fromJson: _numToString)  String unitPrice, @JsonKey(fromJson: _numToString)  String subtotal)?  $default,) {final _that = this;
 switch (_that) {
 case _SaleItemModel() when $default != null:
 return $default(_that.productId,_that.productName,_that.quantity,_that.unitPrice,_that.subtotal);case _:
@@ -210,17 +210,17 @@ return $default(_that.productId,_that.productName,_that.quantity,_that.unitPrice
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _SaleItemModel implements SaleItemModel {
-  const _SaleItemModel({required this.productId, required this.productName, required this.quantity, required this.unitPrice, required this.subtotal});
+  const _SaleItemModel({required this.productId, required this.productName, required this.quantity, @JsonKey(fromJson: _numToString) required this.unitPrice, @JsonKey(fromJson: _numToString) required this.subtotal});
   factory _SaleItemModel.fromJson(Map<String, dynamic> json) => _$SaleItemModelFromJson(json);
 
 @override final  String productId;
 @override final  String productName;
 @override final  int quantity;
-@override final  String unitPrice;
-@override final  String subtotal;
+@override@JsonKey(fromJson: _numToString) final  String unitPrice;
+@override@JsonKey(fromJson: _numToString) final  String subtotal;
 
 /// Create a copy of SaleItemModel
 /// with the given fields replaced by the non-null parameter values.
@@ -255,7 +255,7 @@ abstract mixin class _$SaleItemModelCopyWith<$Res> implements $SaleItemModelCopy
   factory _$SaleItemModelCopyWith(_SaleItemModel value, $Res Function(_SaleItemModel) _then) = __$SaleItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String productId, String productName, int quantity, String unitPrice, String subtotal
+ String productId, String productName, int quantity,@JsonKey(fromJson: _numToString) String unitPrice,@JsonKey(fromJson: _numToString) String subtotal
 });
 
 
@@ -483,8 +483,8 @@ return $default(_that.type,_that.id,_that.name);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _SoldByModel implements SoldByModel {
   const _SoldByModel({required this.type, required this.id, required this.name});
   factory _SoldByModel.fromJson(Map<String, dynamic> json) => _$SoldByModelFromJson(json);
@@ -559,7 +559,7 @@ as String,
 /// @nodoc
 mixin _$SaleModel {
 
- String get id; String get shopId; String get totalAmount; List<SaleItemModel> get items; SoldByModel get soldBy; DateTime get createdAt;
+ String get id; String get shopId;@JsonKey(fromJson: _numToString) String get totalAmount; List<SaleItemModel> get items; SoldByModel get soldBy; DateTime get createdAt;
 /// Create a copy of SaleModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -592,7 +592,7 @@ abstract mixin class $SaleModelCopyWith<$Res>  {
   factory $SaleModelCopyWith(SaleModel value, $Res Function(SaleModel) _then) = _$SaleModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String shopId, String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
+ String id, String shopId,@JsonKey(fromJson: _numToString) String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
 });
 
 
@@ -711,7 +711,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId, @JsonKey(fromJson: _numToString)  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SaleModel() when $default != null:
 return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
@@ -732,7 +732,7 @@ return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId, @JsonKey(fromJson: _numToString)  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _SaleModel():
 return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
@@ -752,7 +752,7 @@ return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId, @JsonKey(fromJson: _numToString)  String totalAmount,  List<SaleItemModel> items,  SoldByModel soldBy,  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SaleModel() when $default != null:
 return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy,_that.createdAt);case _:
@@ -764,15 +764,15 @@ return $default(_that.id,_that.shopId,_that.totalAmount,_that.items,_that.soldBy
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _SaleModel implements SaleModel {
-  const _SaleModel({required this.id, required this.shopId, required this.totalAmount, required final  List<SaleItemModel> items, required this.soldBy, required this.createdAt}): _items = items;
+  const _SaleModel({required this.id, required this.shopId, @JsonKey(fromJson: _numToString) required this.totalAmount, required final  List<SaleItemModel> items, required this.soldBy, required this.createdAt}): _items = items;
   factory _SaleModel.fromJson(Map<String, dynamic> json) => _$SaleModelFromJson(json);
 
 @override final  String id;
 @override final  String shopId;
-@override final  String totalAmount;
+@override@JsonKey(fromJson: _numToString) final  String totalAmount;
  final  List<SaleItemModel> _items;
 @override List<SaleItemModel> get items {
   if (_items is EqualUnmodifiableListView) return _items;
@@ -816,7 +816,7 @@ abstract mixin class _$SaleModelCopyWith<$Res> implements $SaleModelCopyWith<$Re
   factory _$SaleModelCopyWith(_SaleModel value, $Res Function(_SaleModel) _then) = __$SaleModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String shopId, String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
+ String id, String shopId,@JsonKey(fromJson: _numToString) String totalAmount, List<SaleItemModel> items, SoldByModel soldBy, DateTime createdAt
 });
 
 
@@ -861,7 +861,7 @@ $SoldByModelCopyWith<$Res> get soldBy {
 /// @nodoc
 mixin _$SaleListItem {
 
- String get id; String get shopId; String get totalAmount; int get itemsCount; String get soldByName; DateTime get createdAt;
+ String get id; String get shopId;@JsonKey(fromJson: _numToString) String get totalAmount; int get itemsCount; String get soldByName; DateTime get createdAt;
 /// Create a copy of SaleListItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -894,7 +894,7 @@ abstract mixin class $SaleListItemCopyWith<$Res>  {
   factory $SaleListItemCopyWith(SaleListItem value, $Res Function(SaleListItem) _then) = _$SaleListItemCopyWithImpl;
 @useResult
 $Res call({
- String id, String shopId, String totalAmount, int itemsCount, String soldByName, DateTime createdAt
+ String id, String shopId,@JsonKey(fromJson: _numToString) String totalAmount, int itemsCount, String soldByName, DateTime createdAt
 });
 
 
@@ -1004,7 +1004,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String shopId, @JsonKey(fromJson: _numToString)  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SaleListItem() when $default != null:
 return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.soldByName,_that.createdAt);case _:
@@ -1025,7 +1025,7 @@ return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId,  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String shopId, @JsonKey(fromJson: _numToString)  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _SaleListItem():
 return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.soldByName,_that.createdAt);case _:
@@ -1045,7 +1045,7 @@ return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId,  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String shopId, @JsonKey(fromJson: _numToString)  String totalAmount,  int itemsCount,  String soldByName,  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SaleListItem() when $default != null:
 return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.soldByName,_that.createdAt);case _:
@@ -1057,15 +1057,15 @@ return $default(_that.id,_that.shopId,_that.totalAmount,_that.itemsCount,_that.s
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _SaleListItem implements SaleListItem {
-  const _SaleListItem({required this.id, required this.shopId, required this.totalAmount, required this.itemsCount, required this.soldByName, required this.createdAt});
+  const _SaleListItem({required this.id, required this.shopId, @JsonKey(fromJson: _numToString) required this.totalAmount, required this.itemsCount, required this.soldByName, required this.createdAt});
   factory _SaleListItem.fromJson(Map<String, dynamic> json) => _$SaleListItemFromJson(json);
 
 @override final  String id;
 @override final  String shopId;
-@override final  String totalAmount;
+@override@JsonKey(fromJson: _numToString) final  String totalAmount;
 @override final  int itemsCount;
 @override final  String soldByName;
 @override final  DateTime createdAt;
@@ -1103,7 +1103,7 @@ abstract mixin class _$SaleListItemCopyWith<$Res> implements $SaleListItemCopyWi
   factory _$SaleListItemCopyWith(_SaleListItem value, $Res Function(_SaleListItem) _then) = __$SaleListItemCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String shopId, String totalAmount, int itemsCount, String soldByName, DateTime createdAt
+ String id, String shopId,@JsonKey(fromJson: _numToString) String totalAmount, int itemsCount, String soldByName, DateTime createdAt
 });
 
 

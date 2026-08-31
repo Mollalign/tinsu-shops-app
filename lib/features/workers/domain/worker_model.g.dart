@@ -8,17 +8,17 @@ part of 'worker_model.dart';
 
 _WorkerModel _$WorkerModelFromJson(Map<String, dynamic> json) => _WorkerModel(
   id: json['id'] as String,
-  shopId: json['shopId'] as String,
+  shopId: json['shop_id'] as String,
   name: json['name'] as String,
-  isActive: json['isActive'] as bool? ?? true,
+  isActive: json['is_active'] as bool? ?? true,
 );
 
 Map<String, dynamic> _$WorkerModelToJson(_WorkerModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'shopId': instance.shopId,
+      'shop_id': instance.shopId,
       'name': instance.name,
-      'isActive': instance.isActive,
+      'is_active': instance.isActive,
     };
 
 _WorkerCreatedModel _$WorkerCreatedModelFromJson(Map<String, dynamic> json) =>

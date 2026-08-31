@@ -76,7 +76,17 @@ class ErrorInterceptor extends Interceptor {
     if (statusCode == 404) return const NotFoundError();
 
     // Check for domain errors from backend
-    if (detail is String) {
+    // FastAPI AppException returns: {"detail": {"code": "...", "message": "..."}}
+    if (detail is Map) {
+      final code = detail['code'] as String?;
+      final message = detail['message'] as String?;
+      if (code == 'INSUFFICIENT_STOCK' ||
+          (message != null && message.toLowerCase().contains('insufficient stock'))) {
+        return InsufficientStockError(
+            productName: message ?? 'Product', available: 0);
+      }
+      if (message != null) return ValidationError(message);
+    } else if (detail is String) {
       if (detail.contains('INSUFFICIENT_STOCK') ||
           detail.toLowerCase().contains('insufficient stock')) {
         return const InsufficientStockError(productName: 'Product', available: 0);

@@ -10,7 +10,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: json['id'] as String,
   role: $enumDecode(_$UserRoleEnumMap, json['role']),
   name: json['name'] as String,
-  shopId: json['shopId'] as String?,
+  shopId: json['shop_id'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -18,21 +18,21 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'id': instance.id,
       'role': _$UserRoleEnumMap[instance.role]!,
       'name': instance.name,
-      'shopId': instance.shopId,
+      'shop_id': instance.shopId,
     };
 
 const _$UserRoleEnumMap = {UserRole.owner: 'owner', UserRole.worker: 'worker'};
 
 _AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) =>
     _AuthResponse(
-      accessToken: json['accessToken'] as String,
-      tokenType: json['tokenType'] as String,
+      accessToken: json['access_token'] as String,
+      tokenType: json['token_type'] as String,
       user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AuthResponseToJson(_AuthResponse instance) =>
     <String, dynamic>{
-      'accessToken': instance.accessToken,
-      'tokenType': instance.tokenType,
+      'access_token': instance.accessToken,
+      'token_type': instance.tokenType,
       'user': instance.user,
     };

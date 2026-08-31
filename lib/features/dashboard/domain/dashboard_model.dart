@@ -3,8 +3,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'dashboard_model.freezed.dart';
 part 'dashboard_model.g.dart';
 
+/// Converts a backend numeric Decimal to a String for display.
+String _numToString(dynamic v) => v?.toString() ?? '0';
+
 @freezed
 abstract class PaymentBreakdown with _$PaymentBreakdown {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory PaymentBreakdown({
     @Default('0') String cash,
     @Default('0') String telebirr,
@@ -25,12 +29,16 @@ extension PaymentBreakdownX on PaymentBreakdown {
 
 @freezed
 abstract class TodayReport with _$TodayReport {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory TodayReport({
     required String date,
-    required String totalSales,
+    @JsonKey(fromJson: _numToString) required String totalSales,
     required int numberOfSales,
     required int itemsSold,
-    required PaymentBreakdown paymentBreakdown,
+    // paymentBreakdown is not returned by the backend — kept for UI compat only.
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    @Default(PaymentBreakdown())
+    PaymentBreakdown paymentBreakdown,
     required int lowStockCount,
   }) = _TodayReport;
 
@@ -44,11 +52,15 @@ extension TodayReportX on TodayReport {
 
 @freezed
 abstract class WorkerTodayReport with _$WorkerTodayReport {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory WorkerTodayReport({
-    required String totalSales,
+    @JsonKey(fromJson: _numToString) required String totalSales,
     required int numberOfSales,
     required int itemsSold,
-    required PaymentBreakdown paymentBreakdown,
+    // paymentBreakdown is not returned by the backend — kept for UI compat only.
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    @Default(PaymentBreakdown())
+    PaymentBreakdown paymentBreakdown,
   }) = _WorkerTodayReport;
 
   factory WorkerTodayReport.fromJson(Map<String, dynamic> json) =>
@@ -61,10 +73,11 @@ extension WorkerTodayReportX on WorkerTodayReport {
 
 @freezed
 abstract class ShopDailySummary with _$ShopDailySummary {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory ShopDailySummary({
     required String shopId,
     required String shopName,
-    required String todaySales,
+    @JsonKey(fromJson: _numToString) required String todaySales,
     required int numberOfSales,
   }) = _ShopDailySummary;
 
@@ -78,9 +91,10 @@ extension ShopDailySummaryX on ShopDailySummary {
 
 @freezed
 abstract class OwnerDashboard with _$OwnerDashboard {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OwnerDashboard({
     required List<ShopDailySummary> shops,
-    required String totalTodaySales,
+    @JsonKey(fromJson: _numToString) required String totalTodaySales,
   }) = _OwnerDashboard;
 
   factory OwnerDashboard.fromJson(Map<String, dynamic> json) =>

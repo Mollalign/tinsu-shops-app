@@ -9,6 +9,7 @@ enum PaymentMethod { cash, telebirr, cbeBirr, other }
 
 @freezed
 abstract class UserModel with _$UserModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory UserModel({
     required String id,
     required UserRole role,
@@ -22,6 +23,7 @@ abstract class UserModel with _$UserModel {
 
 @freezed
 abstract class AuthResponse with _$AuthResponse {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory AuthResponse({
     required String accessToken,
     required String tokenType,

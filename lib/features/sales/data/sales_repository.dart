@@ -28,7 +28,6 @@ class SalesRepository {
       final res = await _dio.post(
         ApiConstants.sales(shopId),
         data: {
-          'payment_method': 'CASH', // default — UI no longer exposes this
           'items': items,
         },
         options: Options(

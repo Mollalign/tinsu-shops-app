@@ -3,14 +3,20 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'sale_model.freezed.dart';
 part 'sale_model.g.dart';
 
+/// Converts a backend numeric value (int or double) to a String.
+/// Used for monetary fields serialized as JSON numbers by FastAPI/Pydantic
+/// but stored as String in Flutter for precision-safe display.
+String _numToString(dynamic v) => v?.toString() ?? '0';
+
 @freezed
 abstract class SaleItemModel with _$SaleItemModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SaleItemModel({
     required String productId,
     required String productName,
     required int quantity,
-    required String unitPrice,
-    required String subtotal,
+    @JsonKey(fromJson: _numToString) required String unitPrice,
+    @JsonKey(fromJson: _numToString) required String subtotal,
   }) = _SaleItemModel;
 
   factory SaleItemModel.fromJson(Map<String, dynamic> json) =>
@@ -19,6 +25,7 @@ abstract class SaleItemModel with _$SaleItemModel {
 
 @freezed
 abstract class SoldByModel with _$SoldByModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SoldByModel({
     required String type,
     required String id,
@@ -31,10 +38,11 @@ abstract class SoldByModel with _$SoldByModel {
 
 @freezed
 abstract class SaleModel with _$SaleModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SaleModel({
     required String id,
     required String shopId,
-    required String totalAmount,
+    @JsonKey(fromJson: _numToString) required String totalAmount,
     required List<SaleItemModel> items,
     required SoldByModel soldBy,
     required DateTime createdAt,
@@ -51,10 +59,11 @@ extension SaleModelX on SaleModel {
 
 @freezed
 abstract class SaleListItem with _$SaleListItem {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SaleListItem({
     required String id,
     required String shopId,
-    required String totalAmount,
+    @JsonKey(fromJson: _numToString) required String totalAmount,
     required int itemsCount,
     required String soldByName,
     required DateTime createdAt,
