@@ -249,16 +249,44 @@ class _SellScreenState extends ConsumerState<SellScreen> {
 // Header
 // ─────────────────────────────────────────────────────────
 
-class _SellHeader extends StatelessWidget {
+class _SellHeader extends ConsumerWidget {
   final String workerName;
   final CartState cart;
   const _SellHeader({required this.workerName, required this.cart});
 
+  Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('End Shift?'),
+        content: const Text('This will clear your cart and log you out.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: AppTheme.error),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    // Clear the cart first, then log out
+    ref.read(cartProvider.notifier).clear();
+    await ref.read(sessionProvider.notifier).logout();
+    if (context.mounted) context.go('/worker/select');
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: AppTheme.surface,
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
       child: Row(
         children: [
           Expanded(
@@ -309,6 +337,15 @@ class _SellHeader extends StatelessWidget {
                 ),
               ),
             ),
+          const SizedBox(width: 4),
+          // Logout button
+          Tooltip(
+            message: 'End Shift',
+            child: IconButton(
+              icon: const Icon(Icons.logout, size: 22, color: AppTheme.outline),
+              onPressed: () => _confirmLogout(context, ref),
+            ),
+          ),
         ],
       ),
     );

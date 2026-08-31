@@ -6,9 +6,12 @@ part of 'worker_select_shop_screen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicShopsHash() => r'7bd0edd9b6b5b6dcf9056a27643f9503f4d021f6';
+String _$publicShopsHash() => r'ddc02fb72ec74eccc7a41e0e06f67961853a9606';
 
-/// See also [publicShops].
+/// Fetches shops via the public (no-auth) endpoint.
+/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
+///
+/// Copied from [publicShops].
 @ProviderFor(publicShops)
 final publicShopsProvider = AutoDisposeFutureProvider<List<ShopModel>>.internal(
   publicShops,

@@ -11,6 +11,9 @@ import '../../../dashboard/data/dashboard_repository.dart';
 import '../../../dashboard/domain/dashboard_model.dart';
 import '../../../sales/data/sales_repository.dart';
 import '../../../sales/domain/sale_model.dart';
+import '../../../sales/presentation/cart_provider.dart';
+import 'package:go_router/go_router.dart';
+
 
 part 'worker_today_screen.g.dart';
 
@@ -24,6 +27,33 @@ Future<List<SaleListItem>> workerSales(Ref ref, String shopId) =>
 
 class WorkerTodayScreen extends ConsumerWidget {
   const WorkerTodayScreen({super.key});
+
+  Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('End Shift?'),
+        content: const Text('This will clear your cart and log you out.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: AppTheme.error),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    ref.read(cartProvider.notifier).clear();
+    await ref.read(sessionProvider.notifier).logout();
+    if (context.mounted) context.go('/worker/select');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,16 +87,33 @@ class WorkerTodayScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('My Sales Today',
-                          style: Theme.of(context).textTheme.headlineSmall),
-                      if (workerName.isNotEmpty)
-                        Text(
-                          workerName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: AppTheme.outline),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('My Sales Today',
+                                  style: Theme.of(context).textTheme.headlineSmall),
+                              if (workerName.isNotEmpty)
+                                Text(
+                                  workerName,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(color: AppTheme.outline),
+                                ),
+                            ],
+                          ),
+                          Tooltip(
+                            message: 'End Shift',
+                            child: IconButton(
+                              icon: const Icon(Icons.logout, size: 22, color: AppTheme.outline),
+                              onPressed: () => _confirmLogout(context, ref),
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 20),
                       // ── Summary card ──
                       reportAsync.when(

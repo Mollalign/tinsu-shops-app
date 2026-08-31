@@ -1,19 +1,42 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/theme/app_theme.dart';
+import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
-import '../../../workers/data/workers_repository.dart';
 import '../../../workers/domain/worker_model.dart';
 
 part 'worker_select_worker_screen.g.dart';
 
+/// Fetches active workers via the public (no-auth) endpoint.
+/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
 @riverpod
-Future<List<WorkerModel>> shopWorkers(Ref ref, String shopId) =>
-    ref.watch(workersRepositoryProvider).listWorkers(shopId);
+Future<List<WorkerModel>> publicShopWorkers(Ref ref, String shopId) async {
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 30),
+      contentType: 'application/json',
+    ),
+  );
+  try {
+    final res = await dio.get(ApiConstants.publicWorkers(shopId));
+    // Public endpoint returns a flat list (not paginated)
+    final data = res.data as List;
+    return data
+        .map((e) => WorkerModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  } on DioException catch (e) {
+    final status = e.response?.statusCode;
+    if (status != null && status >= 500) throw ServerError(status);
+    throw const NetworkError();
+  }
+}
 
 class WorkerSelectWorkerScreen extends ConsumerWidget {
   final String shopId;
@@ -26,7 +49,7 @@ class WorkerSelectWorkerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final workersAsync = ref.watch(shopWorkersProvider(shopId));
+    final workersAsync = ref.watch(publicShopWorkersProvider(shopId));
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -70,15 +93,20 @@ class WorkerSelectWorkerScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             Expanded(
               child: workersAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () =>
+                    const Center(child: CircularProgressIndicator()),
                 error: (e, _) => ErrorState(
                   message: e is AppError
                       ? e.toUserMessage()
                       : 'Could not load workers.',
-                  onRetry: () => ref.invalidate(shopWorkersProvider(shopId)),
+                  onRetry: () =>
+                      ref.invalidate(publicShopWorkersProvider(shopId)),
                 ),
                 data: (workers) {
-                  final active = workers.where((w) => w.isActive).toList();
+                  // Public endpoint already filters is_active=true,
+                  // but guard here too just in case.
+                  final active =
+                      workers.where((w) => w.isActive).toList();
                   if (active.isEmpty) {
                     return const EmptyState(
                       icon: Icons.person_off_outlined,
@@ -87,7 +115,8 @@ class WorkerSelectWorkerScreen extends ConsumerWidget {
                     );
                   }
                   return GridView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,

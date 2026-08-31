@@ -1,19 +1,39 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/theme/app_theme.dart';
+import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
-import '../../../shops/data/shops_repository.dart';
 import '../../../shops/domain/shop_model.dart';
 
 part 'worker_select_shop_screen.g.dart';
 
+/// Fetches shops via the public (no-auth) endpoint.
+/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
 @riverpod
-Future<List<ShopModel>> publicShops(Ref ref) =>
-    ref.watch(shopsRepositoryProvider).listShops();
+Future<List<ShopModel>> publicShops(Ref ref) async {
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 30),
+      contentType: 'application/json',
+    ),
+  );
+  try {
+    final res = await dio.get(ApiConstants.publicShops);
+    final data = res.data as List;
+    return data.map((e) => ShopModel.fromJson(e as Map<String, dynamic>)).toList();
+  } on DioException catch (e) {
+    final status = e.response?.statusCode;
+    if (status != null && status >= 500) throw ServerError(status);
+    throw const NetworkError();
+  }
+}
 
 class WorkerSelectShopScreen extends ConsumerWidget {
   const WorkerSelectShopScreen({super.key});

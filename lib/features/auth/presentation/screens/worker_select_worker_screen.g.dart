@@ -6,7 +6,7 @@ part of 'worker_select_worker_screen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$shopWorkersHash() => r'b929457f18de001c1680800fd970f576f0ed2a71';
+String _$publicShopWorkersHash() => r'1ccc9df0ddccd0cdd6dab79e0dbbf8d6f0e9b343';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,23 +29,35 @@ class _SystemHash {
   }
 }
 
-/// See also [shopWorkers].
-@ProviderFor(shopWorkers)
-const shopWorkersProvider = ShopWorkersFamily();
+/// Fetches active workers via the public (no-auth) endpoint.
+/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
+///
+/// Copied from [publicShopWorkers].
+@ProviderFor(publicShopWorkers)
+const publicShopWorkersProvider = PublicShopWorkersFamily();
 
-/// See also [shopWorkers].
-class ShopWorkersFamily extends Family<AsyncValue<List<WorkerModel>>> {
-  /// See also [shopWorkers].
-  const ShopWorkersFamily();
+/// Fetches active workers via the public (no-auth) endpoint.
+/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
+///
+/// Copied from [publicShopWorkers].
+class PublicShopWorkersFamily extends Family<AsyncValue<List<WorkerModel>>> {
+  /// Fetches active workers via the public (no-auth) endpoint.
+  /// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
+  ///
+  /// Copied from [publicShopWorkers].
+  const PublicShopWorkersFamily();
 
-  /// See also [shopWorkers].
-  ShopWorkersProvider call(String shopId) {
-    return ShopWorkersProvider(shopId);
+  /// Fetches active workers via the public (no-auth) endpoint.
+  /// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
+  ///
+  /// Copied from [publicShopWorkers].
+  PublicShopWorkersProvider call(String shopId) {
+    return PublicShopWorkersProvider(shopId);
   }
 
   @override
-  ShopWorkersProvider getProviderOverride(
-    covariant ShopWorkersProvider provider,
+  PublicShopWorkersProvider getProviderOverride(
+    covariant PublicShopWorkersProvider provider,
   ) {
     return call(provider.shopId);
   }
@@ -62,26 +74,34 @@ class ShopWorkersFamily extends Family<AsyncValue<List<WorkerModel>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'shopWorkersProvider';
+  String? get name => r'publicShopWorkersProvider';
 }
 
-/// See also [shopWorkers].
-class ShopWorkersProvider extends AutoDisposeFutureProvider<List<WorkerModel>> {
-  /// See also [shopWorkers].
-  ShopWorkersProvider(String shopId)
+/// Fetches active workers via the public (no-auth) endpoint.
+/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
+///
+/// Copied from [publicShopWorkers].
+class PublicShopWorkersProvider
+    extends AutoDisposeFutureProvider<List<WorkerModel>> {
+  /// Fetches active workers via the public (no-auth) endpoint.
+  /// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
+  ///
+  /// Copied from [publicShopWorkers].
+  PublicShopWorkersProvider(String shopId)
     : this._internal(
-        (ref) => shopWorkers(ref as ShopWorkersRef, shopId),
-        from: shopWorkersProvider,
-        name: r'shopWorkersProvider',
+        (ref) => publicShopWorkers(ref as PublicShopWorkersRef, shopId),
+        from: publicShopWorkersProvider,
+        name: r'publicShopWorkersProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$shopWorkersHash,
-        dependencies: ShopWorkersFamily._dependencies,
-        allTransitiveDependencies: ShopWorkersFamily._allTransitiveDependencies,
+            : _$publicShopWorkersHash,
+        dependencies: PublicShopWorkersFamily._dependencies,
+        allTransitiveDependencies:
+            PublicShopWorkersFamily._allTransitiveDependencies,
         shopId: shopId,
       );
 
-  ShopWorkersProvider._internal(
+  PublicShopWorkersProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -95,12 +115,12 @@ class ShopWorkersProvider extends AutoDisposeFutureProvider<List<WorkerModel>> {
 
   @override
   Override overrideWith(
-    FutureOr<List<WorkerModel>> Function(ShopWorkersRef provider) create,
+    FutureOr<List<WorkerModel>> Function(PublicShopWorkersRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ShopWorkersProvider._internal(
-        (ref) => create(ref as ShopWorkersRef),
+      override: PublicShopWorkersProvider._internal(
+        (ref) => create(ref as PublicShopWorkersRef),
         from: from,
         name: null,
         dependencies: null,
@@ -113,12 +133,12 @@ class ShopWorkersProvider extends AutoDisposeFutureProvider<List<WorkerModel>> {
 
   @override
   AutoDisposeFutureProviderElement<List<WorkerModel>> createElement() {
-    return _ShopWorkersProviderElement(this);
+    return _PublicShopWorkersProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ShopWorkersProvider && other.shopId == shopId;
+    return other is PublicShopWorkersProvider && other.shopId == shopId;
   }
 
   @override
@@ -132,18 +152,18 @@ class ShopWorkersProvider extends AutoDisposeFutureProvider<List<WorkerModel>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ShopWorkersRef on AutoDisposeFutureProviderRef<List<WorkerModel>> {
+mixin PublicShopWorkersRef on AutoDisposeFutureProviderRef<List<WorkerModel>> {
   /// The parameter `shopId` of this provider.
   String get shopId;
 }
 
-class _ShopWorkersProviderElement
+class _PublicShopWorkersProviderElement
     extends AutoDisposeFutureProviderElement<List<WorkerModel>>
-    with ShopWorkersRef {
-  _ShopWorkersProviderElement(super.provider);
+    with PublicShopWorkersRef {
+  _PublicShopWorkersProviderElement(super.provider);
 
   @override
-  String get shopId => (origin as ShopWorkersProvider).shopId;
+  String get shopId => (origin as PublicShopWorkersProvider).shopId;
 }
 
 // ignore_for_file: type=lint

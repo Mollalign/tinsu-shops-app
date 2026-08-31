@@ -18,6 +18,10 @@ class ApiConstants {
   static const String shops = '$apiV1/shops';
   static String shop(String id) => '$apiV1/shops/$id';
 
+  // Public (no auth required)
+  static const String publicShops = '$apiV1/public/shops';
+  static String publicWorkers(String shopId) => '$apiV1/public/shops/$shopId/workers';
+
   // Workers
   static String workers(String shopId) =>
       '$apiV1/shops/$shopId/workers';
