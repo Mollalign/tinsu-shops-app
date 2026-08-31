@@ -11,6 +11,7 @@ import '../features/dashboard/presentation/screens/owner_dashboard_screen.dart';
 import '../features/dashboard/presentation/screens/worker_today_screen.dart';
 import '../features/products/presentation/screens/products_screen.dart';
 import '../features/products/presentation/screens/add_product_screen.dart';
+import '../features/products/presentation/screens/categories_screen.dart';
 import '../features/products/presentation/screens/edit_product_screen.dart';
 import '../features/products/presentation/screens/product_detail_screen.dart';
 import '../features/inventory/presentation/screens/stock_screen.dart';
@@ -150,6 +151,9 @@ GoRouter router(Ref ref) {
       ),
 
       // ── Owner detail routes (outside shell) ──
+      GoRoute(
+          path: '/owner/categories',
+          builder: (_, __) => const CategoriesScreen()),
       GoRoute(
           path: '/owner/products/add',
           builder: (_, __) => const AddProductScreen()),

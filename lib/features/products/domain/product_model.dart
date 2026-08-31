@@ -19,7 +19,9 @@ abstract class ProductModel with _$ProductModel {
     @JsonKey(fromJson: _numToString) required String sellingPrice,
     required int stockQuantity,
     @Default(5) int lowStockThreshold,
-    String? category,
+    // New structured category fields
+    String? categoryId,
+    String? categoryName,
     @Default(true) bool isActive,
   }) = _ProductModel;
 

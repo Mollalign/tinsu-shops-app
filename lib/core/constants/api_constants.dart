@@ -53,4 +53,10 @@ class ApiConstants {
   // Reports
   static String shopToday(String shopId) =>
       '$apiV1/shops/$shopId/reports/today';
+
+  // Categories
+  static String categories(String shopId) =>
+      '$apiV1/shops/$shopId/categories';
+  static String category(String shopId, String categoryId) =>
+      '$apiV1/shops/$shopId/categories/$categoryId';
 }

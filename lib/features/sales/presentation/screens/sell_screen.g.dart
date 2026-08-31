@@ -6,7 +6,7 @@ part of 'sell_screen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$shopProductsHash() => r'5d288ce114d35c7d8537e8441fc7fc5d382fe449';
+String _$shopCategoriesHash() => r'1b102a56d4bb8a457bb7bd94b5dabedb50cd6745';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,6 +29,127 @@ class _SystemHash {
   }
 }
 
+/// See also [shopCategories].
+@ProviderFor(shopCategories)
+const shopCategoriesProvider = ShopCategoriesFamily();
+
+/// See also [shopCategories].
+class ShopCategoriesFamily extends Family<AsyncValue<List<CategoryModel>>> {
+  /// See also [shopCategories].
+  const ShopCategoriesFamily();
+
+  /// See also [shopCategories].
+  ShopCategoriesProvider call(String shopId) {
+    return ShopCategoriesProvider(shopId);
+  }
+
+  @override
+  ShopCategoriesProvider getProviderOverride(
+    covariant ShopCategoriesProvider provider,
+  ) {
+    return call(provider.shopId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'shopCategoriesProvider';
+}
+
+/// See also [shopCategories].
+class ShopCategoriesProvider
+    extends AutoDisposeFutureProvider<List<CategoryModel>> {
+  /// See also [shopCategories].
+  ShopCategoriesProvider(String shopId)
+    : this._internal(
+        (ref) => shopCategories(ref as ShopCategoriesRef, shopId),
+        from: shopCategoriesProvider,
+        name: r'shopCategoriesProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$shopCategoriesHash,
+        dependencies: ShopCategoriesFamily._dependencies,
+        allTransitiveDependencies:
+            ShopCategoriesFamily._allTransitiveDependencies,
+        shopId: shopId,
+      );
+
+  ShopCategoriesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.shopId,
+  }) : super.internal();
+
+  final String shopId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<CategoryModel>> Function(ShopCategoriesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ShopCategoriesProvider._internal(
+        (ref) => create(ref as ShopCategoriesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        shopId: shopId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<CategoryModel>> createElement() {
+    return _ShopCategoriesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ShopCategoriesProvider && other.shopId == shopId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, shopId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ShopCategoriesRef on AutoDisposeFutureProviderRef<List<CategoryModel>> {
+  /// The parameter `shopId` of this provider.
+  String get shopId;
+}
+
+class _ShopCategoriesProviderElement
+    extends AutoDisposeFutureProviderElement<List<CategoryModel>>
+    with ShopCategoriesRef {
+  _ShopCategoriesProviderElement(super.provider);
+
+  @override
+  String get shopId => (origin as ShopCategoriesProvider).shopId;
+}
+
+String _$shopProductsHash() => r'ec9ed6b662eec81e5c96c9730a38e66a8ed0df9a';
+
 /// See also [shopProducts].
 @ProviderFor(shopProducts)
 const shopProductsProvider = ShopProductsFamily();
@@ -39,15 +160,15 @@ class ShopProductsFamily extends Family<AsyncValue<List<ProductModel>>> {
   const ShopProductsFamily();
 
   /// See also [shopProducts].
-  ShopProductsProvider call(String shopId) {
-    return ShopProductsProvider(shopId);
+  ShopProductsProvider call(String shopId, {String? categoryId}) {
+    return ShopProductsProvider(shopId, categoryId: categoryId);
   }
 
   @override
   ShopProductsProvider getProviderOverride(
     covariant ShopProductsProvider provider,
   ) {
-    return call(provider.shopId);
+    return call(provider.shopId, categoryId: provider.categoryId);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -69,9 +190,13 @@ class ShopProductsFamily extends Family<AsyncValue<List<ProductModel>>> {
 class ShopProductsProvider
     extends AutoDisposeFutureProvider<List<ProductModel>> {
   /// See also [shopProducts].
-  ShopProductsProvider(String shopId)
+  ShopProductsProvider(String shopId, {String? categoryId})
     : this._internal(
-        (ref) => shopProducts(ref as ShopProductsRef, shopId),
+        (ref) => shopProducts(
+          ref as ShopProductsRef,
+          shopId,
+          categoryId: categoryId,
+        ),
         from: shopProductsProvider,
         name: r'shopProductsProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -81,6 +206,7 @@ class ShopProductsProvider
         allTransitiveDependencies:
             ShopProductsFamily._allTransitiveDependencies,
         shopId: shopId,
+        categoryId: categoryId,
       );
 
   ShopProductsProvider._internal(
@@ -91,9 +217,11 @@ class ShopProductsProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.shopId,
+    required this.categoryId,
   }) : super.internal();
 
   final String shopId;
+  final String? categoryId;
 
   @override
   Override overrideWith(
@@ -109,6 +237,7 @@ class ShopProductsProvider
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         shopId: shopId,
+        categoryId: categoryId,
       ),
     );
   }
@@ -120,13 +249,16 @@ class ShopProductsProvider
 
   @override
   bool operator ==(Object other) {
-    return other is ShopProductsProvider && other.shopId == shopId;
+    return other is ShopProductsProvider &&
+        other.shopId == shopId &&
+        other.categoryId == categoryId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, shopId.hashCode);
+    hash = _SystemHash.combine(hash, categoryId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -137,6 +269,9 @@ class ShopProductsProvider
 mixin ShopProductsRef on AutoDisposeFutureProviderRef<List<ProductModel>> {
   /// The parameter `shopId` of this provider.
   String get shopId;
+
+  /// The parameter `categoryId` of this provider.
+  String? get categoryId;
 }
 
 class _ShopProductsProviderElement
@@ -146,9 +281,11 @@ class _ShopProductsProviderElement
 
   @override
   String get shopId => (origin as ShopProductsProvider).shopId;
+  @override
+  String? get categoryId => (origin as ShopProductsProvider).categoryId;
 }
 
-String _$productSearchHash() => r'7917e3032172acee2ffc3c795bfee0a41891fe22';
+String _$productSearchHash() => r'79164c41d6de514c13e94e303ec88c3e9fc2f554';
 
 /// See also [productSearch].
 @ProviderFor(productSearch)
@@ -160,15 +297,23 @@ class ProductSearchFamily extends Family<AsyncValue<List<ProductModel>>> {
   const ProductSearchFamily();
 
   /// See also [productSearch].
-  ProductSearchProvider call(String shopId, String query) {
-    return ProductSearchProvider(shopId, query);
+  ProductSearchProvider call(
+    String shopId,
+    String query, {
+    String? categoryId,
+  }) {
+    return ProductSearchProvider(shopId, query, categoryId: categoryId);
   }
 
   @override
   ProductSearchProvider getProviderOverride(
     covariant ProductSearchProvider provider,
   ) {
-    return call(provider.shopId, provider.query);
+    return call(
+      provider.shopId,
+      provider.query,
+      categoryId: provider.categoryId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -190,9 +335,14 @@ class ProductSearchFamily extends Family<AsyncValue<List<ProductModel>>> {
 class ProductSearchProvider
     extends AutoDisposeFutureProvider<List<ProductModel>> {
   /// See also [productSearch].
-  ProductSearchProvider(String shopId, String query)
+  ProductSearchProvider(String shopId, String query, {String? categoryId})
     : this._internal(
-        (ref) => productSearch(ref as ProductSearchRef, shopId, query),
+        (ref) => productSearch(
+          ref as ProductSearchRef,
+          shopId,
+          query,
+          categoryId: categoryId,
+        ),
         from: productSearchProvider,
         name: r'productSearchProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -203,6 +353,7 @@ class ProductSearchProvider
             ProductSearchFamily._allTransitiveDependencies,
         shopId: shopId,
         query: query,
+        categoryId: categoryId,
       );
 
   ProductSearchProvider._internal(
@@ -214,10 +365,12 @@ class ProductSearchProvider
     required super.from,
     required this.shopId,
     required this.query,
+    required this.categoryId,
   }) : super.internal();
 
   final String shopId;
   final String query;
+  final String? categoryId;
 
   @override
   Override overrideWith(
@@ -234,6 +387,7 @@ class ProductSearchProvider
         debugGetCreateSourceHash: null,
         shopId: shopId,
         query: query,
+        categoryId: categoryId,
       ),
     );
   }
@@ -247,7 +401,8 @@ class ProductSearchProvider
   bool operator ==(Object other) {
     return other is ProductSearchProvider &&
         other.shopId == shopId &&
-        other.query == query;
+        other.query == query &&
+        other.categoryId == categoryId;
   }
 
   @override
@@ -255,6 +410,7 @@ class ProductSearchProvider
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, shopId.hashCode);
     hash = _SystemHash.combine(hash, query.hashCode);
+    hash = _SystemHash.combine(hash, categoryId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -268,6 +424,9 @@ mixin ProductSearchRef on AutoDisposeFutureProviderRef<List<ProductModel>> {
 
   /// The parameter `query` of this provider.
   String get query;
+
+  /// The parameter `categoryId` of this provider.
+  String? get categoryId;
 }
 
 class _ProductSearchProviderElement
@@ -279,6 +438,8 @@ class _ProductSearchProviderElement
   String get shopId => (origin as ProductSearchProvider).shopId;
   @override
   String get query => (origin as ProductSearchProvider).query;
+  @override
+  String? get categoryId => (origin as ProductSearchProvider).categoryId;
 }
 
 // ignore_for_file: type=lint

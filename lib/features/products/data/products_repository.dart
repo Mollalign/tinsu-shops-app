@@ -16,11 +16,19 @@ class ProductsRepository {
   final Dio _dio;
   ProductsRepository({required Dio dio}) : _dio = dio;
 
-  Future<List<ProductModel>> listProducts(String shopId, {int page = 1}) async {
+  Future<List<ProductModel>> listProducts(
+    String shopId, {
+    int page = 1,
+    String? categoryId,
+  }) async {
     try {
       final res = await _dio.get(
         ApiConstants.products(shopId),
-        queryParameters: {'page': page, 'page_size': 50},
+        queryParameters: {
+          'page': page,
+          'page_size': 50,
+          if (categoryId != null) 'category_id': categoryId,
+        },
       );
       final items = res.data['items'] as List;
       return items.map((e) => ProductModel.fromJson(e)).toList();
@@ -29,11 +37,18 @@ class ProductsRepository {
     }
   }
 
-  Future<List<ProductModel>> searchProducts(String shopId, String q) async {
+  Future<List<ProductModel>> searchProducts(
+    String shopId,
+    String q, {
+    String? categoryId,
+  }) async {
     try {
       final res = await _dio.get(
         ApiConstants.productSearch(shopId),
-        queryParameters: {'q': q},
+        queryParameters: {
+          'q': q,
+          if (categoryId != null) 'category_id': categoryId,
+        },
       );
       final data = res.data as List;
       return data.map((e) => ProductModel.fromJson(e)).toList();
@@ -67,7 +82,7 @@ class ProductsRepository {
     required double sellingPrice,
     int initialStock = 0,
     int lowStockThreshold = 5,
-    String? category,
+    String? categoryId,
     String? photoUrl,
   }) async {
     try {
@@ -76,7 +91,7 @@ class ProductsRepository {
         'selling_price': sellingPrice,
         'initial_stock': initialStock,
         'low_stock_threshold': lowStockThreshold,
-        if (category != null) 'category': category,
+        if (categoryId != null) 'category_id': categoryId,
         if (photoUrl != null) 'photo_url': photoUrl,
       });
       return ProductModel.fromJson(res.data);
@@ -91,22 +106,26 @@ class ProductsRepository {
     String? name,
     double? sellingPrice,
     int? lowStockThreshold,
-    String? category,
+    // Pass null explicitly to clear; don't include key to leave unchanged
+    Object? categoryId = _absent,
     String? photoUrl,
     bool? isActive,
   }) async {
     try {
+      final data = <String, dynamic>{
+        if (name != null) 'name': name,
+        if (sellingPrice != null) 'selling_price': sellingPrice,
+        if (lowStockThreshold != null) 'low_stock_threshold': lowStockThreshold,
+        if (photoUrl != null) 'photo_url': photoUrl,
+        if (isActive != null) 'is_active': isActive,
+      };
+      // Only include category_id in the payload when the caller explicitly passed it
+      if (!identical(categoryId, _absent)) {
+        data['category_id'] = categoryId; // may be null (to clear)
+      }
       final res = await _dio.patch(
         ApiConstants.product(shopId, productId),
-        data: {
-          if (name != null) 'name': name,
-          if (sellingPrice != null) 'selling_price': sellingPrice,
-          if (lowStockThreshold != null)
-            'low_stock_threshold': lowStockThreshold,
-          if (category != null) 'category': category,
-          if (photoUrl != null) 'photo_url': photoUrl,
-          if (isActive != null) 'is_active': isActive,
-        },
+        data: data,
       );
       return ProductModel.fromJson(res.data);
     } on DioException catch (e) {
@@ -140,3 +159,6 @@ class ProductsRepository {
     }
   }
 }
+
+/// Sentinel object to distinguish "not provided" from explicit null for categoryId.
+const Object _absent = Object();

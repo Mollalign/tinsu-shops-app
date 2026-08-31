@@ -121,11 +121,11 @@ class _ProductDetailBody extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (product.category != null) ...[
+                if (product.categoryName != null) ...[
                   const SizedBox(height: 12),
                   _InfoCard(
                     label: 'Category',
-                    value: product.category!,
+                    value: product.categoryName!,
                   ),
                 ],
                 const SizedBox(height: 24),

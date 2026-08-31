@@ -86,6 +86,12 @@ class SettingsScreen extends ConsumerWidget {
               title: 'Workers',
               onTap: () => context.go('/owner/workers'),
             ),
+            _SettingsTile(
+              icon: Icons.label_outline,
+              title: 'Categories',
+              subtitle: 'Organise your products',
+              onTap: () => context.push('/owner/categories'),
+            ),
           ],
 
           const SizedBox(height: 16),

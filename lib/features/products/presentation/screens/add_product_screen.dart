@@ -6,7 +6,10 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/buttons.dart';
 import '../../../auth/presentation/session_provider.dart';
+import '../../data/categories_repository.dart';
 import '../../data/products_repository.dart';
+import '../../domain/category_model.dart';
+import '../widgets/category_picker.dart';
 import 'products_screen.dart';
 
 class AddProductScreen extends ConsumerStatefulWidget {
@@ -21,7 +24,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
   final _nameCtrl = TextEditingController();
   final _priceCtrl = TextEditingController();
   final _stockCtrl = TextEditingController(text: '0');
-  final _categoryCtrl = TextEditingController();
+  CategoryModel? _selectedCategory;
   bool _loading = false;
   String? _error;
 
@@ -30,7 +33,6 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
     _nameCtrl.dispose();
     _priceCtrl.dispose();
     _stockCtrl.dispose();
-    _categoryCtrl.dispose();
     super.dispose();
   }
 
@@ -50,9 +52,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
             name: _nameCtrl.text.trim(),
             sellingPrice: double.parse(_priceCtrl.text.trim()),
             initialStock: int.tryParse(_stockCtrl.text.trim()) ?? 0,
-            category: _categoryCtrl.text.trim().isEmpty
-                ? null
-                : _categoryCtrl.text.trim(),
+            categoryId: _selectedCategory?.id,
           );
       ref.invalidate(ownerProductsProvider(shopId));
       if (mounted) {
@@ -68,8 +68,26 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
     }
   }
 
+  Future<void> _pickCategory(List<CategoryModel> cats) async {
+    final picked = await showModalBottomSheet<CategoryModel?>(
+      context: context,
+      builder: (_) => CategoryPicker(
+        categories: cats,
+        selected: _selectedCategory,
+      ),
+    );
+    // picked == null if user tapped "No Category"
+    if (mounted) setState(() => _selectedCategory = picked);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final session = ref.watch(sessionProvider);
+    final shopId = session.maybeWhen(
+      authenticated: (u, shopId) => shopId ?? '',
+      orElse: () => '',
+    );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Add Product')),
       body: SingleChildScrollView(
@@ -79,31 +97,25 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Photo placeholder (future: camera/gallery)
               Center(
-                child: GestureDetector(
-                  onTap: () {
-                    // TODO: image picker
-                  },
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: AppTheme.surfaceVariant,
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      border: Border.all(color: AppTheme.divider),
-                    ),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_a_photo_outlined,
-                            size: 32, color: AppTheme.outline),
-                        SizedBox(height: 6),
-                        Text('Add Photo',
-                            style: TextStyle(
-                                fontSize: 12, color: AppTheme.outline)),
-                      ],
-                    ),
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceVariant,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    border: Border.all(color: AppTheme.divider),
+                  ),
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_a_photo_outlined,
+                          size: 32, color: AppTheme.outline),
+                      SizedBox(height: 6),
+                      Text('Add Photo',
+                          style: TextStyle(
+                              fontSize: 12, color: AppTheme.outline)),
+                    ],
                   ),
                 ),
               ),
@@ -126,7 +138,8 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                 ),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return 'Price is required';
-                  if (double.tryParse(v.trim()) == null || double.parse(v.trim()) <= 0) {
+                  if (double.tryParse(v.trim()) == null ||
+                      double.parse(v.trim()) <= 0) {
                     return 'Enter a valid price';
                   }
                   return null;
@@ -139,15 +152,55 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                 decoration: const InputDecoration(labelText: 'Starting stock'),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return null;
-                  if (int.tryParse(v.trim()) == null) return 'Enter a whole number';
+                  if (int.tryParse(v.trim()) == null) {
+                    return 'Enter a whole number';
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _categoryCtrl,
-                decoration: const InputDecoration(labelText: 'Category (optional)'),
-                textCapitalization: TextCapitalization.words,
+              // Category picker
+              FutureBuilder<List<CategoryModel>>(
+                future: ref
+                    .read(categoriesRepositoryProvider)
+                    .listCategories(shopId),
+                builder: (context, snap) {
+                  final cats = snap.data ?? [];
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    onTap: cats.isEmpty ? null : () => _pickCategory(cats),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceVariant,
+                        borderRadius:
+                            BorderRadius.circular(AppTheme.radiusMd),
+                        border: Border.all(color: AppTheme.divider),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _selectedCategory?.name ??
+                                  (cats.isEmpty
+                                      ? 'No categories — add from Settings'
+                                      : 'Category (optional)'),
+                              style: TextStyle(
+                                color: _selectedCategory != null
+                                    ? AppTheme.onBackground
+                                    : AppTheme.outline,
+                              ),
+                            ),
+                          ),
+                          const Icon(Icons.arrow_drop_down,
+                              color: AppTheme.outline),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 28),
               if (_error != null) ...[

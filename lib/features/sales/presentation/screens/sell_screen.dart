@@ -11,7 +11,9 @@ import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../auth/presentation/session_provider.dart';
+import '../../../products/data/categories_repository.dart';
 import '../../../products/data/products_repository.dart';
+import '../../../products/domain/category_model.dart';
 import '../../../products/domain/product_model.dart';
 import '../../../sales/data/sales_repository.dart';
 import '../../domain/sale_model.dart';
@@ -21,14 +23,24 @@ import '../cart_provider.dart';
 part 'sell_screen.g.dart';
 
 @riverpod
-Future<List<ProductModel>> shopProducts(Ref ref, String shopId) =>
-    ref.watch(productsRepositoryProvider).listProducts(shopId);
+Future<List<CategoryModel>> shopCategories(Ref ref, String shopId) =>
+    ref.watch(categoriesRepositoryProvider).listCategories(shopId);
+
+@riverpod
+Future<List<ProductModel>> shopProducts(Ref ref, String shopId,
+    {String? categoryId}) =>
+    ref
+        .watch(productsRepositoryProvider)
+        .listProducts(shopId, categoryId: categoryId);
 
 @riverpod
 Future<List<ProductModel>> productSearch(
-    Ref ref, String shopId, String query) async {
+    Ref ref, String shopId, String query,
+    {String? categoryId}) async {
   if (query.trim().isEmpty) return [];
-  return ref.watch(productsRepositoryProvider).searchProducts(shopId, query);
+  return ref
+      .watch(productsRepositoryProvider)
+      .searchProducts(shopId, query, categoryId: categoryId);
 }
 
 class SellScreen extends ConsumerStatefulWidget {
@@ -41,6 +53,7 @@ class SellScreen extends ConsumerStatefulWidget {
 class _SellScreenState extends ConsumerState<SellScreen> {
   final _searchCtrl = TextEditingController();
   String _query = '';
+  String? _selectedCategoryId; // null = All
   Timer? _debounce;
   bool _checkingOut = false;
   String? _checkoutError;
@@ -195,11 +208,26 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                 ),
               ),
 
+            // ── Category filter ──
+            _CategoryFilterBar(
+              shopId: shopId,
+              selectedId: _selectedCategoryId,
+              onSelected: (id) =>
+                  setState(() => _selectedCategoryId = id),
+            ),
+
             // ── Product grid ──
             Expanded(
               child: _query.isEmpty
-                  ? _ProductGrid(shopId: shopId)
-                  : _SearchResultList(shopId: shopId, query: _query),
+                  ? _ProductGrid(
+                      shopId: shopId,
+                      categoryId: _selectedCategoryId,
+                    )
+                  : _SearchResultList(
+                      shopId: shopId,
+                      query: _query,
+                      categoryId: _selectedCategoryId,
+                    ),
             ),
 
             // ── Cart bottom bar ──
@@ -374,37 +402,121 @@ class _CartBar extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────
+// Category filter bar
+// ─────────────────────────────────────────────────────────
+
+class _CategoryFilterBar extends ConsumerWidget {
+  final String shopId;
+  final String? selectedId;
+  final ValueChanged<String?> onSelected;
+  const _CategoryFilterBar({
+    required this.shopId,
+    required this.selectedId,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(shopCategoriesProvider(shopId));
+    return async.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (cats) {
+        if (cats.isEmpty) return const SizedBox.shrink();
+        return SizedBox(
+          height: 36,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            children: [
+              _CategoryChip(
+                label: 'All',
+                selected: selectedId == null,
+                onTap: () => onSelected(null),
+              ),
+              ...cats.map((c) => _CategoryChip(
+                    label: c.name,
+                    selected: selectedId == c.id,
+                    onTap: () => onSelected(c.id),
+                  )),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _CategoryChip(
+      {required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          decoration: BoxDecoration(
+            color: selected ? AppTheme.primary : AppTheme.surfaceVariant,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: selected ? AppTheme.primary : AppTheme.divider,
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: selected ? Colors.white : AppTheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
 // Product grid — tap to add
 // ─────────────────────────────────────────────────────────
 
 class _ProductGrid extends ConsumerWidget {
   final String shopId;
-  const _ProductGrid({required this.shopId});
+  final String? categoryId;
+  const _ProductGrid({required this.shopId, this.categoryId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(shopProductsProvider(shopId));
+    final async = ref.watch(shopProductsProvider(shopId, categoryId: categoryId));
 
     return async.when(
       loading: () => const ProductGridSkeleton(),
       error: (e, _) => ErrorState(
         message:
             e is AppError ? e.toUserMessage() : 'Could not load products.',
-        onRetry: () => ref.invalidate(shopProductsProvider(shopId)),
+        onRetry: () => ref.invalidate(shopProductsProvider(shopId, categoryId: categoryId)),
       ),
       data: (products) {
         final active = products.where((p) => p.isActive).toList();
         if (active.isEmpty) {
           return const EmptyState(
             icon: Icons.inventory_2_outlined,
-            title: 'No products yet',
-            description: 'The owner has not added any products.',
+            title: 'No products',
+            description: 'No products in this category.',
           );
         }
         return RefreshIndicator(
           color: AppTheme.primary,
           onRefresh: () async =>
-              ref.invalidate(shopProductsProvider(shopId)),
+              ref.invalidate(shopProductsProvider(shopId, categoryId: categoryId)),
           child: GridView.builder(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -425,11 +537,14 @@ class _ProductGrid extends ConsumerWidget {
 class _SearchResultList extends ConsumerWidget {
   final String shopId;
   final String query;
-  const _SearchResultList({required this.shopId, required this.query});
+  final String? categoryId;
+  const _SearchResultList(
+      {required this.shopId, required this.query, this.categoryId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(productSearchProvider(shopId, query));
+    final async =
+        ref.watch(productSearchProvider(shopId, query, categoryId: categoryId));
 
     return async.when(
       loading: () => const Center(
