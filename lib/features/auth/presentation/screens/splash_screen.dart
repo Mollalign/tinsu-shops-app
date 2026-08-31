@@ -87,7 +87,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'ቀላል ሽያጭ፣ ሃይለኛ ውጤት',
+                  'Shop Management System',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white.withValues(alpha: 0.75),

@@ -123,6 +123,16 @@ GoRouter router(Ref ref) {
               (path == '/worker/sell' || path == '/worker/today')) {
             return '/owner/shops';
           }
+          // Owner has no shop selected yet — redirect non-shops routes to
+          // /owner/shops so they must pick a shop before accessing any data.
+          if (user.role == UserRole.owner &&
+              (shopId == null || shopId.isEmpty) &&
+              path != '/owner/shops' &&
+              path != '/owner/shops/add' &&
+              path != '/owner/settings' &&
+              path != '/owner/dashboard') {
+            return '/owner/shops';
+          }
           return null;
         },
       );

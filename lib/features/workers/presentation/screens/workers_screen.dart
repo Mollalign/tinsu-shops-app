@@ -23,9 +23,36 @@ class WorkersScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
-      authenticated: (u, shopId) => shopId ?? '',
-      orElse: () => '',
+      authenticated: (u, shopId) => shopId,
+      orElse: () => null,
     );
+
+    // No shop selected yet — prompt the owner to pick one.
+    if (shopId == null || shopId.isEmpty) {
+      return Scaffold(
+        backgroundColor: AppTheme.background,
+        appBar: AppBar(title: const Text('Workers')),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.store_outlined,
+                  size: 48, color: AppTheme.outline),
+              const SizedBox(height: 16),
+              Text(
+                'No shop selected',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => context.go('/owner/shops'),
+                child: const Text('Select a shop'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     final workersAsync = ref.watch(shopWorkersListProvider(shopId));
 
