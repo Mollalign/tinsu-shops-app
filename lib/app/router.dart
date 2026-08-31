@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -35,20 +36,52 @@ import 'worker_shell.dart';
 
 part 'router.g.dart';
 
-@riverpod
+/// A [ChangeNotifier] that wraps [SessionState] so GoRouter's
+/// [refreshListenable] can trigger redirect re-evaluation without
+/// recreating the router object on every session change.
+class _SessionNotifier extends ChangeNotifier {
+  _SessionNotifier(this._state);
+
+  SessionState _state;
+
+  SessionState get state => _state;
+
+  void update(SessionState next) {
+    if (_state == next) return;
+    _state = next;
+    notifyListeners();
+  }
+}
+
+@Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
-  final session = ref.watch(sessionProvider);
+  // Keep a stable ChangeNotifier that mirrors sessionProvider.
+  final notifier = _SessionNotifier(ref.read(sessionProvider));
+
+  // Sync the notifier whenever the session changes — this tells
+  // GoRouter to re-run the redirect without recreating the router.
+  ref.listen<SessionState>(sessionProvider, (_, next) {
+    notifier.update(next);
+  });
+
+  // Make sure the notifier is disposed with the provider.
+  ref.onDispose(notifier.dispose);
 
   return GoRouter(
     initialLocation: '/splash',
+    refreshListenable: notifier,
     redirect: (context, state) {
       final path = state.matchedLocation;
-      if (path == '/splash') return null;
+      final session = notifier.state;
 
       return session.when(
-        initial: () => '/splash',
-        loading: () => '/splash',
+        // Still initialising — stay on splash
+        initial: () => path == '/splash' ? null : '/splash',
+        loading: () => path == '/splash' ? null : '/splash',
+
+        // Logged out
         unauthenticated: () {
+          if (path == '/splash') return '/login';
           if (path.startsWith('/owner') ||
               path.startsWith('/worker/sell') ||
               path.startsWith('/worker/today')) {
@@ -56,7 +89,14 @@ GoRouter router(Ref ref) {
           }
           return null;
         },
+
+        // Logged in
         authenticated: (user, shopId) {
+          if (path == '/splash') {
+            return user.role == UserRole.owner
+                ? '/owner/shops'
+                : '/worker/sell';
+          }
           if (path == '/login' ||
               path == '/worker/select' ||
               path == '/worker/pin') {
@@ -117,7 +157,7 @@ GoRouter router(Ref ref) {
       // Cart — full-screen, outside shell
       GoRoute(path: '/worker/cart', builder: (_, __) => const CartScreen()),
 
-      // Sale complete — no payment screen (removed entirely)
+      // Sale complete
       GoRoute(
         path: '/worker/sale-complete',
         builder: (context, state) {
@@ -130,7 +170,8 @@ GoRouter router(Ref ref) {
       ShellRoute(
         builder: (context, state, child) => OwnerShell(child: child),
         routes: [
-          GoRoute(path: '/owner/shops', builder: (_, __) => const ShopsScreen()),
+          GoRoute(
+              path: '/owner/shops', builder: (_, __) => const ShopsScreen()),
           GoRoute(
               path: '/owner/dashboard',
               builder: (_, __) => const OwnerDashboardScreen()),
@@ -140,7 +181,8 @@ GoRouter router(Ref ref) {
           GoRoute(
               path: '/owner/sales',
               builder: (_, __) => const SalesHistoryScreen()),
-          GoRoute(path: '/owner/stock', builder: (_, __) => const StockScreen()),
+          GoRoute(
+              path: '/owner/stock', builder: (_, __) => const StockScreen()),
           GoRoute(
               path: '/owner/workers',
               builder: (_, __) => const WorkersScreen()),
@@ -172,7 +214,9 @@ GoRouter router(Ref ref) {
         builder: (_, state) =>
             RestockScreen(productId: state.pathParameters['id']!),
       ),
-      GoRoute(path: '/owner/low-stock', builder: (_, __) => const LowStockScreen()),
+      GoRoute(
+          path: '/owner/low-stock',
+          builder: (_, __) => const LowStockScreen()),
       GoRoute(
         path: '/owner/sales/:id',
         builder: (_, state) =>

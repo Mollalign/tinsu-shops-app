@@ -32,9 +32,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _init() async {
+    // Grab the notifier BEFORE any await so we never access
+    // ref after the widget might have been unmounted.
+    final sessionNotifier = ref.read(sessionProvider.notifier);
+
+    // Minimum splash display time
     await Future.delayed(const Duration(milliseconds: 900));
-    await ref.read(sessionProvider.notifier).restore();
-    // Router redirect handles where to go based on session state
+
+    // Restore session — this updates sessionProvider state,
+    // which triggers the GoRouter redirect automatically.
+    await sessionNotifier.restore();
   }
 
   @override
