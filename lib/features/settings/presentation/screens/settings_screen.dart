@@ -173,15 +173,18 @@ class SettingsScreen extends ConsumerWidget {
   Future<void> _logout(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+            // Use dialogCtx — NOT the outer context — so we only
+            // pop the dialog, not a GoRouter page.
+            onPressed: () => Navigator.of(dialogCtx).pop(false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.of(dialogCtx).pop(true),
             child: const Text('Logout',
                 style: TextStyle(color: AppTheme.error)),
           ),
@@ -189,7 +192,11 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
     if (confirmed == true) {
-      await ref.read(sessionProvider.notifier).logout();
+      // Defer to next frame so the dialog close animation finishes
+      // before GoRouter re-evaluates and redirects to /login.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(sessionProvider.notifier).logout();
+      });
     }
   }
 }

@@ -64,6 +64,14 @@ class Session extends _$Session {
     final current = state;
     if (current is _Authenticated) {
       state = current.copyWith(currentShopId: shopId);
+      // Persist so the selection survives app restarts
+      final storage = ref.read(secureStorageProvider);
+      storage.saveSession(
+        userId: current.user.id,
+        role: current.user.role.name,
+        name: current.user.name,
+        shopId: shopId,
+      );
     }
   }
 

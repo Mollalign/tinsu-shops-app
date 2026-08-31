@@ -106,16 +106,17 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
   Future<void> _deactivate(String shopId) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         title: const Text('Deactivate Product?'),
         content: const Text(
             'This product will be hidden. Historical sales are preserved.'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.of(dialogCtx).pop(false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.of(dialogCtx).pop(true),
             child: const Text('Deactivate',
                 style: TextStyle(color: AppTheme.error)),
           ),

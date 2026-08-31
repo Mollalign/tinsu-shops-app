@@ -19,8 +19,9 @@ class WorkersRepository {
   Future<List<WorkerModel>> listWorkers(String shopId) async {
     try {
       final res = await _dio.get(ApiConstants.workers(shopId));
-      final data = res.data as List;
-      return data.map((e) => WorkerModel.fromJson(e)).toList();
+      // Backend returns Page[WorkerResponse]: {items: [...], page, total, ...}
+      final items = (res.data['items'] as List);
+      return items.map((e) => WorkerModel.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw extractError(e);
     }
@@ -51,7 +52,11 @@ class WorkersRepository {
 
   Future<String> resetPin(String shopId, String workerId) async {
     try {
-      final res = await _dio.post(ApiConstants.workerResetPin(shopId, workerId));
+      // Backend requires a WorkerResetPin body; send null to auto-generate.
+      final res = await _dio.post(
+        ApiConstants.workerResetPin(shopId, workerId),
+        data: {'new_pin': null},
+      );
       return res.data['pin'] as String;
     } on DioException catch (e) {
       throw extractError(e);

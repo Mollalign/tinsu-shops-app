@@ -37,36 +37,41 @@ class WorkersScreen extends ConsumerWidget {
         icon: const Icon(Icons.person_add_outlined),
         label: const Text('Add Worker'),
       ),
-      body: workersAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => ErrorState(
-          message: e is AppError ? e.toUserMessage() : 'Could not load workers.',
-          onRetry: () => ref.invalidate(shopWorkersListProvider(shopId)),
-        ),
-        data: (workers) {
-          if (workers.isEmpty) {
-            return const EmptyState(
-              icon: Icons.people_outline,
-              title: 'No workers yet',
-              description: 'Add your first worker.',
-            );
-          }
-          return RefreshIndicator(
-            color: AppTheme.primary,
-            onRefresh: () async =>
-                ref.invalidate(shopWorkersListProvider(shopId)),
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-              itemCount: workers.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, i) => _WorkerTile(
-                worker: workers[i],
-                onTap: () =>
-                    context.push('/owner/workers/${workers[i].id}'),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      body: SafeArea(
+        top: false,
+        child: workersAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => ErrorState(
+            message: e is AppError ? e.toUserMessage() : 'Could not load workers.',
+            onRetry: () => ref.invalidate(shopWorkersListProvider(shopId)),
+          ),
+          data: (workers) {
+            if (workers.isEmpty) {
+              return const EmptyState(
+                icon: Icons.people_outline,
+                title: 'No workers yet',
+                description: 'Add your first worker.',
+              );
+            }
+            final bottomPad = MediaQuery.viewPaddingOf(context).bottom + 88;
+            return RefreshIndicator(
+              color: AppTheme.primary,
+              onRefresh: () async =>
+                  ref.invalidate(shopWorkersListProvider(shopId)),
+              child: ListView.separated(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPad),
+                itemCount: workers.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, i) => _WorkerTile(
+                  worker: workers[i],
+                  onTap: () =>
+                      context.push('/owner/workers/${workers[i].id}'),
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

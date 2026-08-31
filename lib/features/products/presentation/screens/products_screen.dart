@@ -64,68 +64,74 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         icon: const Icon(Icons.add),
         label: const Text('Add Product'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: SearchField(
-              hint: 'Search products...',
-              controller: _searchCtrl,
-              onChanged: _onSearch,
-            ),
-          ),
-          Expanded(
-            child: productsAsync.when(
-              loading: () => const ProductGridSkeleton(),
-              error: (e, _) => ErrorState(
-                message: e is AppError ? e.toUserMessage() : 'Could not load products.',
-                onRetry: () => ref.invalidate(ownerProductsProvider(shopId)),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: SearchField(
+                hint: 'Search products...',
+                controller: _searchCtrl,
+                onChanged: _onSearch,
               ),
-              data: (products) {
-                var filtered = products.where((p) => p.isActive).toList();
-                if (_query.isNotEmpty) {
-                  filtered = filtered
-                      .where((p) => p.name.toLowerCase().contains(_query.toLowerCase()))
-                      .toList();
-                }
-                if (filtered.isEmpty) {
-                  return EmptyState(
-                    icon: Icons.inventory_2_outlined,
-                    title: _query.isEmpty ? 'No products yet' : 'No results found',
-                    description: _query.isEmpty
-                        ? 'Add your first product to start selling.'
-                        : 'Try a different search term.',
-                    actionLabel: _query.isEmpty ? 'Add Product' : null,
-                    onAction: _query.isEmpty
-                        ? () => context.push('/owner/products/add')
-                        : null,
-                  );
-                }
-                return RefreshIndicator(
-                  color: AppTheme.primary,
-                  onRefresh: () async =>
-                      ref.invalidate(ownerProductsProvider(shopId)),
-                  child: GridView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.72,
-                    ),
-                    itemCount: filtered.length,
-                    itemBuilder: (context, i) => ProductCard(
-                      product: filtered[i],
-                      onTap: () =>
-                          context.push('/owner/products/${filtered[i].id}'),
-                    ),
-                  ),
-                );
-              },
             ),
-          ),
-        ],
+            Expanded(
+              child: productsAsync.when(
+                loading: () => const ProductGridSkeleton(),
+                error: (e, _) => ErrorState(
+                  message: e is AppError ? e.toUserMessage() : 'Could not load products.',
+                  onRetry: () => ref.invalidate(ownerProductsProvider(shopId)),
+                ),
+                data: (products) {
+                  var filtered = products.where((p) => p.isActive).toList();
+                  if (_query.isNotEmpty) {
+                    filtered = filtered
+                        .where((p) => p.name.toLowerCase().contains(_query.toLowerCase()))
+                        .toList();
+                  }
+                  if (filtered.isEmpty) {
+                    return EmptyState(
+                      icon: Icons.inventory_2_outlined,
+                      title: _query.isEmpty ? 'No products yet' : 'No results found',
+                      description: _query.isEmpty
+                          ? 'Add your first product to start selling.'
+                          : 'Try a different search term.',
+                      actionLabel: _query.isEmpty ? 'Add Product' : null,
+                      onAction: _query.isEmpty
+                          ? () => context.push('/owner/products/add')
+                          : null,
+                    );
+                  }
+                  // Bottom padding = FAB height (56) + gap (16) + nav bar safe area
+                  final bottomPad = MediaQuery.viewPaddingOf(context).bottom + 88;
+                  return RefreshIndicator(
+                    color: AppTheme.primary,
+                    onRefresh: () async =>
+                        ref.invalidate(ownerProductsProvider(shopId)),
+                    child: GridView.builder(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, bottomPad),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.72,
+                      ),
+                      itemCount: filtered.length,
+                      itemBuilder: (context, i) => ProductCard(
+                        product: filtered[i],
+                        onTap: () =>
+                            context.push('/owner/products/${filtered[i].id}'),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -40,20 +40,13 @@ class OwnerDashboardScreen extends ConsumerWidget {
     );
 
     if (shopId.isEmpty) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('No shop selected'),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () => context.go('/owner/shops'),
-                child: const Text('Select Shop'),
-              ),
-            ],
-          ),
-        ),
+      // No shop selected yet — redirect to shop picker after the frame
+      // (cannot call context.go during build)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) context.go('/owner/shops');
+      });
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 

@@ -35,31 +35,36 @@ class CategoriesScreen extends ConsumerWidget {
         icon: const Icon(Icons.add),
         label: const Text('Add Category'),
       ),
-      body: catsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => ErrorState(
-          message: e is AppError ? e.toUserMessage() : 'Could not load categories.',
-          onRetry: () => ref.invalidate(ownerCategoriesProvider(shopId)),
-        ),
-        data: (cats) {
-          if (cats.isEmpty) {
-            return const EmptyState(
-              icon: Icons.label_outline,
-              title: 'No categories yet',
-              description:
-                  'Add categories to help organise your products.',
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      body: SafeArea(
+        top: false,
+        child: catsAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => ErrorState(
+            message: e is AppError ? e.toUserMessage() : 'Could not load categories.',
+            onRetry: () => ref.invalidate(ownerCategoriesProvider(shopId)),
+          ),
+          data: (cats) {
+            if (cats.isEmpty) {
+              return const EmptyState(
+                icon: Icons.label_outline,
+                title: 'No categories yet',
+                description:
+                    'Add categories to help organise your products.',
+              );
+            }
+            final bottomPad = MediaQuery.viewPaddingOf(context).bottom + 88;
+            return ListView.separated(
+              padding: EdgeInsets.fromLTRB(16, 12, 16, bottomPad),
+              itemCount: cats.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, i) => _CategoryTile(
+                category: cats[i],
+                shopId: shopId,
+              ),
             );
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
-            itemCount: cats.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, i) => _CategoryTile(
-              category: cats[i],
-              shopId: shopId,
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

@@ -54,6 +54,7 @@ class ShopsScreen extends ConsumerWidget {
         icon: const Icon(Icons.add),
         label: const Text('Add Shop'),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         color: AppTheme.primary,
         onRefresh: () async {
@@ -143,7 +144,10 @@ class ShopsScreen extends ConsumerWidget {
                 );
 
                 return SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                  padding: EdgeInsets.fromLTRB(
+                    16, 0, 16,
+                    MediaQuery.viewPaddingOf(context).bottom + 88,
+                  ),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, i) {
