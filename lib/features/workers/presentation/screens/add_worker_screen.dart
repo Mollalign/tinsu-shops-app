@@ -171,7 +171,6 @@ class _PinRevealScreen extends StatelessWidget {
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                height: 52,
                 child: OutlinedButton.icon(
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: created.pin));
@@ -186,7 +185,6 @@ class _PinRevealScreen extends StatelessWidget {
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
-                height: 52,
                 child: ElevatedButton(
                   onPressed: () => context.pop(),
                   child: const Text('Done'),

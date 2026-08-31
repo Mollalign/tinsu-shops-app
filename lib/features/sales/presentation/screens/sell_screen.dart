@@ -380,7 +380,6 @@ class _CartBar extends StatelessWidget {
           // Complete Sale button — full width, prominent
           SizedBox(
             width: double.infinity,
-            height: 52,
             child: ElevatedButton(
               onPressed: checking ? null : onComplete,
               child: checking

@@ -276,7 +276,7 @@ class AppTheme {
         backgroundColor: primary,
         foregroundColor: onPrimary,
         elevation: 4,
-        shape: CircleBorder(),
+        shape: StadiumBorder(),
       ),
 
       // Chip

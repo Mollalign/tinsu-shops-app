@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_theme.dart';
 
-/// Primary CTA button — full width, deep green
+/// Primary CTA button — full width, deep green.
+/// Sizes itself to its content; never clips text.
 class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -20,9 +21,11 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 52,
       child: ElevatedButton(
         onPressed: loading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+        ),
         child: loading
             ? const SizedBox(
                 width: 22,
@@ -34,6 +37,7 @@ class PrimaryButton extends StatelessWidget {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (icon != null) ...[
                     Icon(icon, size: 20),
@@ -47,7 +51,8 @@ class PrimaryButton extends StatelessWidget {
   }
 }
 
-/// Secondary outlined button
+/// Secondary outlined button — full width.
+/// Sizes itself to its content; never clips text.
 class SecondaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -64,11 +69,14 @@ class SecondaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 52,
       child: OutlinedButton(
         onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
               Icon(icon, size: 20),
@@ -82,7 +90,8 @@ class SecondaryButton extends StatelessWidget {
   }
 }
 
-/// Large payment method button used in checkout
+/// Large payment method button used in checkout.
+/// Uses InkWell + padding — no fixed height so text never overflows.
 class PaymentButton extends StatelessWidget {
   final String label;
   final IconData icon;
@@ -105,7 +114,7 @@ class PaymentButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           child: Row(
             children: [
@@ -118,13 +127,14 @@ class PaymentButton extends StatelessWidget {
                 child: Icon(icon, color: color ?? AppTheme.primary, size: 24),
               ),
               const SizedBox(width: 16),
-              Text(
-                label,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
               ),
-              const Spacer(),
               Icon(Icons.chevron_right, color: AppTheme.outline),
             ],
           ),

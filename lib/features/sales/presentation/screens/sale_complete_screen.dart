@@ -73,7 +73,6 @@ class SaleCompleteScreen extends StatelessWidget {
               // ── Done → back to sell ──
               SizedBox(
                 width: double.infinity,
-                height: 56,
                 child: ElevatedButton(
                   onPressed: () => context.go('/worker/sell'),
                   child: const Text(
