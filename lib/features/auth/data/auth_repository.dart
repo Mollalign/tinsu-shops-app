@@ -55,7 +55,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> saveSession(AuthResponse auth) async {
+  Future<void> saveSession(AuthResponse auth, {String? ownerPhone}) async {
     await _storage.saveAccessToken(auth.accessToken);
     await _storage.saveSession(
       userId: auth.user.id,
@@ -63,7 +63,20 @@ class AuthRepository {
       name: auth.user.name,
       shopId: auth.user.shopId,
     );
+    // Persist phone for PIN-only re-login on future launches.
+    // PIN is intentionally NOT stored.
+    if (ownerPhone != null && ownerPhone.isNotEmpty) {
+      await _storage.saveOwnerPhone(ownerPhone);
+    }
   }
 
+  /// Returns the remembered owner phone, if any.
+  Future<String?> getRememberedPhone() => _storage.getOwnerPhone();
+
+  /// Clears access token + session metadata.
+  /// Keeps the remembered phone so "Welcome back" still works.
   Future<void> clearSession() => _storage.clearSession();
+
+  /// Full wipe — used by "Use another account".
+  Future<void> clearAll() => _storage.clearAll();
 }

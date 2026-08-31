@@ -12,6 +12,7 @@ class AppConstants {
   static const String keyUserId = 'user_id';
   static const String keyUserName = 'user_name';
   static const String keyShopId = 'shop_id';
+  static const String keyOwnerPhone = 'owner_phone';
   static const String keyLanguage = 'language';
 
   // Debounce

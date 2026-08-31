@@ -51,7 +51,10 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
             phone: _phoneCtrl.text.trim(),
             pin: _pin,
           );
-      await ref.read(sessionProvider.notifier).login(auth);
+      await ref.read(sessionProvider.notifier).login(
+            auth,
+            ownerPhone: _phoneCtrl.text.trim(),
+          );
       if (mounted) context.go('/owner/shops');
     } on AppError catch (e) {
       setState(() => _error = e.toUserMessage());

@@ -59,5 +59,30 @@ class SecureStorage {
     };
   }
 
-  Future<void> clearSession() => _storage.deleteAll();
+  // ── Owner Phone (remembered for PIN-only re-login) ────────────────────────
+  Future<void> saveOwnerPhone(String phone) =>
+      _storage.write(key: AppConstants.keyOwnerPhone, value: phone);
+
+  Future<String?> getOwnerPhone() =>
+      _storage.read(key: AppConstants.keyOwnerPhone);
+
+  Future<void> deleteOwnerPhone() =>
+      _storage.delete(key: AppConstants.keyOwnerPhone);
+
+  // ── Clear ─────────────────────────────────────────────────────────────────
+  /// Full logout — removes token + session metadata but keeps the remembered
+  /// owner phone so the "Welcome back" screen can be shown on next launch.
+  Future<void> clearSession() async {
+    await Future.wait([
+      _storage.delete(key: AppConstants.keyAccessToken),
+      _storage.delete(key: AppConstants.keyUserId),
+      _storage.delete(key: AppConstants.keyUserRole),
+      _storage.delete(key: AppConstants.keyUserName),
+      _storage.delete(key: AppConstants.keyShopId),
+    ]);
+  }
+
+  /// Full wipe — removes ALL data including remembered phone.
+  /// Used by "Use another account".
+  Future<void> clearAll() => _storage.deleteAll();
 }

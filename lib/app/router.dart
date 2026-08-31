@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../features/auth/presentation/screens/owner_login_screen.dart';
+import '../features/auth/presentation/screens/owner_quick_login_screen.dart';
 import '../features/auth/presentation/screens/worker_select_shop_screen.dart';
 import '../features/auth/presentation/screens/worker_select_worker_screen.dart';
 import '../features/auth/presentation/screens/worker_pin_screen.dart';
@@ -80,11 +81,21 @@ GoRouter router(Ref ref) {
         loading: () => path == '/splash' ? null : '/splash',
 
         // Logged out
-        unauthenticated: () {
-          if (path == '/splash') return '/login';
+        unauthenticated: (rememberedPhone, rememberedName) {
+          // Splash always navigates away
+          if (path == '/splash') {
+            // If we have a remembered owner phone, go to quick login
+            if (rememberedPhone != null && rememberedPhone.isNotEmpty) {
+              return '/owner/quick-login';
+            }
+            return '/login';
+          }
           if (path.startsWith('/owner') ||
               path.startsWith('/worker/sell') ||
               path.startsWith('/worker/today')) {
+            if (rememberedPhone != null && rememberedPhone.isNotEmpty) {
+              return '/owner/quick-login';
+            }
             return '/login';
           }
           return null;
@@ -98,6 +109,7 @@ GoRouter router(Ref ref) {
                 : '/worker/sell';
           }
           if (path == '/login' ||
+              path == '/owner/quick-login' ||
               path == '/worker/select' ||
               path == '/worker/pin') {
             return user.role == UserRole.owner
@@ -118,6 +130,22 @@ GoRouter router(Ref ref) {
     routes: [
       GoRoute(path: '/splash', builder: (_, __) => const SplashScreen()),
       GoRoute(path: '/login', builder: (_, __) => const OwnerLoginScreen()),
+      GoRoute(
+        path: '/owner/quick-login',
+        builder: (_, state) {
+          // Read current session for remembered phone/name
+          final session = ref.read(sessionProvider);
+          final phone = session.maybeWhen(
+            unauthenticated: (phone, _) => phone ?? '',
+            orElse: () => '',
+          );
+          final name = session.maybeWhen(
+            unauthenticated: (_, name) => name ?? '',
+            orElse: () => '',
+          );
+          return OwnerQuickLoginScreen(ownerPhone: phone, ownerName: name);
+        },
+      ),
       GoRoute(
           path: '/worker/select',
           builder: (_, __) => const WorkerSelectShopScreen()),
