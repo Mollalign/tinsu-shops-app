@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:tinsu_shops/features/products/domain/category_model.dart';
 import 'package:tinsu_shops/features/products/domain/product_model.dart';
+import 'package:tinsu_shops/features/products/domain/product_search_result.dart';
 
 void main() {
   // ── CategoryModel ─────────────────────────────────────────────────
@@ -192,6 +193,157 @@ void main() {
           .where((p) => p.name.toLowerCase().contains('biscuit'))
           .toList();
       expect(bySearch, isEmpty);
+    });
+  });
+
+  // ── ProductSearchResult model ──────────────────────────────────
+  group('ProductSearchResult — parsing', () {
+    final productJson = {
+      'id': 'prod-001',
+      'shop_id': 'shop-001',
+      'name': 'Coca-Cola',
+      'selling_price': 35,
+      'stock_quantity': 20,
+      'is_active': true,
+      'category_id': 'cat-001',
+      'category_name': 'Drinks',
+    };
+
+    test('fromJson with matched_category', () {
+      final result = ProductSearchResult.fromJson({
+        'matched_category': {
+          'id': 'cat-001',
+          'name': 'Drinks',
+          'product_count': 12,
+        },
+        'items': [productJson],
+      });
+
+      expect(result.matchedCategory, isNotNull);
+      expect(result.matchedCategory!.id, 'cat-001');
+      expect(result.matchedCategory!.name, 'Drinks');
+      expect(result.matchedCategory!.productCount, 12);
+      expect(result.items.length, 1);
+      expect(result.items.first.name, 'Coca-Cola');
+    });
+
+    test('fromJson without matched_category', () {
+      final result = ProductSearchResult.fromJson({
+        'matched_category': null,
+        'items': [productJson],
+      });
+
+      expect(result.matchedCategory, isNull);
+      expect(result.items.length, 1);
+    });
+
+    test('fromJson with empty items', () {
+      final result = ProductSearchResult.fromJson({
+        'matched_category': null,
+        'items': <dynamic>[],
+      });
+
+      expect(result.matchedCategory, isNull);
+      expect(result.items, isEmpty);
+    });
+
+    test('CategorySearchMatch.fromJson parses productCount correctly', () {
+      final match = CategorySearchMatch.fromJson({
+        'id': 'cat-abc',
+        'name': 'Snacks',
+        'product_count': 5,
+      });
+
+      expect(match.id, 'cat-abc');
+      expect(match.name, 'Snacks');
+      expect(match.productCount, 5);
+    });
+
+    test('default ProductSearchResult const has empty items and no match', () {
+      const r = ProductSearchResult(items: []);
+      expect(r.matchedCategory, isNull);
+      expect(r.items, isEmpty);
+    });
+  });
+
+  // ── Search result UX logic ────────────────────────────────────────
+  group('Search result UX logic', () {
+    test('no match and no items → show empty state', () {
+      const result = ProductSearchResult(items: []);
+      expect(result.matchedCategory, isNull);
+      expect(result.items.isEmpty, isTrue);
+    });
+
+    test('match present, no items → banner only (no products)', () {
+      final result = ProductSearchResult.fromJson({
+        'matched_category': {
+          'id': 'cat-001',
+          'name': 'Drinks',
+          'product_count': 8,
+        },
+        'items': <dynamic>[],
+      });
+
+      expect(result.matchedCategory, isNotNull);
+      expect(result.matchedCategory!.name, 'Drinks');
+      expect(result.matchedCategory!.productCount, 8);
+      expect(result.items.isEmpty, isTrue);
+    });
+
+    test('no match, items present → show product list only', () {
+      final result = ProductSearchResult.fromJson({
+        'matched_category': null,
+        'items': [
+          {
+            'id': 'p1',
+            'shop_id': 's',
+            'name': 'Coke',
+            'selling_price': 35,
+            'stock_quantity': 10,
+            'is_active': true,
+          }
+        ],
+      });
+
+      expect(result.matchedCategory, isNull);
+      expect(result.items.length, 1);
+    });
+
+    test('productCount label handles singular correctly', () {
+      const match = CategorySearchMatch(id: 'x', name: 'Test', productCount: 1);
+      final label =
+          '${match.productCount} product${match.productCount == 1 ? '' : 's'}';
+      expect(label, '1 product');
+    });
+
+    test('productCount label handles plural correctly', () {
+      const match =
+          CategorySearchMatch(id: 'x', name: 'Test', productCount: 12);
+      final label =
+          '${match.productCount} product${match.productCount == 1 ? '' : 's'}';
+      expect(label, '12 products');
+    });
+
+    test('search result items preserve category fields from backend', () {
+      final result = ProductSearchResult.fromJson({
+        'matched_category': null,
+        'items': [
+          {
+            'id': 'prod-001',
+            'shop_id': 'shop-001',
+            'name': 'Fanta',
+            'selling_price': 30,
+            'stock_quantity': 5,
+            'is_active': true,
+            'category_id': 'cat-001',
+            'category_name': 'Drinks',
+          }
+        ],
+      });
+
+      final product = result.items.first;
+      expect(product.categoryId, 'cat-001');
+      expect(product.categoryName, 'Drinks');
     });
   });
 

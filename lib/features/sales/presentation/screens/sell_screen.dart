@@ -15,6 +15,7 @@ import '../../../products/data/categories_repository.dart';
 import '../../../products/data/products_repository.dart';
 import '../../../products/domain/category_model.dart';
 import '../../../products/domain/product_model.dart';
+import '../../../products/domain/product_search_result.dart';
 import '../../../sales/data/sales_repository.dart';
 import '../../domain/sale_model.dart';
 import '../../domain/cart_item_model.dart';
@@ -34,10 +35,10 @@ Future<List<ProductModel>> shopProducts(Ref ref, String shopId,
         .listProducts(shopId, categoryId: categoryId);
 
 @riverpod
-Future<List<ProductModel>> productSearch(
+Future<ProductSearchResult> productSearch(
     Ref ref, String shopId, String query,
     {String? categoryId}) async {
-  if (query.trim().isEmpty) return [];
+  if (query.trim().isEmpty) return const ProductSearchResult(items: []);
   return ref
       .watch(productsRepositoryProvider)
       .searchProducts(shopId, query, categoryId: categoryId);
@@ -159,7 +160,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                 onChanged: _onSearch,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText: 'Search products...',
+                  hintText: 'Search products or categories',
                   prefixIcon:
                       const Icon(Icons.search, color: AppTheme.outline),
                   suffixIcon: _query.isNotEmpty
@@ -227,6 +228,13 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                       shopId: shopId,
                       query: _query,
                       categoryId: _selectedCategoryId,
+                      onCategorySelected: (id) {
+                        _searchCtrl.clear();
+                        setState(() {
+                          _query = '';
+                          _selectedCategoryId = id;
+                        });
+                      },
                     ),
             ),
 
@@ -574,8 +582,14 @@ class _SearchResultList extends ConsumerWidget {
   final String shopId;
   final String query;
   final String? categoryId;
-  const _SearchResultList(
-      {required this.shopId, required this.query, this.categoryId});
+  final void Function(String categoryId) onCategorySelected;
+
+  const _SearchResultList({
+    required this.shopId,
+    required this.query,
+    this.categoryId,
+    required this.onCategorySelected,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -593,22 +607,127 @@ class _SearchResultList extends ConsumerWidget {
       error: (e, _) => ErrorState(
         message: e is AppError ? e.toUserMessage() : 'Search failed.',
       ),
-      data: (products) {
-        if (products.isEmpty) {
+      data: (result) {
+        final hasCategoryMatch = result.matchedCategory != null;
+        final hasProducts = result.items.isNotEmpty;
+
+        if (!hasCategoryMatch && !hasProducts) {
           return const EmptyState(
             icon: Icons.search_off,
             title: 'No results',
-            description: 'Try a different product name.',
+            description: 'Try a different product or category name.',
           );
         }
-        return ListView.separated(
+
+        return ListView(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          itemCount: products.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemBuilder: (context, i) =>
-              _SearchProductTile(product: products[i]),
+          children: [
+            // ── Category match banner ──
+            if (hasCategoryMatch)
+              _CategoryMatchBanner(
+                match: result.matchedCategory!,
+                onTap: () => onCategorySelected(result.matchedCategory!.id),
+              ),
+            // ── Section label when both exist ──
+            if (hasCategoryMatch && hasProducts)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(2, 14, 2, 6),
+                child: Text(
+                  'Products',
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(color: AppTheme.outline, letterSpacing: 0.5),
+                ),
+              ),
+            // ── Product tiles ──
+            ...result.items.map(
+              (p) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _SearchProductTile(product: p),
+              ),
+            ),
+          ],
         );
       },
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// Category match banner
+// ─────────────────────────────────────────────────────────
+
+class _CategoryMatchBanner extends StatelessWidget {
+  final CategorySearchMatch match;
+  final VoidCallback onTap;
+
+  const _CategoryMatchBanner({required this.match, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppTheme.primaryContainer,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(
+            color: AppTheme.primary.withValues(alpha: 0.25),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.folder_outlined,
+                color: AppTheme.primary,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Category',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppTheme.outline,
+                          letterSpacing: 0.4,
+                        ),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    match.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.primary,
+                      fontSize: 15,
+                    ),
+                  ),
+                  Text(
+                    '${match.productCount} product${match.productCount == 1 ? '' : 's'}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: AppTheme.outline),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios,
+                size: 14, color: AppTheme.outline),
+          ],
+        ),
+      ),
     );
   }
 }

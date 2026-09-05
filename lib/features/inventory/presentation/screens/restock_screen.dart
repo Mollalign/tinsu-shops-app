@@ -42,6 +42,8 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
       }
     } on AppError catch (e) {
       setState(() => _error = e.toUserMessage());
+    } catch (_) {
+      setState(() => _error = const GenericError().toUserMessage());
     } finally {
       if (mounted) setState(() => _loading = false);
     }

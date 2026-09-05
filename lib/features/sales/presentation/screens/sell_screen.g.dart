@@ -285,14 +285,14 @@ class _ShopProductsProviderElement
   String? get categoryId => (origin as ShopProductsProvider).categoryId;
 }
 
-String _$productSearchHash() => r'79164c41d6de514c13e94e303ec88c3e9fc2f554';
+String _$productSearchHash() => r'a3f8c12e7b9d4e6a501f2b3c8d9e0f1a2b3c4d5e';
 
 /// See also [productSearch].
 @ProviderFor(productSearch)
 const productSearchProvider = ProductSearchFamily();
 
 /// See also [productSearch].
-class ProductSearchFamily extends Family<AsyncValue<List<ProductModel>>> {
+class ProductSearchFamily extends Family<AsyncValue<ProductSearchResult>> {
   /// See also [productSearch].
   const ProductSearchFamily();
 
@@ -333,7 +333,7 @@ class ProductSearchFamily extends Family<AsyncValue<List<ProductModel>>> {
 
 /// See also [productSearch].
 class ProductSearchProvider
-    extends AutoDisposeFutureProvider<List<ProductModel>> {
+    extends AutoDisposeFutureProvider<ProductSearchResult> {
   /// See also [productSearch].
   ProductSearchProvider(String shopId, String query, {String? categoryId})
     : this._internal(
@@ -374,7 +374,7 @@ class ProductSearchProvider
 
   @override
   Override overrideWith(
-    FutureOr<List<ProductModel>> Function(ProductSearchRef provider) create,
+    FutureOr<ProductSearchResult> Function(ProductSearchRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -393,7 +393,7 @@ class ProductSearchProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<ProductModel>> createElement() {
+  AutoDisposeFutureProviderElement<ProductSearchResult> createElement() {
     return _ProductSearchProviderElement(this);
   }
 
@@ -418,7 +418,7 @@ class ProductSearchProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProductSearchRef on AutoDisposeFutureProviderRef<List<ProductModel>> {
+mixin ProductSearchRef on AutoDisposeFutureProviderRef<ProductSearchResult> {
   /// The parameter `shopId` of this provider.
   String get shopId;
 
@@ -430,7 +430,7 @@ mixin ProductSearchRef on AutoDisposeFutureProviderRef<List<ProductModel>> {
 }
 
 class _ProductSearchProviderElement
-    extends AutoDisposeFutureProviderElement<List<ProductModel>>
+    extends AutoDisposeFutureProviderElement<ProductSearchResult>
     with ProductSearchRef {
   _ProductSearchProviderElement(super.provider);
 

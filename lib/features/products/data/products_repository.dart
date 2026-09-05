@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../../core/network/api_client.dart';
 import '../domain/product_model.dart';
+import '../domain/product_search_result.dart';
 
 part 'products_repository.g.dart';
 
@@ -37,7 +38,7 @@ class ProductsRepository {
     }
   }
 
-  Future<List<ProductModel>> searchProducts(
+  Future<ProductSearchResult> searchProducts(
     String shopId,
     String q, {
     String? categoryId,
@@ -50,8 +51,7 @@ class ProductsRepository {
           if (categoryId != null) 'category_id': categoryId,
         },
       );
-      final data = res.data as List;
-      return data.map((e) => ProductModel.fromJson(e)).toList();
+      return ProductSearchResult.fromJson(res.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw extractError(e);
     }
@@ -143,17 +143,16 @@ class ProductsRepository {
     }
   }
 
-  Future<ProductModel> restock({
+  Future<void> restock({
     required String shopId,
     required String productId,
     required int quantity,
   }) async {
     try {
-      final res = await _dio.post(
+      await _dio.post(
         ApiConstants.restock(shopId, productId),
         data: {'quantity': quantity},
       );
-      return ProductModel.fromJson(res.data);
     } on DioException catch (e) {
       throw extractError(e);
     }
