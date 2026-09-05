@@ -157,6 +157,24 @@ class ProductsRepository {
       throw extractError(e);
     }
   }
+
+  /// Returns the products most recently sold by the authenticated worker in
+  /// [shopId], ordered by most-recently-sold first (max [limit] items).
+  Future<List<ProductModel>> getRecentProducts(
+    String shopId, {
+    int limit = 8,
+  }) async {
+    try {
+      final res = await _dio.get(
+        ApiConstants.workerRecentProducts(shopId),
+        queryParameters: {'limit': limit},
+      );
+      final items = res.data['items'] as List;
+      return items.map((e) => ProductModel.fromJson(e)).toList();
+    } on DioException catch (e) {
+      throw extractError(e);
+    }
+  }
 }
 
 /// Sentinel object to distinguish "not provided" from explicit null for categoryId.

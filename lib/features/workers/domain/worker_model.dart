@@ -20,7 +20,7 @@ abstract class WorkerModel with _$WorkerModel {
 
 @freezed
 abstract class WorkerCreatedModel with _$WorkerCreatedModel {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory WorkerCreatedModel({
     required WorkerModel worker,
     required String pin,

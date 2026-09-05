@@ -285,7 +285,7 @@ class _ShopProductsProviderElement
   String? get categoryId => (origin as ShopProductsProvider).categoryId;
 }
 
-String _$productSearchHash() => r'a3f8c12e7b9d4e6a501f2b3c8d9e0f1a2b3c4d5e';
+String _$productSearchHash() => r'0b1294039f14dcf87939705c80aefd159b2afbc4';
 
 /// See also [productSearch].
 @ProviderFor(productSearch)
@@ -440,6 +440,127 @@ class _ProductSearchProviderElement
   String get query => (origin as ProductSearchProvider).query;
   @override
   String? get categoryId => (origin as ProductSearchProvider).categoryId;
+}
+
+String _$recentProductsHash() => r'aed49c4c9a905dcb0b1a2257fc48dcbae56b6854';
+
+/// See also [recentProducts].
+@ProviderFor(recentProducts)
+const recentProductsProvider = RecentProductsFamily();
+
+/// See also [recentProducts].
+class RecentProductsFamily extends Family<AsyncValue<List<ProductModel>>> {
+  /// See also [recentProducts].
+  const RecentProductsFamily();
+
+  /// See also [recentProducts].
+  RecentProductsProvider call(String shopId) {
+    return RecentProductsProvider(shopId);
+  }
+
+  @override
+  RecentProductsProvider getProviderOverride(
+    covariant RecentProductsProvider provider,
+  ) {
+    return call(provider.shopId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'recentProductsProvider';
+}
+
+/// See also [recentProducts].
+class RecentProductsProvider
+    extends AutoDisposeFutureProvider<List<ProductModel>> {
+  /// See also [recentProducts].
+  RecentProductsProvider(String shopId)
+    : this._internal(
+        (ref) => recentProducts(ref as RecentProductsRef, shopId),
+        from: recentProductsProvider,
+        name: r'recentProductsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$recentProductsHash,
+        dependencies: RecentProductsFamily._dependencies,
+        allTransitiveDependencies:
+            RecentProductsFamily._allTransitiveDependencies,
+        shopId: shopId,
+      );
+
+  RecentProductsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.shopId,
+  }) : super.internal();
+
+  final String shopId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<ProductModel>> Function(RecentProductsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RecentProductsProvider._internal(
+        (ref) => create(ref as RecentProductsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        shopId: shopId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<ProductModel>> createElement() {
+    return _RecentProductsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RecentProductsProvider && other.shopId == shopId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, shopId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RecentProductsRef on AutoDisposeFutureProviderRef<List<ProductModel>> {
+  /// The parameter `shopId` of this provider.
+  String get shopId;
+}
+
+class _RecentProductsProviderElement
+    extends AutoDisposeFutureProviderElement<List<ProductModel>>
+    with RecentProductsRef {
+  _RecentProductsProviderElement(super.provider);
+
+  @override
+  String get shopId => (origin as RecentProductsProvider).shopId;
 }
 
 // ignore_for_file: type=lint

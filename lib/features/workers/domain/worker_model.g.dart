@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element
 
 part of 'worker_model.dart';
 
@@ -27,6 +26,3 @@ _WorkerCreatedModel _$WorkerCreatedModelFromJson(Map<String, dynamic> json) =>
       worker: WorkerModel.fromJson(json['worker'] as Map<String, dynamic>),
       pin: json['pin'] as String,
     );
-
-Map<String, dynamic> _$WorkerCreatedModelToJson(_WorkerCreatedModel instance) =>
-    <String, dynamic>{'worker': instance.worker, 'pin': instance.pin};

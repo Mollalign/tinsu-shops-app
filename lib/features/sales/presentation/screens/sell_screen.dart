@@ -44,6 +44,10 @@ Future<ProductSearchResult> productSearch(
       .searchProducts(shopId, query, categoryId: categoryId);
 }
 
+@riverpod
+Future<List<ProductModel>> recentProducts(Ref ref, String shopId) =>
+    ref.watch(productsRepositoryProvider).getRecentProducts(shopId);
+
 class SellScreen extends ConsumerStatefulWidget {
   const SellScreen({super.key});
 
@@ -106,8 +110,9 @@ class _SellScreenState extends ConsumerState<SellScreen> {
       // Clear cart (also resets idempotency key for next sale)
       ref.read(cartProvider.notifier).clear();
 
-      // Refresh product stock after sale
+      // Refresh product stock and recently sold after a successful sale
       ref.invalidate(shopProductsProvider(shopId));
+      ref.invalidate(recentProductsProvider(shopId));
 
       if (mounted) {
         context.go('/worker/sale-complete', extra: {
@@ -208,6 +213,10 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                   ],
                 ),
               ),
+
+            // ── Recently Sold (hidden when no history) ──
+            if (_query.isEmpty)
+              _RecentlySoldSection(shopId: shopId),
 
             // ── Category filter ──
             _CategoryFilterBar(
@@ -1019,6 +1028,198 @@ class _SearchProductTile extends ConsumerWidget {
                         TextStyle(color: AppTheme.error, fontSize: 12)),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// Recently Sold section
+// ─────────────────────────────────────────────────────────
+
+class _RecentlySoldSection extends ConsumerWidget {
+  final String shopId;
+  const _RecentlySoldSection({required this.shopId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(recentProductsProvider(shopId));
+
+    return async.when(
+      // Small placeholder while loading — does not block the product grid
+      loading: () => const SizedBox(
+        height: 112,
+        child: Center(
+          child: SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      ),
+      // Silently hide on error — this is a non-critical enhancement
+      error: (_, __) => const SizedBox.shrink(),
+      data: (products) {
+        if (products.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+              child: Text(
+                'Recently Sold',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: AppTheme.outline,
+                      letterSpacing: 0.5,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ),
+            SizedBox(
+              height: 96,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+                itemCount: products.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (ctx, i) =>
+                    _RecentProductCard(product: products[i]),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Compact tap-to-add card for the Recently Sold horizontal list.
+class _RecentProductCard extends ConsumerWidget {
+  final ProductModel product;
+  const _RecentProductCard({required this.product});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isOut = product.isOutOfStock;
+    final qty = ref.watch(
+      cartProvider.select((s) => s.quantityFor(product.id)),
+    );
+
+    return GestureDetector(
+      onTap: isOut
+          ? null
+          : () => ref.read(cartProvider.notifier).addProduct(product),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: 72,
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(
+            color: qty > 0 ? AppTheme.primary : AppTheme.divider,
+            width: qty > 0 ? 2 : 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── Photo ──
+            Expanded(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(AppTheme.radiusMd - 1),
+                ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _ProductPhoto(url: product.photoUrl, isOut: isOut),
+                    // Out of stock badge
+                    if (isOut)
+                      Positioned(
+                        top: 3,
+                        left: 3,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppTheme.outOfStockBg,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            'Out',
+                            style: TextStyle(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.outOfStockText,
+                            ),
+                          ),
+                        ),
+                      ),
+                    // In-cart quantity badge
+                    if (qty > 0)
+                      Positioned(
+                        top: 3,
+                        right: 3,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primary,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '×$qty',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            // ── Name + price ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5, 4, 5, 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    product.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: isOut ? AppTheme.outline : null,
+                    ),
+                  ),
+                  Text(
+                    Formatters.currency(product.price),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: isOut ? AppTheme.outline : AppTheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
