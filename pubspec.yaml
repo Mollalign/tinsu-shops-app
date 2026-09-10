@@ -53,9 +53,23 @@ dev_dependencies:
   riverpod_generator: ^2.6.5
   custom_lint: ^0.7.5
   riverpod_lint: ^2.6.5
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: assets/icons/app-icon.jpeg
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: assets/icons/app-icon.jpeg
+    background_color: "#1E6FE0"
+    theme_color: "#1E6FE0"
 
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/icons/app-icon.jpeg
 
 

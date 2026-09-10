@@ -102,16 +102,7 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: AppTheme.primary,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.storefront,
-                            color: Colors.white, size: 26),
-                      ),
+                      const AppLogo(size: 44, borderRadius: 10),
                       const SizedBox(width: 12),
                       Text(
                         l.appName,

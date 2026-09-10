@@ -129,16 +129,7 @@ class _OwnerQuickLoginScreenState
               child: Column(
                 children: [
                   // Logo
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primary,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Icon(Icons.storefront,
-                        color: Colors.white, size: 36),
-                  ),
+                  const AppLogo(size: 64, borderRadius: 16),
                   const SizedBox(height: 20),
                   Text(
                     l.welcomeBack,

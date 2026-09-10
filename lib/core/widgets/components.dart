@@ -5,6 +5,29 @@ import '../../app/theme/app_theme.dart';
 import '../../features/products/domain/product_model.dart';
 import '../../core/utils/formatters.dart';
 
+/// Branded app icon used on splash and login screens.
+class AppLogo extends StatelessWidget {
+  final double size;
+  final double borderRadius;
+
+  const AppLogo({super.key, this.size = 44, this.borderRadius = 10});
+
+  static const String assetPath = 'assets/icons/app-icon.jpeg';
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: Image.asset(
+        assetPath,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+}
+
 /// Product grid card — prominent photo, name, price, stock
 class ProductCard extends StatelessWidget {
   final ProductModel product;

@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/app_error.dart';
+import '../../../../core/widgets/components.dart';
 import '../../../../core/widgets/language_toggle.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -68,16 +69,7 @@ class WorkerSelectShopScreen extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: AppTheme.primary,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Icon(Icons.storefront,
-                                color: Colors.white, size: 26),
-                          ),
+                          const AppLogo(size: 44, borderRadius: 10),
                           const SizedBox(width: 12),
                           Text(
                             l.appName,
