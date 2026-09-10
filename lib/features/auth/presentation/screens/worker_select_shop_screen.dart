@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/app_error.dart';
+import '../../../../core/widgets/language_toggle.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../shops/domain/shop_model.dart';
@@ -57,26 +58,32 @@ class WorkerSelectShopScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: AppTheme.primary,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.storefront,
-                            color: Colors.white, size: 26),
+                      Row(
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(Icons.storefront,
+                                color: Colors.white, size: 26),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            l.appName,
+                            style:
+                                Theme.of(context).textTheme.titleLarge?.copyWith(
+                                      color: AppTheme.primary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      Text(
-                        l.appName,
-                        style:
-                            Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  color: AppTheme.primary,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                      ),
+                      const LanguageToggle(compact: true),
                     ],
                   ),
                   const SizedBox(height: 40),

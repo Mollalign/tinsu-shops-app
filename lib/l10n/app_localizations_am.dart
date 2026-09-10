@@ -9,22 +9,22 @@ class AppLocalizationsAm extends AppLocalizations {
   AppLocalizationsAm([String locale = 'am']) : super(locale);
 
   @override
-  String get appName => 'ቲንሱ ሱቆች';
+  String get appName => 'የቲንሱ ሱቆች';
 
   @override
-  String get tagline => 'ቀላል ሽያጭ፣ ሃይለኛ ውጤት';
+  String get tagline => 'ቀላል ሽያጭ፣ አስተማማኝ ውጤት';
 
   @override
-  String get signIn => 'ግባ';
+  String get signIn => 'ይግቡ';
 
   @override
   String get signInToOwnerAccount => 'ወደ ባለቤት መለያዎ ይግቡ';
 
   @override
-  String get loginAsWorker => 'እንደ ሠራተኛ ግባ';
+  String get loginAsWorker => 'እንደ ሠራተኛ ይግቡ';
 
   @override
-  String get logout => 'ውጣ';
+  String get logout => 'ይውጡ';
 
   @override
   String get phoneNumber => 'ስልክ ቁጥር';
@@ -36,25 +36,25 @@ class AppLocalizationsAm extends AppLocalizations {
   String get enterPin => 'ፒን ያስገቡ';
 
   @override
-  String get welcomeBack => 'እንኳን ደስ አለዎ';
+  String get welcomeBack => 'እንኳን ደህና መጡ';
 
   @override
-  String get invalidCredentials => 'ስልክ ቁጥር ወይም ፒን ትክክል አይደለም።';
+  String get invalidCredentials => 'ስልክ ቁጥር ወይም ፒን ትክክል አይደለም። እንደገና ይሞክሩ።';
 
   @override
-  String get selectShop => 'ሱቅ ምረጥ';
+  String get selectShop => 'ሱቅ ይምረጡ';
 
   @override
-  String get selectYourShop => 'ለመቀጠል ሱቅ ምረጡ';
+  String get selectYourShop => 'ለመቀጠል ሱቅዎን ይምረጡ';
 
   @override
-  String get whoAreYou => 'ማን ነህ/ናት?';
+  String get whoAreYou => 'ማን ነዎት?';
 
   @override
   String get loading => 'እየጫነ ነው...';
 
   @override
-  String get retry => 'ደግም ሞክር';
+  String get retry => 'እንደገና ይሞክሩ';
 
   @override
   String get cancel => 'ሰርዝ';
@@ -69,10 +69,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get delete => 'ሰርዝ';
 
   @override
-  String get edit => 'ቀይር';
+  String get edit => 'አስተካክል';
 
   @override
-  String get add => 'ጨምር';
+  String get add => 'አክል';
 
   @override
   String get search => 'ፈልግ';
@@ -81,13 +81,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get searchProduct => 'ምርት ፈልግ';
 
   @override
-  String get searchProductsHint => 'ምርቶች ወይም ምድቦች ፈልግ…';
+  String get searchProductsHint => 'ምርቶችን ወይም ምድቦችን ይፈልጉ…';
 
   @override
-  String get noResultsFound => 'ምንም አልተገኘም';
+  String get noResultsFound => 'ምንም ውጤት አልተገኘም';
 
   @override
-  String get clear => 'አጥፋ';
+  String get clear => 'አጽዳ';
 
   @override
   String get myShops => 'ሱቆቼ';
@@ -96,22 +96,22 @@ class AppLocalizationsAm extends AppLocalizations {
   String get allShops => 'ሁሉም ሱቆች';
 
   @override
-  String get addShop => 'ሱቅ ጨምር';
+  String get addShop => 'ሱቅ አክል';
 
   @override
   String get shopName => 'የሱቅ ስም';
 
   @override
-  String get location => 'ቦታ';
+  String get location => 'አድራሻ';
 
   @override
-  String get locationOptional => 'ቦታ (አማራጭ)';
+  String get locationOptional => 'አድራሻ (አማራጭ)';
 
   @override
-  String get phone => 'ስልክ';
+  String get phone => 'ስልክ ቁጥር';
 
   @override
-  String get phoneOptional => 'ስልክ (አማራጭ)';
+  String get phoneOptional => 'ስልክ ቁጥር (አማራጭ)';
 
   @override
   String get createShop => 'ሱቅ ፍጠር';
@@ -120,7 +120,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get switchShop => 'ሱቅ ቀይር';
 
   @override
-  String get shopCreated => 'ሱቅ ተፈጥሯል';
+  String get shopCreated => 'ሱቅ በተሳካ ሁኔታ ተፈጥሯል';
 
   @override
   String get shopsLabel => 'ሱቆች';
@@ -129,16 +129,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get shopsSubtitle => 'ሱቆችን ይመልከቱ እና ይቀይሩ';
 
   @override
-  String get noShopsYet => 'ሱቆች አልተጨመሩም';
+  String get noShopsYet => 'እስካሁን ምንም ሱቅ የለም';
 
   @override
-  String get noShopsDesc => 'ለመጀመር የመጀሪያ ሱቅዎን ይፍጠሩ።';
+  String get noShopsDesc => 'ለመጀመር የመጀመሪያ ሱቅዎን ይፍጠሩ።';
 
   @override
   String get noShopSelected => 'ምንም ሱቅ አልተመረጠም';
 
   @override
-  String get selectAShop => 'ሱቅ ምረጥ';
+  String get selectAShop => 'ሱቅ ይምረጡ';
 
   @override
   String get dashboard => 'ዳሽቦርድ';
@@ -150,10 +150,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get yesterday => 'ትናንት';
 
   @override
-  String get thisWeek => 'ይህ ሳምንት';
+  String get thisWeek => 'በዚህ ሳምንት';
 
   @override
-  String get thisMonth => 'ይህ ወር';
+  String get thisMonth => 'በዚህ ወር';
 
   @override
   String get sales => 'ሽያጮች';
@@ -165,19 +165,19 @@ class AppLocalizationsAm extends AppLocalizations {
   String get itemsSold => 'የተሸጡ ዕቃዎች';
 
   @override
-  String get numberOfSales => 'የሽያጭ ቁጥር';
+  String get numberOfSales => 'የሽያጭ ብዛት';
 
   @override
   String get paymentBreakdown => 'የክፍያ ዝርዝር';
 
   @override
-  String get cash => 'ናቅፋ';
+  String get cash => 'ጥሬ ገንዘብ';
 
   @override
-  String get telebirr => 'ቴሌቢር';
+  String get telebirr => 'ቴሌብር';
 
   @override
-  String get cbeBirr => 'ሲቢኢ ቢር';
+  String get cbeBirr => 'ሲቢኢ ብር';
 
   @override
   String get other => 'ሌላ';
@@ -192,10 +192,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get productLabel => 'ምርት';
 
   @override
-  String get addProduct => 'ምርት ጨምር';
+  String get addProduct => 'ምርት አክል';
 
   @override
-  String get editProduct => 'ምርት ቀይር';
+  String get editProduct => 'ምርት አስተካክል';
 
   @override
   String get productName => 'የምርት ስም';
@@ -213,98 +213,99 @@ class AppLocalizationsAm extends AppLocalizations {
   String get categoryOptional => 'ምድብ (አማራጭ)';
 
   @override
-  String get saveProduct => 'ምርት አስቀምጥ';
+  String get saveProduct => 'ምርቱን አስቀምጥ';
 
   @override
   String get saveChanges => 'ለውጦችን አስቀምጥ';
 
   @override
-  String get deleteProduct => 'ምርት ሰርዝ';
+  String get deleteProduct => 'ምርቱን ሰርዝ';
 
   @override
-  String get deactivateProduct => 'ምርት አቦዝን';
+  String get deactivateProduct => 'ምርቱን አቦዝን';
 
   @override
   String get deactivate => 'አቦዝን';
 
   @override
-  String get deactivateProductTitle => 'ምርቱን ያቦዝናሉ?';
+  String get deactivateProductTitle => 'ምርቱን ማቦዘን ይፈልጋሉ?';
 
   @override
-  String get deactivateProductContent => 'ምርቱ ይደበቃል። ያለፈ ሽያጭ ይቀመጣል።';
+  String get deactivateProductContent =>
+      'ይህ ምርት ከሽያጭ ዝርዝር ይደበቃል። የቀደመ የሽያጭ ታሪክ ግን ይጠበቃል።';
 
   @override
-  String get addPhoto => 'ፎቶ ጨምር';
+  String get addPhoto => 'ፎቶ አክል';
 
   @override
-  String get noProducts => 'ምርቶች አልተጨመሩም';
+  String get noProducts => 'ምንም ምርት የለም';
 
   @override
-  String get noProductsDesc => 'ለሽያጭ ምርቶችን ጨምር።';
+  String get noProductsDesc => 'መሸጥ ለመጀመር የመጀመሪያውን ምርት ያክሉ።';
 
   @override
   String noProductsMatched(String query) {
-    return '\"$query\" ለሚለው ምርት አልተገኘም። ሌላ ስም ወይም ምድብ ሞክር።';
+    return 'ከ\"$query\" ጋር የሚዛመድ ምርት አልተገኘም። ሌላ ስም ወይም ምድብ ይሞክሩ።';
   }
 
   @override
   String get outOfStock => 'አልቋል';
 
   @override
-  String get lowStock => 'ክምችቱ ቀንሷል';
+  String get lowStock => 'አነስተኛ ክምችት';
 
   @override
-  String get inStock => 'አለ';
+  String get inStock => 'በክምችት አለ';
 
   @override
-  String get inactive => 'ንቁ አይደለም';
+  String get inactive => 'የቦዘነ';
 
   @override
   String stockLeft(int count) {
-    return '$count ቀሪ';
+    return '$count የቀረ';
   }
 
   @override
-  String get productSaved => 'ምርት ተቀምጧል';
+  String get productSaved => 'ምርቱ ተቀምጧል';
 
   @override
-  String get productUpdated => 'ምርት ተዘምኗል';
+  String get productUpdated => 'ምርቱ ተዘምኗል';
 
   @override
-  String get noCategoriesForProducts => 'ምድቦች አልተፈጠሩም';
+  String get noCategoriesForProducts => 'ምንም ምድቦች የሉም';
 
   @override
   String get stock => 'ክምችት';
 
   @override
-  String get currentStock => 'አሁን ያለ ክምችት';
+  String get currentStock => 'ያለ ክምችት';
 
   @override
   String get restock => 'ክምችት ጨምር';
 
   @override
-  String get restockProduct => 'ክምችት ጨምር';
+  String get restockProduct => 'ምርት ክምችት ጨምር';
 
   @override
-  String get addQuantity => 'ብዛት ጨምር';
+  String get addQuantity => 'የሚጨመር ብዛት';
 
   @override
-  String get newStock => 'አዲስ ክምችት';
+  String get newStock => 'አዲሱ ክምችት';
 
   @override
   String get confirmRestock => 'ክምችት አረጋግጥ';
 
   @override
-  String get stockUpdated => 'ክምችት ተዘምኗል';
+  String get stockUpdated => 'ክምችቱ ተዘምኗል';
 
   @override
   String get allProducts => 'ሁሉም';
 
   @override
-  String get lowStockFilter => 'ቀንሷል';
+  String get lowStockFilter => 'አነስተኛ ክምችት';
 
   @override
-  String get outOfStockFilter => 'አልቋል';
+  String get outOfStockFilter => 'ያለቀ';
 
   @override
   String productsNeedAttention(int count) {
@@ -312,7 +313,7 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get stockSubtitle => 'ክምችት ያስተዳድሩ';
+  String get stockSubtitle => 'የዕቃ ክምችት መጠንን ያስተዳድሩ';
 
   @override
   String get management => 'አስተዳደር';
@@ -321,16 +322,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get categories => 'ምድቦች';
 
   @override
-  String get addCategory => 'ምድብ ጨምር';
+  String get addCategory => 'ምድብ አክል';
 
   @override
   String get categoryName => 'የምድብ ስም';
 
   @override
-  String get categoryHint => 'ለምሳሌ ውሃ';
+  String get categoryHint => 'ለምሳሌ መጠጦች';
 
   @override
-  String get renameCategory => 'ምድብ ቀይር';
+  String get renameCategory => 'የምድብ ስም ቀይር';
 
   @override
   String get newName => 'አዲስ ስም';
@@ -344,46 +345,47 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get deleteCategoryContent => 'ምርቶቹ ይቀራሉ ነገር ግን ምድብ አይኖራቸውም።';
+  String get deleteCategoryContent =>
+      'በዚህ ምድብ ውስጥ ያሉ ምርቶች ሳይሰረዙ ይቀራሉ ነገር ግን ምድብ አይኖራቸውም።';
 
   @override
-  String get noCategoriesYet => 'ምድቦች አልተፈጠሩም';
+  String get noCategoriesYet => 'ምንም ምድቦች የሉም';
 
   @override
-  String get noCategoriesDesc => 'ምርቶቹን ለማደራጀት ምድቦችን ጨምር።';
+  String get noCategoriesDesc => 'ምርቶችዎን ለማደራጀት ምድቦችን ያክሉ።';
 
   @override
-  String get couldNotLoadCategories => 'ምድቦቹን ማምጣት አልተቻለም።';
+  String get couldNotLoadCategories => 'ምድቦችን ማምጣት አልተቻለም።';
 
   @override
-  String get currentSale => 'አሁን ያለ ሽያጭ';
+  String get currentSale => 'የአሁኑ ሽያጭ';
 
   @override
   String get total => 'ጠቅላላ';
 
   @override
-  String get checkout => 'ስሌት';
+  String get checkout => 'ሂሳብ አጠናቅቅ';
 
   @override
   String get howMany => 'ስንት?';
 
   @override
-  String get addToSale => 'ለሽያጭ ጨምር';
+  String get addToSale => 'ወደ ሽያጭ ጨምር';
 
   @override
-  String get sell => 'ሽጥ';
+  String get sell => 'ሽያጭ';
 
   @override
   String get today => 'ዛሬ';
 
   @override
-  String get saleComplete => 'ሽያጭ ተጠናቋል';
+  String get saleComplete => 'ሽያጩ ተጠናቋል';
 
   @override
-  String get viewSale => 'ሽያጭ ተመልከት';
+  String get viewSale => 'ሽያጩን ተመልከት';
 
   @override
-  String get nextSale => 'ተጠናቋል';
+  String get nextSale => 'ቀጣይ ሽያጭ';
 
   @override
   String saleNumber(String number) {
@@ -394,43 +396,43 @@ class AppLocalizationsAm extends AppLocalizations {
   String get products2 => 'ምርቶች';
 
   @override
-  String get noSalesToday => 'ዛሬ ሽያጭ የለም';
+  String get noSalesToday => 'ዛሬ የተካሄደ ሽያጭ የለም';
 
   @override
-  String get noSalesTodayDesc => 'ሽያጭ ሲፈጠር እዚህ ይታያል።';
+  String get noSalesTodayDesc => 'ሽያጭ ሲያካሂዱ እዚህ ዝርዝሩ ይታያል።';
 
   @override
-  String get noSalesHistory => 'ሽያጮች አልተፈጠሩም';
+  String get noSalesHistory => 'ምንም የሽያጭ ታሪክ የለም';
 
   @override
-  String get noSalesHistoryDesc => 'የመጀሪያ ሽያጭ ሲፈጠር እዚህ ይታያል።';
+  String get noSalesHistoryDesc => 'የመጀመሪያው ሽያጭ ሲጠናቀቅ እዚህ ይታያል።';
 
   @override
-  String get mySalesToday => 'የዛሬ ሽያጭ';
+  String get mySalesToday => 'የዛሬ ሽያጮቼ';
 
   @override
-  String get couldNotCompleteSale => 'ሽያጩ ሊጠናቀቅ አልቻለም።';
+  String get couldNotCompleteSale => 'ሽያጩን ማጠናቀቅ አልተቻለም።';
 
   @override
-  String get tryAgain => 'ደግም ሞክር';
+  String get tryAgain => 'እንደገና ይሞክሩ';
 
   @override
-  String get updateCart => 'ዝርዝር አዘምን';
+  String get updateCart => 'ጋሪውን አዘምን';
 
   @override
-  String get notEnoughStock => 'ክምችቱ በቂ አይደለም';
+  String get notEnoughStock => 'በቂ ክምችት የለም';
 
   @override
-  String get cartEmpty => 'ዝርዝሩ ባዶ ነው';
+  String get cartEmpty => 'ጋሪው ባዶ ነው';
 
   @override
-  String get cartEmptyDesc => 'ምርት ለመሽጥ ነካካ።';
+  String get cartEmptyDesc => 'መሸጥ ለመጀመር ምርቶችን ይጫኑ።';
 
   @override
-  String get saleEmpty => 'ሽያጩ ባዶ ነው';
+  String get saleEmpty => 'የሽያጭ ዝርዝሩ ባዶ ነው';
 
   @override
-  String get saleEmptyDesc => 'ምርት ለመጨመር ነካካ።';
+  String get saleEmptyDesc => 'ዕቃ ለመጨመር ምርቱን ይጫኑ።';
 
   @override
   String itemsWithCount(int count, String plural, String total) {
@@ -438,10 +440,10 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get completeSale => 'ሽያጩን ጨርስ';
+  String get completeSale => 'ሽያጩን አጠናቅቅ';
 
   @override
-  String get completing => 'እያጠናቀቀ...';
+  String get completing => 'እያጠናቀቀ ነው...';
 
   @override
   String get recentLabel => 'የቅርብ ጊዜ';
@@ -453,45 +455,45 @@ class AppLocalizationsAm extends AppLocalizations {
   String get noRecentProductsDesc => 'የሚሸጡት ምርቶች እዚህ ይታያሉ።';
 
   @override
-  String get noProductsInCategory => 'በዚህ ምድብ ምርቶች የሉም።';
+  String get noProductsInCategory => 'በዚህ ምድብ ውስጥ ምንም ምርት የለም።';
 
   @override
   String get noSearchResults => 'ምንም አልተገኘም';
 
   @override
   String noSearchResultsDesc(String query) {
-    return 'ለ\"$query\" ምርቶች ወይም ምድቦች አልተገኙም።';
+    return 'ከ\"$query\" ጋር የሚዛመድ ምርት ወይም ምድብ አልተገኘም።';
   }
 
   @override
-  String get endShift => 'ፈረቃ ጨርስ';
+  String get endShift => 'ፈረቃ አጠናቅቅ';
 
   @override
-  String get endShiftTitle => 'ፈረቃ ይጨርሱ?';
+  String get endShiftTitle => 'ፈረቃዎን ማጠናቀቅ ይፈልጋሉ?';
 
   @override
-  String get endShiftContent => 'ዝርዝርዎ ይጠርጋል እና ይወጣሉ።';
+  String get endShiftContent => 'ይህ የጋሪዎን ዕቃዎች ይሰርዛል እንዲሁም ከመለያዎ ያስወጣዎታል።';
 
   @override
-  String get clearSaleTitle => 'ሽያጩን ያጥፉ?';
+  String get clearSaleTitle => 'ሽያጩ ይሰረዝ?';
 
   @override
-  String get clearSaleContent => 'ሁሉም ዕቃዎች ይወገዳሉ።';
+  String get clearSaleContent => 'በጋሪው ውስጥ ያሉ ሁሉም ዕቃዎች ይወገዳሉ።';
 
   @override
-  String get backToProducts => 'ወደ ምርቶች ተመለስ';
+  String get backToProducts => '← ወደ ምርቶች ይመለሱ';
 
   @override
-  String get couldNotLoadSales => 'ሽያጮቹን ማምጣት አልተቻለም።';
+  String get couldNotLoadSales => 'የሽያጭ መረጃን ማምጣት አልተቻለም።';
 
   @override
-  String get couldNotLoadSale => 'ሽያጩን ማምጣት አልተቻለም።';
+  String get couldNotLoadSale => 'የሽያጭ ዝርዝሩን ማምጣት አልተቻለም።';
 
   @override
-  String get couldNotLoadProducts => 'ምርቶቹን ማምጣት አልተቻለም።';
+  String get couldNotLoadProducts => 'ምርቶችን ማምጣት አልተቻለም።';
 
   @override
-  String get couldNotLoadShops => 'ሱቆቹን ማምጣት አልተቻለም።';
+  String get couldNotLoadShops => 'ሱቆችን ማምጣት አልተቻለም።';
 
   @override
   String get couldNotLoadReport => 'ሪፖርቱን ማምጣት አልተቻለም።';
@@ -503,10 +505,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get workers => 'ሠራተኞች';
 
   @override
-  String get addWorker => 'ሠራተኛ ጨምር';
+  String get addWorker => 'ሠራተኛ አክል';
 
   @override
-  String get addNewWorker => 'አዲስ ሠራተኛ ጨምር';
+  String get addNewWorker => 'አዲስ ሠራተኛ አክል';
 
   @override
   String get workerName => 'ስም';
@@ -518,43 +520,43 @@ class AppLocalizationsAm extends AppLocalizations {
   String get workerAdded => 'ሠራተኛ ተጨምሯል';
 
   @override
-  String get workerCreated => 'ሠራተኛ ተፈጥሯል';
+  String get workerCreated => 'ሠራተኛ ተመዝግቧል';
 
   @override
-  String get workerUpdated => 'ሠራተኛ ተዘምኗል';
+  String get workerUpdated => 'የሠራተኛው መረጃ ተዘምኗል';
 
   @override
-  String get pinAutoGenerated => 'ፒን ተዘጋጅቷል';
+  String get pinAutoGenerated => 'ፒን በራስ-ሰር ተፈጥሯል';
 
   @override
-  String get sharePinWithWorker => 'ይህን ፒን ለሠራተኛው ስጥ።';
+  String get sharePinWithWorker => 'ይህንን ፒን ለሠራተኛው ያጋሩ።';
 
   @override
-  String get shareWithWorker => 'ይህን ለሠራተኛው ስጥ።';
+  String get shareWithWorker => 'ይህንን ለሠራተኛው ያጋሩ።';
 
   @override
-  String get pinOnlyShownOnce => 'ይህ ለአንድ ጊዜ ብቻ ይታያል።';
+  String get pinOnlyShownOnce => 'ይህ ፒን የሚታየው ለአንድ ጊዜ ብቻ ነው።';
 
   @override
-  String get copyPin => 'ፒን ቅዳ';
+  String get copyPin => 'ፒኑን ቅዳ';
 
   @override
-  String get pinCopied => 'ፒን ተቀድቷል';
+  String get pinCopied => 'ፒኑ ተቀድቷል';
 
   @override
-  String get noWorkers => 'ሠራተኞች አልተጨመሩም';
+  String get noWorkers => 'ምንም ሠራተኞች የሉም';
 
   @override
-  String get noWorkersDesc => 'የመጀሪያ ሠራተኛ ጨምር።';
+  String get noWorkersDesc => 'የመጀመሪያ ሠራተኛዎን ያክሉ።';
 
   @override
   String get resetPin => 'ፒን ዳግም አስጀምር';
 
   @override
-  String get disableWorker => 'ሠራተኛ አቦዝን';
+  String get disableWorker => 'ሠራተኛን አቦዝን';
 
   @override
-  String get enableWorker => 'ሠራተኛ ንቁ አድርግ';
+  String get enableWorker => 'ሠራተኛን አንቃ';
 
   @override
   String get workerRole => 'ሠራተኛ';
@@ -563,64 +565,64 @@ class AppLocalizationsAm extends AppLocalizations {
   String get ownerLabel => 'ባለቤት';
 
   @override
-  String get workerDisabled => 'ሠራተኛ ተቦዝኗል';
+  String get workerDisabled => 'ሠራተኛው ታግዷል';
 
   @override
-  String get workerEnabled => 'ሠራተኛ ነቅቷል';
+  String get workerEnabled => 'ሠራተኛው ነቅቷል';
 
   @override
-  String get pinReset => 'ፒን ዳግም ተጀምሯል';
+  String get pinReset => 'ፒኑ ዳግም ተጀምሯል';
 
   @override
-  String get activeStatus => 'ነቅቷል';
+  String get activeStatus => 'ንቁ';
 
   @override
-  String get disabledStatus => 'ተቦዝኗል';
+  String get disabledStatus => 'የቦዘነ';
 
   @override
-  String get workerNameEmpty => 'ስም ባዶ መሆን አይችልም።';
+  String get workerNameEmpty => 'የሠራተኛው ስም ባዶ መሆን አይችልም።';
 
   @override
-  String get workerNameRequired => 'ስም ያስፈልጋል።';
+  String get workerNameRequired => 'የሠራተኛው ስም ያስፈልጋል።';
 
   @override
-  String get couldNotLoadWorkers => 'ሠራተኞቹን ማምጣት አልተቻለም።';
+  String get couldNotLoadWorkers => 'ሠራተኞችን ማምጣት አልተቻለም።';
 
   @override
-  String get couldNotLoadWorker => 'ሠራተኛውን ማምጣት አልተቻለም።';
+  String get couldNotLoadWorker => 'የሠራተኛውን መረጃ ማምጣት አልተቻለም።';
 
   @override
-  String get workersSubtitle => 'ቡድንዎን ያስተዳድሩ';
+  String get workersSubtitle => 'የቡድን አባላትዎን ያስተዳድሩ';
 
   @override
   String get generateAutomatically => 'በራስ-ሰር ፍጠር';
 
   @override
-  String get enterManually => 'በእጅ ያስገቡ';
+  String get enterManually => 'በእጅ አስገባ';
 
   @override
-  String get createWorker => 'ሠራተኛ ፍጠር';
+  String get createWorker => 'ሠራተኛ መዝግብ';
 
   @override
   String get pinDigitsHint => '4+ አሃዞች';
 
   @override
-  String get confirmPin => 'ፒን ያረጋግጡ';
+  String get confirmPin => 'ፒኑን ያረጋግጡ';
 
   @override
-  String get pinMustBe4Digits => 'ፒን ቢያንስ 4 አሃዞች መሆን አለበት።';
+  String get pinMustBe4Digits => 'ፒኑ ቢያንስ 4 አሃዞች መሆን አለበት።';
 
   @override
-  String get pinMustBeDigitsOnly => 'ፒን ቁጥሮችን ብቻ መያዝ አለበት።';
+  String get pinMustBeDigitsOnly => 'ፒኑ ቁጥሮችን ብቻ መያዝ አለበት።';
 
   @override
-  String get pinsMustMatch => 'ፒኖቹ አይዛመዱም።';
+  String get pinsMustMatch => 'ያስገቧቸው ፒኖች አይዛመዱም።';
 
   @override
-  String get newPinsMustMatch => 'አዲሱ ፒን እና ማረጋገጫ አይዛመዱም።';
+  String get newPinsMustMatch => 'አዲሱ ፒን እና ማረጋገጫው አይዛመዱም።';
 
   @override
-  String get settings => 'ቅንጅቶች';
+  String get settings => 'ቅንብሮች';
 
   @override
   String get more => 'ተጨማሪ';
@@ -635,7 +637,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get security => 'ደህንነት';
 
   @override
-  String get shopSettings => 'የሱቅ ቅንጅቶች';
+  String get shopSettings => 'የሱቅ ቅንብሮች';
 
   @override
   String get help => 'እርዳታ';
@@ -647,22 +649,22 @@ class AppLocalizationsAm extends AppLocalizations {
   String get amharic => 'አማርኛ';
 
   @override
-  String get chooseLanguage => 'ቋንቋ ምረጥ';
+  String get chooseLanguage => 'ቋንቋ ይምረጡ';
 
   @override
   String get preferences => 'ምርጫዎች';
 
   @override
-  String get support => 'ድጋፍ';
+  String get support => 'የደንበኞች ድጋፍ';
 
   @override
   String get changePin => 'ፒን ቀይር';
 
   @override
-  String get changePinSubtitle => 'የመግቢያ ፒን ይቀይሩ';
+  String get changePinSubtitle => 'የመግቢያ ፒንዎን ይቀይሩ';
 
   @override
-  String get currentPin => 'አሁን ያለ ፒን';
+  String get currentPin => 'የአሁኑ ፒን';
 
   @override
   String get newPin => 'አዲስ ፒን';
@@ -671,16 +673,16 @@ class AppLocalizationsAm extends AppLocalizations {
   String get confirmNewPin => 'አዲሱን ፒን ያረጋግጡ';
 
   @override
-  String get pinChangedSuccess => 'ፒን በተሳካ ሁኔታ ተቀይሯል።';
+  String get pinChangedSuccess => 'ፒኑ በተሳካ ሁኔታ ተቀይሯል።';
 
   @override
-  String get updateLoginPin => 'የመግቢያ ፒን ያዘምኑ';
+  String get updateLoginPin => 'የመግቢያ ፒንዎን ያዘምኑ';
 
   @override
-  String get enterCurrentPinHint => 'ለማረጋገጥ አሁን ያለውን ፒን ያስገቡ፣ ከዚያ አዲሱን ያስገቡ።';
+  String get enterCurrentPinHint => 'ለማረጋገጥ የአሁኑን ፒን ያስገቡ፣ ከዚያ አዲሱን ያዘጋጁ።';
 
   @override
-  String get currentPinRequired => 'አሁን ያለ ፒን ያስፈልጋል።';
+  String get currentPinRequired => 'የአሁኑ ፒን ያስፈልጋል።';
 
   @override
   String get newPinMustBe4Digits => 'አዲሱ ፒን ቢያንስ 4 አሃዞች መሆን አለበት።';
@@ -701,10 +703,10 @@ class AppLocalizationsAm extends AppLocalizations {
   }
 
   @override
-  String get nameRequired => 'ስም ያስፈልጋል።';
+  String get nameRequired => 'ስም ማስገባት ያስፈልጋል።';
 
   @override
-  String get priceRequired => 'ዋጋ ያስፈልጋል።';
+  String get priceRequired => 'ዋጋ ማስገባት ያስፈልጋል።';
 
   @override
   String get priceInvalid => 'ትክክለኛ ዋጋ ያስገቡ።';
@@ -713,24 +715,24 @@ class AppLocalizationsAm extends AppLocalizations {
   String get stockInvalid => 'ሙሉ ቁጥር ያስገቡ።';
 
   @override
-  String get errorNetwork => 'ኔትወርክዎን ያረጋግጡ እና እንደገና ይሞክሩ።';
+  String get errorNetwork => 'እባክዎ የኢንተርኔት ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።';
 
   @override
-  String get errorServer => 'ስህተት ተፈጠረ። እንደገና ይሞክሩ።';
+  String get errorServer => 'ስህተት ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።';
 
   @override
-  String get errorUnauthorized => 'ክፍለ ጊዜዎ ጊዜው አልፎበታል። እንደገና ይግቡ።';
+  String get errorUnauthorized => 'የመግቢያ ጊዜዎ አልቋል። እባክዎ እንደገና ይግቡ።';
 
   @override
   String errorInsufficientStock(int count, String productName) {
-    return 'ከ\"$productName\" $count ብቻ አለ።';
+    return 'ከ\"$productName\" በክምችት የቀረው $count ብቻ ነው።';
   }
 
   @override
   String get errorNotFound => 'የተፈለገው ዕቃ አልተገኘም።';
 
   @override
-  String get errorGeneric => 'ስህተት ተፈጠረ። እንደገና ይሞክሩ።';
+  String get errorGeneric => 'ያልተጠበቀ ስህተት ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።';
 
   @override
   String get salesHistory => 'የሽያጭ ታሪክ';
@@ -739,25 +741,25 @@ class AppLocalizationsAm extends AppLocalizations {
   String get saleDetails => 'የሽያጭ ዝርዝር';
 
   @override
-  String get soldBy => 'ያሸጠ';
+  String get soldBy => 'የሸጠው';
 
   @override
   String get payment => 'ክፍያ';
 
   @override
-  String get workerSalesToday => 'ዛሬ የሠሩ';
+  String get workerSalesToday => 'የዛሬ ሽያጭ';
 
   @override
-  String get totalToday => 'ዛሬ ጠቅላላ';
+  String get totalToday => 'የዛሬ ጠቅላላ';
 
   @override
-  String get confirmLogout => 'እርግጠኛ ነዎት ለውጣ?';
+  String get confirmLogout => 'እርግጠኛ ነዎት መውጣት ይፈልጋሉ?';
 
   @override
   String get currencySymbol => 'ብር';
 
   @override
-  String get home => 'ቤት';
+  String get home => 'ዋና ገጽ';
 
   @override
   String get shopLabel => 'ሱቅ';
@@ -766,10 +768,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get recentSales => 'የቅርብ ሽያጮች';
 
   @override
-  String get allStocked => 'ሁሉም ምርቶች በበቂ ሁኔታ ተከማችተዋል';
+  String get allStocked => 'ሁሉም ምርቶች በበቂ ክምችት ላይ ናቸው';
 
   @override
-  String get allStockedDesc => 'አሁን ትኩረት የሚሹ ምርቶች የሉም።';
+  String get allStockedDesc => 'አሁን ትኩረት የሚሻ ክምችት የለም።';
 
   @override
   String stockRemaining(int count) {
@@ -778,7 +780,7 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String currentStockValue(int count) {
-    return 'የአሁን ክምችት፡ $count';
+    return 'ያለ ክምችት፡ $count';
   }
 
   @override
@@ -795,4 +797,13 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get stockLabel => 'ክምችት';
+
+  @override
+  String get updatePin => 'ፒን አዘምን';
+
+  @override
+  String get profile => 'መለያ';
+
+  @override
+  String get workerAccount => 'የሠራተኛ መለያ';
 }

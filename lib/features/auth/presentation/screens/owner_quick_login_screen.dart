@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/components.dart';
+import '../../../../core/widgets/language_toggle.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/auth_repository.dart';
 import '../session_provider.dart';
@@ -101,9 +102,18 @@ class _OwnerQuickLoginScreenState
       body: SafeArea(
         child: Column(
           children: [
+            // ── Language Toggle ──────────────────────────────────────
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 12, 24, 0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: LanguageToggle(compact: true),
+              ),
+            ),
+
             // ── Header ──────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
               child: Column(
                 children: [
                   // Logo

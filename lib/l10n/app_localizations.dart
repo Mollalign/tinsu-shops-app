@@ -1621,6 +1621,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stock'**
   String get stockLabel;
+
+  /// No description provided for @updatePin.
+  ///
+  /// In en, this message translates to:
+  /// **'Update PIN'**
+  String get updatePin;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @workerAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Worker Account'**
+  String get workerAccount;
 }
 
 class _AppLocalizationsDelegate

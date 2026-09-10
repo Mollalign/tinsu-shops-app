@@ -74,12 +74,12 @@ class WorkersRepository {
     }
   }
 
-  Future<String> resetPin(String shopId, String workerId) async {
+  Future<String> resetPin(String shopId, String workerId, {String? newPin}) async {
     try {
       // Backend requires a WorkerResetPin body; send null to auto-generate.
       final res = await _dio.post(
         ApiConstants.workerResetPin(shopId, workerId),
-        data: {'new_pin': null},
+        data: {'new_pin': newPin},
       );
       return res.data['pin'] as String;
     } on DioException catch (e) {

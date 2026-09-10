@@ -8,6 +8,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../core/widgets/language_toggle.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../workers/domain/worker_model.dart';
 
@@ -60,9 +61,15 @@ class WorkerSelectWorkerScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.go('/worker/select'),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => context.go('/worker/select'),
+                  ),
+                  const Spacer(),
+                  const LanguageToggle(compact: true),
+                ],
               ),
             ),
             Padding(

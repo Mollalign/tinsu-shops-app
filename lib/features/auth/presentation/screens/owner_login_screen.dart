@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/buttons.dart';
 import '../../../../core/widgets/components.dart';
+import '../../../../core/widgets/language_toggle.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/auth_repository.dart';
 import '../session_provider.dart';
@@ -80,27 +81,33 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 32),
-              // Logo
+              // Logo and Language Toggle
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primary,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.storefront,
-                        color: Colors.white, size: 26),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    l.appName,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
                           color: AppTheme.primary,
-                          fontWeight: FontWeight.w700,
+                          borderRadius: BorderRadius.circular(10),
                         ),
+                        child: const Icon(Icons.storefront,
+                            color: Colors.white, size: 26),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        l.appName,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: AppTheme.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                    ],
                   ),
+                  const LanguageToggle(compact: true),
                 ],
               ),
               const SizedBox(height: 48),

@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/components.dart';
+import '../../../../core/widgets/language_toggle.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/auth_repository.dart';
 import '../session_provider.dart';
@@ -97,7 +98,7 @@ class _WorkerPinScreenState extends ConsumerState<WorkerPinScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
                   IconButton(
@@ -105,6 +106,8 @@ class _WorkerPinScreenState extends ConsumerState<WorkerPinScreen> {
                     onPressed: () => context.go(
                         '/worker/select-worker?shopId=${widget.shopId}&shopName='),
                   ),
+                  const Spacer(),
+                  const LanguageToggle(compact: true),
                 ],
               ),
             ),

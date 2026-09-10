@@ -8,6 +8,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../core/widgets/language_toggle.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../products/data/categories_repository.dart';
@@ -321,6 +322,18 @@ class _SellHeader extends ConsumerWidget {
     if (context.mounted) context.go('/worker/select');
   }
 
+  void _showAccountSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _WorkerAccountSheet(
+        workerName: workerName,
+        onLogout: () => _confirmLogout(context, ref),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context)!;
@@ -328,13 +341,141 @@ class _SellHeader extends ConsumerWidget {
 
     return Container(
       color: AppTheme.surface,
-      padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
       child: Row(
         children: [
-          // ── Worker avatar ──
+          // ── Worker avatar & info (tappable to open profile/language sheet) ──
+          Expanded(
+            child: InkWell(
+              onTap: () => _showAccountSheet(context, ref),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: const BoxDecoration(
+                            color: AppTheme.primaryContainer,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              initial,
+                              style: const TextStyle(
+                                color: AppTheme.primary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: AppTheme.success,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppTheme.surface, width: 2),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l.sell,
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          if (workerName.isNotEmpty)
+                            Text(
+                              workerName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: AppTheme.outline),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // ── Quick Language Toggle ──
+          const LanguageToggle(compact: true),
+          const SizedBox(width: 6),
+
+          // ── End shift icon ──
+          Tooltip(
+            message: l.endShift,
+            child: IconButton(
+              icon: const Icon(Icons.exit_to_app,
+                  size: 22, color: AppTheme.outline),
+              onPressed: () => _confirmLogout(context, ref),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WorkerAccountSheet extends StatelessWidget {
+  final String workerName;
+  final VoidCallback onLogout;
+
+  const _WorkerAccountSheet({
+    required this.workerName,
+    required this.onLogout,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final initial = workerName.isNotEmpty ? workerName[0].toUpperCase() : '?';
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle
+          Center(
+            child: Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppTheme.divider,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Worker Avatar & Name
           Container(
-            width: 42,
-            height: 42,
+            width: 60,
+            height: 60,
             decoration: const BoxDecoration(
               color: AppTheme.primaryContainer,
               shape: BoxShape.circle,
@@ -345,44 +486,86 @@ class _SellHeader extends ConsumerWidget {
                 style: const TextStyle(
                   color: AppTheme.primary,
                   fontWeight: FontWeight.w700,
-                  fontSize: 18,
+                  fontSize: 24,
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
-
-          // ── Title + worker name ──
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l.sell,
-                  style:
-                      Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                ),
-                if (workerName.isNotEmpty)
-                  Text(
-                    workerName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: AppTheme.outline),
-                  ),
-              ],
+          const SizedBox(height: 12),
+          Text(
+            workerName.isNotEmpty ? workerName : l.workerRole,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceVariant,
+              borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+            ),
+            child: Text(
+              l.workerRole,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppTheme.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Divider(color: AppTheme.divider),
+          const SizedBox(height: 16),
 
-          // ── End shift icon ──
-          Tooltip(
-            message: l.endShift,
-            child: IconButton(
-              icon: const Icon(Icons.exit_to_app,
-                  size: 22, color: AppTheme.outline),
-              onPressed: () => _confirmLogout(context, ref),
+          // Language Selector row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.language, size: 22, color: AppTheme.onSurfaceVariant),
+                  const SizedBox(width: 12),
+                  Text(
+                    l.language,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const LanguageToggle(compact: true),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(color: AppTheme.divider),
+          const SizedBox(height: 20),
+
+          // End Shift / Logout Button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                onLogout();
+              },
+              icon: const Icon(Icons.exit_to_app, color: AppTheme.error, size: 20),
+              label: Text(
+                l.endShift,
+                style: const TextStyle(
+                  color: AppTheme.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: AppTheme.error),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                ),
+              ),
             ),
           ),
         ],

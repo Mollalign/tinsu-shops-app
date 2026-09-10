@@ -338,5 +338,8 @@
   "useAnotherAccount": "Use another account",
   "recent": "Recent",
   "all": "All",
-  "stockLabel": "Stock"
+  "stockLabel": "Stock",
+  "updatePin": "Update PIN",
+  "profile": "Profile",
+  "workerAccount": "Worker Account"
 }

@@ -802,4 +802,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stockLabel => 'Stock';
+
+  @override
+  String get updatePin => 'Update PIN';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get workerAccount => 'Worker Account';
 }
