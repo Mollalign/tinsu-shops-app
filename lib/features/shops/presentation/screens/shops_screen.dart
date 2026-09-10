@@ -7,6 +7,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../dashboard/data/dashboard_repository.dart';
 import '../../../dashboard/domain/dashboard_model.dart';
@@ -28,6 +29,7 @@ class ShopsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final ownerName = session.maybeWhen(
       authenticated: (user, _) => user.name,
@@ -41,7 +43,7 @@ class ShopsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: Text('My Shops', style: Theme.of(context).textTheme.titleLarge),
+        title: Text(l.myShops, style: Theme.of(context).textTheme.titleLarge),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -52,7 +54,7 @@ class ShopsScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/owner/shops/add'),
         icon: const Icon(Icons.add),
-        label: const Text('Add Shop'),
+        label: Text(l.addShop),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
@@ -70,11 +72,10 @@ class ShopsScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _greeting(ownerName),
+                      _greeting(context, l, ownerName),
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 16),
-                    // Overall total
                     dashAsync.when(
                       loading: () => const SizedBox.shrink(),
                       error: (_, __) => const SizedBox.shrink(),
@@ -88,7 +89,7 @@ class ShopsScreen extends ConsumerWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total Today',
+                            Text(l.totalToday,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -119,23 +120,22 @@ class ShopsScreen extends ConsumerWidget {
               error: (e, _) => SliverToBoxAdapter(
                 child: ErrorState(
                   message: e is AppError
-                      ? e.toUserMessage()
-                      : 'Could not load shops.',
+                      ? e.toUserMessage(l)
+                      : l.couldNotLoadShops,
                   onRetry: () => ref.invalidate(ownerShopsProvider),
                 ),
               ),
               data: (shops) {
                 if (shops.isEmpty) {
-                  return const SliverToBoxAdapter(
+                  return SliverToBoxAdapter(
                     child: EmptyState(
                       icon: Icons.store_outlined,
-                      title: 'No shops yet',
-                      description: 'Add your first shop to get started.',
+                      title: l.noShopsYet,
+                      description: l.noShopsDesc,
                     ),
                   );
                 }
 
-                // Overlay daily summaries if available
                 final summaries = dashAsync.maybeWhen(
                   data: (d) => {
                     for (final s in d.shops) s.shopId: s,
@@ -159,6 +159,7 @@ class ShopsScreen extends ConsumerWidget {
                             shop: shop,
                             summary: summary,
                             isSelected: shop.id == currentShopId,
+                            todayLabel: l.today,
                             onTap: () {
                               ref
                                   .read(sessionProvider.notifier)
@@ -180,14 +181,11 @@ class ShopsScreen extends ConsumerWidget {
     );
   }
 
-  String _greeting(String name) {
+  String _greeting(BuildContext context, AppLocalizations l, String name) {
     final h = DateTime.now().hour;
-    final g = h < 12
-        ? 'Good morning'
-        : h < 17
-            ? 'Good afternoon'
-            : 'Good evening';
-    return '$g, $name';
+    if (h < 12) return l.goodMorning(name);
+    if (h < 17) return l.goodAfternoon(name);
+    return l.goodEvening(name);
   }
 }
 
@@ -196,12 +194,14 @@ class _ShopCard extends StatelessWidget {
   final ShopDailySummary? summary;
   final bool isSelected;
   final VoidCallback onTap;
+  final String todayLabel;
 
   const _ShopCard({
     required this.shop,
     this.summary,
     required this.isSelected,
     required this.onTap,
+    required this.todayLabel,
   });
 
   @override
@@ -264,7 +264,7 @@ class _ShopCard extends StatelessWidget {
                             color: AppTheme.primary,
                           ),
                     ),
-                    Text('Today',
+                    Text(todayLabel,
                         style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),

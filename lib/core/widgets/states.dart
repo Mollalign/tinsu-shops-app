@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_theme.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Empty state with optional action button
 class EmptyState extends StatelessWidget {
@@ -98,7 +99,7 @@ class ErrorState extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Try Again'),
+                label: Text(AppLocalizations.of(context)?.tryAgain ?? 'Try Again'),
               ),
             ],
           ],

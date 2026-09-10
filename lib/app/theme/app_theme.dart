@@ -53,56 +53,63 @@ class AppTheme {
   static const double spacingXl = 32;
 
   // ── Typography ────────────────────────────────────────────────────────────
+  static const List<String> _ethiopicFallback = ['NotoSansEthiopic'];
+
   static TextTheme _buildTextTheme() {
     final base = GoogleFonts.outfitTextTheme();
+    // Wrap each style with an Ethiopic fallback so Amharic glyphs render
+    // correctly while Latin characters continue to use Outfit.
+    T? eth<T extends TextStyle?>(T? style) =>
+        style?.copyWith(fontFamilyFallback: _ethiopicFallback) as T?;
+
     return base.copyWith(
-      displayLarge: base.displayLarge?.copyWith(
+      displayLarge: eth(base.displayLarge?.copyWith(
         fontWeight: FontWeight.w700,
         color: onBackground,
         letterSpacing: -1,
-      ),
-      displayMedium: base.displayMedium?.copyWith(
+      )),
+      displayMedium: eth(base.displayMedium?.copyWith(
         fontWeight: FontWeight.w700,
         color: onBackground,
         letterSpacing: -0.5,
-      ),
-      headlineLarge: base.headlineLarge?.copyWith(
+      )),
+      headlineLarge: eth(base.headlineLarge?.copyWith(
         fontWeight: FontWeight.w700,
         color: onBackground,
-      ),
-      headlineMedium: base.headlineMedium?.copyWith(
+      )),
+      headlineMedium: eth(base.headlineMedium?.copyWith(
         fontWeight: FontWeight.w600,
         color: onBackground,
-      ),
-      headlineSmall: base.headlineSmall?.copyWith(
+      )),
+      headlineSmall: eth(base.headlineSmall?.copyWith(
         fontWeight: FontWeight.w600,
         color: onBackground,
-      ),
-      titleLarge: base.titleLarge?.copyWith(
+      )),
+      titleLarge: eth(base.titleLarge?.copyWith(
         fontWeight: FontWeight.w600,
         color: onBackground,
-      ),
-      titleMedium: base.titleMedium?.copyWith(
+      )),
+      titleMedium: eth(base.titleMedium?.copyWith(
         fontWeight: FontWeight.w500,
         color: onBackground,
-      ),
-      titleSmall: base.titleSmall?.copyWith(
+      )),
+      titleSmall: eth(base.titleSmall?.copyWith(
         fontWeight: FontWeight.w500,
         color: onSurfaceVariant,
-      ),
-      bodyLarge: base.bodyLarge?.copyWith(
+      )),
+      bodyLarge: eth(base.bodyLarge?.copyWith(
         color: onBackground,
-      ),
-      bodyMedium: base.bodyMedium?.copyWith(
+      )),
+      bodyMedium: eth(base.bodyMedium?.copyWith(
         color: onSurfaceVariant,
-      ),
-      bodySmall: base.bodySmall?.copyWith(
+      )),
+      bodySmall: eth(base.bodySmall?.copyWith(
         color: onSurfaceVariant,
-      ),
-      labelLarge: base.labelLarge?.copyWith(
+      )),
+      labelLarge: eth(base.labelLarge?.copyWith(
         fontWeight: FontWeight.w600,
         letterSpacing: 0.2,
-      ),
+      )),
     );
   }
 

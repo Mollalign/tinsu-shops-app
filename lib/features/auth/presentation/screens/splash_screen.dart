@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../session_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -32,15 +33,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _init() async {
-    // Grab the notifier BEFORE any await so we never access
-    // ref after the widget might have been unmounted.
     final sessionNotifier = ref.read(sessionProvider.notifier);
-
-    // Minimum splash display time
     await Future.delayed(const Duration(milliseconds: 900));
-
-    // Restore session — this updates sessionProvider state,
-    // which triggers the GoRouter redirect automatically.
     await sessionNotifier.restore();
   }
 
@@ -52,6 +46,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFF1B6B3A),
       body: FadeTransition(
@@ -76,9 +72,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Tinsu-Shops',
-                  style: TextStyle(
+                Text(
+                  l.appName,
+                  style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -87,7 +83,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Shop Management System',
+                  l.tagline,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white.withValues(alpha: 0.75),

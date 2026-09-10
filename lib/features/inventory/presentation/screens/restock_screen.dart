@@ -7,6 +7,7 @@ import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/buttons.dart';
 import '../../../../core/widgets/components.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../products/data/products_repository.dart';
 import '../../../products/presentation/screens/product_detail_screen.dart';
@@ -37,13 +38,13 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
       ref.invalidate(ownerProductsProvider(shopId));
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Stock updated')));
+            .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.stockUpdated)));
         context.pop();
       }
     } on AppError catch (e) {
-      setState(() => _error = e.toUserMessage());
+      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
     } catch (_) {
-      setState(() => _error = const GenericError().toUserMessage());
+      if (mounted) setState(() => _error = const GenericError().toUserMessage(AppLocalizations.of(context)!));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -51,6 +52,7 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -62,11 +64,11 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Restock')),
+      appBar: AppBar(title: Text(l.restock)),
       body: productAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorState(
-          message: e is AppError ? e.toUserMessage() : 'Could not load product.',
+          message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
         ),
         data: (product) => SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -77,7 +79,7 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
                   style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 4),
               Text(
-                'Current stock: ${product.stockQuantity}',
+                l.currentStockValue(product.stockQuantity),
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -87,7 +89,7 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
               Center(
                 child: Column(
                   children: [
-                    Text('Add quantity',
+                    Text(l.addQuantity,
                         style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 20),
                     QuantityStepper(
@@ -108,7 +110,7 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
                         text: TextSpan(
                           style: Theme.of(context).textTheme.bodyLarge,
                           children: [
-                            const TextSpan(text: 'New stock: '),
+                            TextSpan(text: '${l.newStock}: '),
                             TextSpan(
                               text: '${product.stockQuantity + _qty}',
                               style: const TextStyle(
@@ -137,7 +139,7 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
                 const SizedBox(height: 16),
               ],
               PrimaryButton(
-                label: 'Confirm Restock',
+                label: l.confirmRestock,
                 onPressed: () => _confirm(shopId, product.stockQuantity),
                 loading: _loading,
               ),

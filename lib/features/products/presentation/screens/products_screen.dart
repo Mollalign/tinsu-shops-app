@@ -7,6 +7,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/components.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/products_repository.dart';
 import '../../domain/product_model.dart';
@@ -36,13 +37,13 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (user, shopId) => shopId ?? '',
       orElse: () => '',
     );
 
-    // Use the shared search controller (server-side, with debounce + stale protection)
     final searchState = ref.watch(productSearchControllerProvider(shopId));
     final searchCtrl =
         ref.read(productSearchControllerProvider(shopId).notifier);
@@ -51,11 +52,11 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Products')),
+      appBar: AppBar(title: Text(l.products)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/owner/products/add'),
         icon: const Icon(Icons.add),
-        label: const Text('Add Product'),
+        label: Text(l.addProduct),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SafeArea(
@@ -71,7 +72,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                     searchCtrl.onQueryChanged(v),
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText: 'Search products or categories…',
+                  hintText: l.searchProductsHint,
                   prefixIcon:
                       const Icon(Icons.search, color: AppTheme.outline),
                   suffixIcon: _searchCtrl.text.isNotEmpty
@@ -119,8 +120,6 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
   }
 }
 
-// ── Search results view ───────────────────────────────────────────────────────
-
 class _SearchView extends StatelessWidget {
   const _SearchView({
     required this.state,
@@ -134,6 +133,7 @@ class _SearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     if (state.hasError) {
       return ErrorState(
         message: state.errorMessage!,
@@ -142,7 +142,6 @@ class _SearchView extends StatelessWidget {
     }
 
     if (state.results == null) {
-      // First fetch not yet returned — show previous grid or skeleton
       return const ProductGridSkeleton();
     }
 
@@ -151,16 +150,14 @@ class _SearchView extends StatelessWidget {
     if (items.isEmpty) {
       return EmptyState(
         icon: Icons.search_off_outlined,
-        title: 'No results found',
-        description:
-            'No products matched "${state.normalizedQuery}".\n'
-            'Try a different name or category.',
+        title: l.noSearchResults,
+        description: l.noSearchResultsDesc(state.normalizedQuery),
       );
     }
 
-    final bottomPad = 88.0; // FAB height + gap
+    const bottomPad = 88.0;
     return ListView.separated(
-      padding: EdgeInsets.fromLTRB(16, 8, 16, bottomPad),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, bottomPad),
       itemCount: items.length,
       separatorBuilder: (_, __) => const SizedBox(height: 10),
       itemBuilder: (context, i) {
@@ -247,10 +244,11 @@ class _ProductListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     return productsAsync.when(
       loading: () => const ProductGridSkeleton(),
       error: (e, _) => ErrorState(
-        message: e is AppError ? e.toUserMessage() : 'Could not load products.',
+        message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
         onRetry: () => ref.invalidate(ownerProductsProvider(shopId)),
       ),
       data: (products) {
@@ -258,9 +256,9 @@ class _ProductListView extends ConsumerWidget {
         if (active.isEmpty) {
           return EmptyState(
             icon: Icons.inventory_2_outlined,
-            title: 'No products yet',
-            description: 'Add your first product to start selling.',
-            actionLabel: 'Add Product',
+            title: l.noProducts,
+            description: l.noProductsDesc,
+            actionLabel: l.addProduct,
             onAction: () => context.push('/owner/products/add'),
           );
         }

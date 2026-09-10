@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/sales_repository.dart';
 import '../../domain/sale_model.dart';
@@ -22,6 +23,7 @@ class SaleDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -32,14 +34,14 @@ class SaleDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Sale Details')),
+      appBar: AppBar(title: Text(l.saleDetails)),
       body: saleAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorState(
-          message: e is AppError ? e.toUserMessage() : 'Could not load sale.',
+          message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadSale,
           onRetry: () => ref.invalidate(saleDetailProvider(shopId, saleId)),
         ),
-        data: (sale) => _SaleDetailBody(sale: sale),
+        data: (sale) => _SaleDetailBody(sale: sale, l: l),
       ),
     );
   }
@@ -47,7 +49,8 @@ class SaleDetailScreen extends ConsumerWidget {
 
 class _SaleDetailBody extends StatelessWidget {
   final SaleModel sale;
-  const _SaleDetailBody({required this.sale});
+  final AppLocalizations l;
+  const _SaleDetailBody({required this.sale, required this.l});
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,7 @@ class _SaleDetailBody extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Total',
+                      Text(l.total,
                           style: Theme.of(context).textTheme.titleMedium),
                       Text(
                         Formatters.currency(sale.total),
@@ -151,9 +154,9 @@ class _SaleDetailBody extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _InfoRow('Sold by', sale.soldBy.name),
+                _InfoRow(l.soldBy, sale.soldBy.name),
                 const SizedBox(height: 8),
-                _InfoRow('Date', Formatters.date(sale.createdAt)),
+                _InfoRow(l.dateLabel, Formatters.date(sale.createdAt)),
               ],
             ),
           ),

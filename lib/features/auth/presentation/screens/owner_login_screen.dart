@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/buttons.dart';
 import '../../../../core/widgets/components.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/auth_repository.dart';
 import '../session_provider.dart';
 
@@ -57,9 +58,9 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
           );
       if (mounted) context.go('/owner/shops');
     } on AppError catch (e) {
-      setState(() => _error = e.toUserMessage());
-    } catch (e) {
-      setState(() => _error = 'Something went wrong. Please try again.');
+      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
+    } catch (_) {
+      if (mounted) setState(() => _error = AppLocalizations.of(context)!.errorServer);
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -67,6 +68,7 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final canLogin = _phoneCtrl.text.trim().isNotEmpty && _pin.length == 4;
 
     return Scaffold(
@@ -93,7 +95,7 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Tinsu-Shops',
+                    l.appName,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: AppTheme.primary,
                           fontWeight: FontWeight.w700,
@@ -103,12 +105,12 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
               ),
               const SizedBox(height: 48),
               Text(
-                'Welcome back',
+                l.welcomeBack,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 4),
               Text(
-                'Sign in to your owner account',
+                l.signInToOwnerAccount,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 32),
@@ -119,16 +121,16 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
                 onChanged: (_) => setState(() {}),
-                decoration: const InputDecoration(
-                  labelText: 'Phone number',
-                  prefixIcon: Icon(Icons.phone_outlined),
+                decoration: InputDecoration(
+                  labelText: l.phoneNumber,
+                  prefixIcon: const Icon(Icons.phone_outlined),
                 ),
               ),
               const SizedBox(height: 24),
 
               // PIN section
               Text(
-                'Enter PIN',
+                l.enterPin,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
@@ -164,7 +166,7 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
               ],
 
               PrimaryButton(
-                label: 'Sign In',
+                label: l.signIn,
                 onPressed: canLogin ? _login : null,
                 loading: _loading,
               ),
@@ -175,7 +177,7 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
                 child: TextButton(
                   onPressed: () => context.go('/worker/select'),
                   child: Text(
-                    'Login as Worker',
+                    l.loginAsWorker,
                     style: TextStyle(color: AppTheme.primary),
                   ),
                 ),

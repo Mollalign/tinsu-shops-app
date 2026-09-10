@@ -7,6 +7,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/sales_repository.dart';
 import '../../domain/sale_model.dart';
@@ -22,6 +23,7 @@ class SalesHistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -32,19 +34,19 @@ class SalesHistoryScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Sales')),
+      appBar: AppBar(title: Text(l.salesHistory)),
       body: salesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorState(
-          message: e is AppError ? e.toUserMessage() : 'Could not load sales.',
+          message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadSales,
           onRetry: () => ref.invalidate(shopSalesProvider(shopId)),
         ),
         data: (sales) {
           if (sales.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               icon: Icons.receipt_long_outlined,
-              title: 'No sales yet',
-              description: 'Sales will appear here after the first sale.',
+              title: l.noSalesHistory,
+              description: l.noSalesHistoryDesc,
             );
           }
           return RefreshIndicator(

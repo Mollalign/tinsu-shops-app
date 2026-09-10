@@ -8,12 +8,12 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../workers/domain/worker_model.dart';
 
 part 'worker_select_worker_screen.g.dart';
 
 /// Fetches active workers via the public (no-auth) endpoint.
-/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
 @riverpod
 Future<List<WorkerModel>> publicShopWorkers(Ref ref, String shopId) async {
   final dio = Dio(
@@ -26,7 +26,6 @@ Future<List<WorkerModel>> publicShopWorkers(Ref ref, String shopId) async {
   );
   try {
     final res = await dio.get(ApiConstants.publicWorkers(shopId));
-    // Public endpoint returns a flat list (not paginated)
     final data = res.data as List;
     return data
         .map((e) => WorkerModel.fromJson(e as Map<String, dynamic>))
@@ -49,6 +48,7 @@ class WorkerSelectWorkerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final workersAsync = ref.watch(publicShopWorkersProvider(shopId));
 
     return Scaffold(
@@ -79,12 +79,12 @@ class WorkerSelectWorkerScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Who are you?',
+                    l.whoAreYou,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Tap your name to continue',
+                    l.selectYourShop,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -97,21 +97,19 @@ class WorkerSelectWorkerScreen extends ConsumerWidget {
                     const Center(child: CircularProgressIndicator()),
                 error: (e, _) => ErrorState(
                   message: e is AppError
-                      ? e.toUserMessage()
-                      : 'Could not load workers.',
+                      ? e.toUserMessage(l)
+                      : l.couldNotLoadWorkers,
                   onRetry: () =>
                       ref.invalidate(publicShopWorkersProvider(shopId)),
                 ),
                 data: (workers) {
-                  // Public endpoint already filters is_active=true,
-                  // but guard here too just in case.
                   final active =
                       workers.where((w) => w.isActive).toList();
                   if (active.isEmpty) {
-                    return const EmptyState(
+                    return EmptyState(
                       icon: Icons.person_off_outlined,
-                      title: 'No workers found',
-                      description: 'Contact the shop owner.',
+                      title: l.noWorkers,
+                      description: l.noWorkersDesc,
                     );
                   }
                   return GridView.builder(

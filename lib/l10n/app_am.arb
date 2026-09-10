@@ -4,6 +4,8 @@
   "tagline": "ቀላል ሽያጭ፣ ሃይለኛ ውጤት",
 
   "signIn": "ግባ",
+  "signInToOwnerAccount": "ወደ ባለቤት መለያዎ ይግቡ",
+  "loginAsWorker": "እንደ ሠራተኛ ግባ",
   "logout": "ውጣ",
   "phoneNumber": "ስልክ ቁጥር",
   "pin": "ፒን",
@@ -11,6 +13,7 @@
   "welcomeBack": "እንኳን ደስ አለዎ",
   "invalidCredentials": "ስልክ ቁጥር ወይም ፒን ትክክል አይደለም።",
   "selectShop": "ሱቅ ምረጥ",
+  "selectYourShop": "ለመቀጠል ሱቅ ምረጡ",
   "whoAreYou": "ማን ነህ/ናት?",
   "loading": "እየጫነ ነው...",
   "retry": "ደግም ሞክር",
@@ -22,16 +25,27 @@
   "add": "ጨምር",
   "search": "ፈልግ",
   "searchProduct": "ምርት ፈልግ",
+  "searchProductsHint": "ምርቶች ወይም ምድቦች ፈልግ…",
   "noResultsFound": "ምንም አልተገኘም",
+  "clear": "አጥፋ",
 
   "myShops": "ሱቆቼ",
   "allShops": "ሁሉም ሱቆች",
   "addShop": "ሱቅ ጨምር",
   "shopName": "የሱቅ ስም",
   "location": "ቦታ",
+  "locationOptional": "ቦታ (አማራጭ)",
   "phone": "ስልክ",
+  "phoneOptional": "ስልክ (አማራጭ)",
   "createShop": "ሱቅ ፍጠር",
   "switchShop": "ሱቅ ቀይር",
+  "shopCreated": "ሱቅ ተፈጥሯል",
+  "shopsLabel": "ሱቆች",
+  "shopsSubtitle": "ሱቆችን ይመልከቱ እና ይቀይሩ",
+  "noShopsYet": "ሱቆች አልተጨመሩም",
+  "noShopsDesc": "ለመጀመር የመጀሪያ ሱቅዎን ይፍጠሩ።",
+  "noShopSelected": "ምንም ሱቅ አልተመረጠም",
+  "selectAShop": "ሱቅ ምረጥ",
 
   "dashboard": "ዳሽቦርድ",
   "todaySales": "የዛሬ ሽያጭ",
@@ -51,28 +65,43 @@
   "howDidCustomerPay": "ደንበኛው እንዴት ከፈለ?",
 
   "products": "ምርቶች",
+  "productLabel": "ምርት",
   "addProduct": "ምርት ጨምር",
   "editProduct": "ምርት ቀይር",
   "productName": "የምርት ስም",
   "sellingPrice": "የሽያጭ ዋጋ",
   "startingStock": "መነሻ ክምችት",
   "category": "ምድብ",
+  "categoryOptional": "ምድብ (አማራጭ)",
   "saveProduct": "ምርት አስቀምጥ",
   "saveChanges": "ለውጦችን አስቀምጥ",
   "deleteProduct": "ምርት ሰርዝ",
   "deactivateProduct": "ምርት አቦዝን",
+  "deactivate": "አቦዝን",
+  "deactivateProductTitle": "ምርቱን ያቦዝናሉ?",
+  "deactivateProductContent": "ምርቱ ይደበቃል። ያለፈ ሽያጭ ይቀመጣል።",
   "addPhoto": "ፎቶ ጨምር",
   "noProducts": "ምርቶች አልተጨመሩም",
   "noProductsDesc": "ለሽያጭ ምርቶችን ጨምር።",
+  "noProductsMatched": "\"{query}\" ለሚለው ምርት አልተገኘም። ሌላ ስም ወይም ምድብ ሞክር።",
+  "@noProductsMatched": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
   "outOfStock": "አልቋል",
   "lowStock": "ክምችቱ ቀንሷል",
   "inStock": "አለ",
+  "inactive": "ንቁ አይደለም",
   "stockLeft": "{count} ቀሪ",
   "@stockLeft": {
     "placeholders": {
       "count": {"type": "int"}
     }
   },
+  "productSaved": "ምርት ተቀምጧል",
+  "productUpdated": "ምርት ተዘምኗል",
+  "noCategoriesForProducts": "ምድቦች አልተፈጠሩም",
 
   "stock": "ክምችት",
   "currentStock": "አሁን ያለ ክምችት",
@@ -91,6 +120,26 @@
       "count": {"type": "int"}
     }
   },
+  "stockSubtitle": "ክምችት ያስተዳድሩ",
+  "management": "አስተዳደር",
+
+  "categories": "ምድቦች",
+  "addCategory": "ምድብ ጨምር",
+  "categoryName": "የምድብ ስም",
+  "categoryHint": "ለምሳሌ ውሃ",
+  "renameCategory": "ምድብ ቀይር",
+  "newName": "አዲስ ስም",
+  "rename": "ቀይር",
+  "deleteCategoryTitle": "\"{name}\" ይሰረዝ?",
+  "@deleteCategoryTitle": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "deleteCategoryContent": "ምርቶቹ ይቀራሉ ነገር ግን ምድብ አይኖራቸውም።",
+  "noCategoriesYet": "ምድቦች አልተፈጠሩም",
+  "noCategoriesDesc": "ምርቶቹን ለማደራጀት ምድቦችን ጨምር።",
+  "couldNotLoadCategories": "ምድቦቹን ማምጣት አልተቻለም።",
 
   "currentSale": "አሁን ያለ ሽያጭ",
   "total": "ጠቅላላ",
@@ -111,6 +160,8 @@
   "products2": "ምርቶች",
   "noSalesToday": "ዛሬ ሽያጭ የለም",
   "noSalesTodayDesc": "ሽያጭ ሲፈጠር እዚህ ይታያል።",
+  "noSalesHistory": "ሽያጮች አልተፈጠሩም",
+  "noSalesHistoryDesc": "የመጀሪያ ሽያጭ ሲፈጠር እዚህ ይታያል።",
   "mySalesToday": "የዛሬ ሽያጭ",
   "couldNotCompleteSale": "ሽያጩ ሊጠናቀቅ አልቻለም።",
   "tryAgain": "ደግም ሞክር",
@@ -118,6 +169,8 @@
   "notEnoughStock": "ክምችቱ በቂ አይደለም",
   "cartEmpty": "ዝርዝሩ ባዶ ነው",
   "cartEmptyDesc": "ምርት ለመሽጥ ነካካ።",
+  "saleEmpty": "ሽያጩ ባዶ ነው",
+  "saleEmptyDesc": "ምርት ለመጨመር ነካካ።",
   "itemsWithCount": "{count} ዕቃ · {total} ብር",
   "@itemsWithCount": {
     "placeholders": {
@@ -126,13 +179,44 @@
       "total": {"type": "String"}
     }
   },
+  "completeSale": "ሽያጩን ጨርስ",
+  "completing": "እያጠናቀቀ...",
+  "recentLabel": "የቅርብ ጊዜ",
+  "noRecentProducts": "የቅርብ ጊዜ ምርቶች የሉም",
+  "noRecentProductsDesc": "የሚሸጡት ምርቶች እዚህ ይታያሉ።",
+  "noProductsInCategory": "በዚህ ምድብ ምርቶች የሉም።",
+  "noSearchResults": "ምንም አልተገኘም",
+  "noSearchResultsDesc": "ለ\"{query}\" ምርቶች ወይም ምድቦች አልተገኙም።",
+  "@noSearchResultsDesc": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
+  "endShift": "ፈረቃ ጨርስ",
+  "endShiftTitle": "ፈረቃ ይጨርሱ?",
+  "endShiftContent": "ዝርዝርዎ ይጠርጋል እና ይወጣሉ።",
+  "clearSaleTitle": "ሽያጩን ያጥፉ?",
+  "clearSaleContent": "ሁሉም ዕቃዎች ይወገዳሉ።",
+  "backToProducts": "ወደ ምርቶች ተመለስ",
+  "couldNotLoadSales": "ሽያጮቹን ማምጣት አልተቻለም።",
+  "couldNotLoadSale": "ሽያጩን ማምጣት አልተቻለም።",
+  "couldNotLoadProducts": "ምርቶቹን ማምጣት አልተቻለም።",
+  "couldNotLoadShops": "ሱቆቹን ማምጣት አልተቻለም።",
+  "couldNotLoadReport": "ሪፖርቱን ማምጣት አልተቻለም።",
+  "dateLabel": "ቀን",
 
   "workers": "ሠራተኞች",
   "addWorker": "ሠራተኛ ጨምር",
+  "addNewWorker": "አዲስ ሠራተኛ ጨምር",
   "workerName": "ስም",
+  "workerNameHint": "ለምሳሌ ሃና",
   "workerAdded": "ሠራተኛ ተጨምሯል",
+  "workerCreated": "ሠራተኛ ተፈጥሯል",
+  "workerUpdated": "ሠራተኛ ተዘምኗል",
   "pinAutoGenerated": "ፒን ተዘጋጅቷል",
   "sharePinWithWorker": "ይህን ፒን ለሠራተኛው ስጥ።",
+  "shareWithWorker": "ይህን ለሠራተኛው ስጥ።",
+  "pinOnlyShownOnce": "ይህ ለአንድ ጊዜ ብቻ ይታያል።",
   "copyPin": "ፒን ቅዳ",
   "pinCopied": "ፒን ተቀድቷል",
   "noWorkers": "ሠራተኞች አልተጨመሩም",
@@ -141,11 +225,29 @@
   "disableWorker": "ሠራተኛ አቦዝን",
   "enableWorker": "ሠራተኛ ንቁ አድርግ",
   "workerRole": "ሠራተኛ",
+  "ownerLabel": "ባለቤት",
   "workerDisabled": "ሠራተኛ ተቦዝኗል",
   "workerEnabled": "ሠራተኛ ነቅቷል",
   "pinReset": "ፒን ዳግም ተጀምሯል",
+  "activeStatus": "ነቅቷል",
+  "disabledStatus": "ተቦዝኗል",
+  "workerNameEmpty": "ስም ባዶ መሆን አይችልም።",
+  "workerNameRequired": "ስም ያስፈልጋል።",
+  "couldNotLoadWorkers": "ሠራተኞቹን ማምጣት አልተቻለም።",
+  "couldNotLoadWorker": "ሠራተኛውን ማምጣት አልተቻለም።",
+  "workersSubtitle": "ቡድንዎን ያስተዳድሩ",
+  "generateAutomatically": "በራስ-ሰር ፍጠር",
+  "enterManually": "በእጅ ያስገቡ",
+  "createWorker": "ሠራተኛ ፍጠር",
+  "pinDigitsHint": "4+ አሃዞች",
+  "confirmPin": "ፒን ያረጋግጡ",
+  "pinMustBe4Digits": "ፒን ቢያንስ 4 አሃዞች መሆን አለበት።",
+  "pinMustBeDigitsOnly": "ፒን ቁጥሮችን ብቻ መያዝ አለበት።",
+  "pinsMustMatch": "ፒኖቹ አይዛመዱም።",
+  "newPinsMustMatch": "አዲሱ ፒን እና ማረጋገጫ አይዛመዱም።",
 
   "settings": "ቅንጅቶች",
+  "more": "ተጨማሪ",
   "account": "መለያ",
   "language": "ቋንቋ",
   "security": "ደህንነት",
@@ -154,6 +256,18 @@
   "english": "English",
   "amharic": "አማርኛ",
   "chooseLanguage": "ቋንቋ ምረጥ",
+  "preferences": "ምርጫዎች",
+  "support": "ድጋፍ",
+  "changePin": "ፒን ቀይር",
+  "changePinSubtitle": "የመግቢያ ፒን ይቀይሩ",
+  "currentPin": "አሁን ያለ ፒን",
+  "newPin": "አዲስ ፒን",
+  "confirmNewPin": "አዲሱን ፒን ያረጋግጡ",
+  "pinChangedSuccess": "ፒን በተሳካ ሁኔታ ተቀይሯል።",
+  "updateLoginPin": "የመግቢያ ፒን ያዘምኑ",
+  "enterCurrentPinHint": "ለማረጋገጥ አሁን ያለውን ፒን ያስገቡ፣ ከዚያ አዲሱን ያስገቡ።",
+  "currentPinRequired": "አሁን ያለ ፒን ያስፈልጋል።",
+  "newPinMustBe4Digits": "አዲሱ ፒን ቢያንስ 4 አሃዞች መሆን አለበት።",
 
   "goodMorning": "እንደምን አደሩ፣ {name}",
   "@goodMorning": {
@@ -174,18 +288,24 @@
     }
   },
 
+  "nameRequired": "ስም ያስፈልጋል።",
+  "priceRequired": "ዋጋ ያስፈልጋል።",
+  "priceInvalid": "ትክክለኛ ዋጋ ያስገቡ።",
+  "stockInvalid": "ሙሉ ቁጥር ያስገቡ።",
+
   "errorNetwork": "ኔትወርክዎን ያረጋግጡ እና እንደገና ይሞክሩ።",
   "errorServer": "ስህተት ተፈጠረ። እንደገና ይሞክሩ።",
   "errorUnauthorized": "ክፍለ ጊዜዎ ጊዜው አልፎበታል። እንደገና ይግቡ።",
-  "errorInsufficientStock": "{count} ዕቃዎች ብቻ ይገኛሉ።",
+  "errorInsufficientStock": "ከ\"{productName}\" {count} ብቻ አለ።",
   "@errorInsufficientStock": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {"type": "int"},
+      "productName": {"type": "String"}
     }
   },
+  "errorNotFound": "የተፈለገው ዕቃ አልተገኘም።",
   "errorGeneric": "ስህተት ተፈጠረ። እንደገና ይሞክሩ።",
 
-  "more": "ተጨማሪ",
   "salesHistory": "የሽያጭ ታሪክ",
   "saleDetails": "የሽያጭ ዝርዝር",
   "soldBy": "ያሸጠ",
@@ -194,5 +314,28 @@
   "totalToday": "ዛሬ ጠቅላላ",
 
   "confirmLogout": "እርግጠኛ ነዎት ለውጣ?",
-  "currencySymbol": "ብር"
+  "currencySymbol": "ብር",
+  "home": "ቤት",
+  "shopLabel": "ሱቅ",
+
+  "recentSales": "የቅርብ ሽያጮች",
+  "allStocked": "ሁሉም ምርቶች በበቂ ሁኔታ ተከማችተዋል",
+  "allStockedDesc": "አሁን ትኩረት የሚሹ ምርቶች የሉም።",
+  "stockRemaining": "{count} የቀረ",
+  "@stockRemaining": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "currentStockValue": "የአሁን ክምችት፡ {count}",
+  "@currentStockValue": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "noProductsFilter": "ከተመረጠው ማጣሪያ ጋር የሚስማማ ምርት የለም።",
+  "useAnotherAccount": "በሌላ መለያ ይግቡ",
+  "recent": "የቅርብ",
+  "all": "ሁሉም",
+  "stockLabel": "ክምችት"
 }

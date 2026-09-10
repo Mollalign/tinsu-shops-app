@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/buttons.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/categories_repository.dart';
 import '../../data/products_repository.dart';
@@ -83,42 +84,41 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
             productId: widget.productId,
             name: _nameCtrl.text.trim(),
             sellingPrice: double.parse(_priceCtrl.text.trim()),
-            // Send category_id only if user touched it
             categoryId: _categoryCleared
-                ? null // explicit null to clear
+                ? null
                 : (_selectedCategory != null ? _selectedCategory!.id : _absent),
           );
       ref.invalidate(productDetailProvider(shopId, widget.productId));
       ref.invalidate(ownerProductsProvider(shopId));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product updated')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.productUpdated)),
         );
         context.pop();
       }
     } on AppError catch (e) {
-      setState(() => _error = e.toUserMessage());
+      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
   }
 
   Future<void> _deactivate(String shopId) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('Deactivate Product?'),
-        content: const Text(
-            'This product will be hidden. Historical sales are preserved.'),
+        title: Text(l.deactivateProductTitle),
+        content: Text(l.deactivateProductContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogCtx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogCtx).pop(true),
-            child: const Text('Deactivate',
-                style: TextStyle(color: AppTheme.error)),
+            child: Text(l.deactivate,
+                style: const TextStyle(color: AppTheme.error)),
           ),
         ],
       ),
@@ -132,7 +132,7 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
       ref.invalidate(ownerProductsProvider(shopId));
       if (mounted) context.go('/owner/products');
     } on AppError catch (e) {
-      setState(() => _error = e.toUserMessage());
+      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -140,6 +140,7 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -150,12 +151,12 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
         ref.watch(productDetailProvider(shopId, widget.productId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Product')),
+      appBar: AppBar(title: Text(l.editProduct)),
       body: productAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorState(
           message:
-              e is AppError ? e.toUserMessage() : 'Could not load product.',
+              e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
         ),
         data: (product) {
           return FutureBuilder<List<CategoryModel>>(
@@ -174,9 +175,9 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                       TextFormField(
                         controller: _nameCtrl,
                         decoration:
-                            const InputDecoration(labelText: 'Product name'),
+                            InputDecoration(labelText: l.productName),
                         validator: (v) => v == null || v.trim().isEmpty
-                            ? 'Name is required'
+                            ? l.nameRequired
                             : null,
                       ),
                       const SizedBox(height: 16),
@@ -184,16 +185,16 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                         controller: _priceCtrl,
                         keyboardType: const TextInputType.numberWithOptions(
                             decimal: true),
-                        decoration: const InputDecoration(
-                          labelText: 'Selling price',
+                        decoration: InputDecoration(
+                          labelText: l.sellingPrice,
                           suffixText: 'ETB',
                         ),
                         validator: (v) {
                           if (v == null || v.trim().isEmpty) {
-                            return 'Price is required';
+                            return l.priceRequired;
                           }
                           if (double.tryParse(v.trim()) == null) {
-                            return 'Enter a valid price';
+                            return l.priceInvalid;
                           }
                           return null;
                         },
@@ -219,7 +220,7 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                                 Expanded(
                                   child: Text(
                                     _selectedCategory?.name ??
-                                        'Category (optional)',
+                                        l.categoryOptional,
                                     style: TextStyle(
                                       color: _selectedCategory != null
                                           ? AppTheme.onBackground
@@ -249,7 +250,7 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                         const SizedBox(height: 16),
                       ],
                       PrimaryButton(
-                        label: 'Save Changes',
+                        label: l.saveChanges,
                         onPressed: () => _save(shopId, cats),
                         loading: _loading,
                       ),
@@ -259,9 +260,9 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                         child: TextButton(
                           onPressed:
                               _loading ? null : () => _deactivate(shopId),
-                          child: const Text(
-                            'Deactivate Product',
-                            style: TextStyle(color: AppTheme.error),
+                          child: Text(
+                            l.deactivate,
+                            style: const TextStyle(color: AppTheme.error),
                           ),
                         ),
                       ),

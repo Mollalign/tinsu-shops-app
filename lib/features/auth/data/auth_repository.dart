@@ -79,4 +79,21 @@ class AuthRepository {
 
   /// Full wipe — used by "Use another account".
   Future<void> clearAll() => _storage.clearAll();
+
+  /// Change the owner's PIN.
+  /// Sends [currentPin] for server-side verification; stores hash of [newPin].
+  /// Never logs or persists either PIN locally.
+  Future<void> changeOwnerPin({
+    required String currentPin,
+    required String newPin,
+  }) async {
+    try {
+      await _dio.patch(ApiConstants.ownerChangePin, data: {
+        'current_pin': currentPin,
+        'new_pin': newPin,
+      });
+    } on DioException catch (e) {
+      throw extractError(e);
+    }
+  }
 }

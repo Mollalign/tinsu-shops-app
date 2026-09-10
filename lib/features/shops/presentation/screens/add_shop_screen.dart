@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/buttons.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/shops_repository.dart';
 import 'shops_screen.dart';
 
@@ -32,6 +33,7 @@ class _AddShopScreenState extends ConsumerState<AddShopScreen> {
   }
 
   Future<void> _submit() async {
+    final l = AppLocalizations.of(context)!;
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() { _loading = true; _error = null; });
     try {
@@ -47,12 +49,12 @@ class _AddShopScreenState extends ConsumerState<AddShopScreen> {
       ref.invalidate(ownerShopsProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Shop created')),
+          SnackBar(content: Text(l.shopCreated)),
         );
         context.pop();
       }
     } on AppError catch (e) {
-      setState(() => _error = e.toUserMessage());
+      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -60,8 +62,9 @@ class _AddShopScreenState extends ConsumerState<AddShopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Shop')),
+      appBar: AppBar(title: Text(l.addShop)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -70,20 +73,20 @@ class _AddShopScreenState extends ConsumerState<AddShopScreen> {
             children: [
               TextFormField(
                 controller: _nameCtrl,
-                decoration: const InputDecoration(labelText: 'Shop name'),
+                decoration: InputDecoration(labelText: l.shopName),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Name is required' : null,
+                    v == null || v.trim().isEmpty ? l.nameRequired : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _locationCtrl,
-                decoration: const InputDecoration(labelText: 'Location (optional)'),
+                decoration: InputDecoration(labelText: l.locationOptional),
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _phoneCtrl,
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(labelText: 'Phone (optional)'),
+                decoration: InputDecoration(labelText: l.phoneOptional),
               ),
               const SizedBox(height: 24),
               if (_error != null) ...[
@@ -99,7 +102,7 @@ class _AddShopScreenState extends ConsumerState<AddShopScreen> {
                 const SizedBox(height: 16),
               ],
               PrimaryButton(
-                label: 'Create Shop',
+                label: l.createShop,
                 onPressed: _submit,
                 loading: _loading,
               ),

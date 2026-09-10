@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/categories_repository.dart';
 import '../../domain/category_model.dart';
@@ -20,6 +21,7 @@ class CategoriesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -29,11 +31,11 @@ class CategoriesScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Categories')),
+      appBar: AppBar(title: Text(l.categories)),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddDialog(context, ref, shopId),
+        onPressed: () => _showAddDialog(context, ref, shopId, l),
         icon: const Icon(Icons.add),
-        label: const Text('Add Category'),
+        label: Text(l.addCategory),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SafeArea(
@@ -41,16 +43,15 @@ class CategoriesScreen extends ConsumerWidget {
         child: catsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => ErrorState(
-            message: e is AppError ? e.toUserMessage() : 'Could not load categories.',
+            message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadCategories,
             onRetry: () => ref.invalidate(ownerCategoriesProvider(shopId)),
           ),
           data: (cats) {
             if (cats.isEmpty) {
-              return const EmptyState(
+              return EmptyState(
                 icon: Icons.label_outline,
-                title: 'No categories yet',
-                description:
-                    'Add categories to help organise your products.',
+                title: l.noCategoriesYet,
+                description: l.noCategoriesDesc,
               );
             }
             final bottomPad = MediaQuery.viewPaddingOf(context).bottom + 88;
@@ -69,25 +70,25 @@ class CategoriesScreen extends ConsumerWidget {
     );
   }
 
-  void _showAddDialog(BuildContext context, WidgetRef ref, String shopId) {
+  void _showAddDialog(BuildContext context, WidgetRef ref, String shopId, AppLocalizations l) {
     final ctrl = TextEditingController();
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Add Category'),
+        title: Text(l.addCategory),
         content: TextField(
           controller: ctrl,
           autofocus: true,
           textCapitalization: TextCapitalization.words,
-          decoration: const InputDecoration(
-            labelText: 'Category name',
-            hintText: 'e.g. Drinks',
+          decoration: InputDecoration(
+            labelText: l.categoryName,
+            hintText: l.categoryHint,
           ),
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel')),
+              child: Text(l.cancel)),
           TextButton(
             onPressed: () async {
               final name = ctrl.text.trim();
@@ -101,12 +102,12 @@ class CategoriesScreen extends ConsumerWidget {
               } on AppError catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toUserMessage())),
+                    SnackBar(content: Text(e.toUserMessage(AppLocalizations.of(context)!))),
                   );
                 }
               }
             },
-            child: const Text('Save'),
+            child: Text(l.save),
           ),
         ],
       ),
@@ -145,21 +146,22 @@ class _CategoryTile extends ConsumerWidget {
   }
 
   void _showRenameDialog(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final ctrl = TextEditingController(text: category.name);
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Rename Category'),
+        title: Text(l.renameCategory),
         content: TextField(
           controller: ctrl,
           autofocus: true,
           textCapitalization: TextCapitalization.words,
-          decoration: const InputDecoration(labelText: 'New name'),
+          decoration: InputDecoration(labelText: l.newName),
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel')),
+              child: Text(l.cancel)),
           TextButton(
             onPressed: () async {
               final name = ctrl.text.trim();
@@ -176,12 +178,12 @@ class _CategoryTile extends ConsumerWidget {
               } on AppError catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toUserMessage())),
+                    SnackBar(content: Text(e.toUserMessage(AppLocalizations.of(context)!))),
                   );
                 }
               }
             },
-            child: const Text('Rename'),
+            child: Text(l.rename),
           ),
         ],
       ),
@@ -189,20 +191,20 @@ class _CategoryTile extends ConsumerWidget {
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete "${category.name}"?'),
-        content: const Text(
-            'Products in this category will remain but will have no category assigned.'),
+        title: Text(l.deleteCategoryTitle(category.name)),
+        content: Text(l.deleteCategoryContent),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+              child: Text(l.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete',
-                style: TextStyle(color: AppTheme.error)),
+            child: Text(l.delete,
+                style: const TextStyle(color: AppTheme.error)),
           ),
         ],
       ),
@@ -216,7 +218,7 @@ class _CategoryTile extends ConsumerWidget {
     } on AppError catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toUserMessage())),
+          SnackBar(content: Text(e.toUserMessage(AppLocalizations.of(context)!))),
         );
       }
     }

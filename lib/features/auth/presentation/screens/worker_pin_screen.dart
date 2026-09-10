@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/components.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/auth_repository.dart';
 import '../session_provider.dart';
 
@@ -60,22 +61,29 @@ class _WorkerPinScreenState extends ConsumerState<WorkerPinScreen> {
       await ref.read(sessionProvider.notifier).login(auth);
       if (mounted) context.go('/worker/sell');
     } on AppError catch (e) {
-      setState(() {
-        _error = e.toUserMessage();
-        _pin = '';
-      });
+      if (mounted) {
+        setState(() {
+          _error = e.toUserMessage(AppLocalizations.of(context)!);
+          _pin = '';
+        });
+      }
     } catch (e) {
-      setState(() {
-        _error = 'Incorrect PIN. Try again.';
-        _pin = '';
-      });
+      if (mounted) {
+        setState(() {
+          _error = AppLocalizations.of(context)!.invalidCredentials;
+          _pin = '';
+        });
+      }
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final initials = widget.workerName
         .trim()
         .split(' ')
@@ -120,7 +128,7 @@ class _WorkerPinScreenState extends ConsumerState<WorkerPinScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Enter your PIN',
+              l.enterPin,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 28),

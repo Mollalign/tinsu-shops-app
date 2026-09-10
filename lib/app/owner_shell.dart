@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../l10n/app_localizations.dart';
 import 'theme/app_theme.dart';
 
-/// Owner shell — four main tabs: Home (shops), Products, Sales, More
+/// Owner shell — five main tabs: Home, Products, Sales, Categories, More
 class OwnerShell extends ConsumerWidget {
   final Widget child;
   const OwnerShell({super.key, required this.child});
@@ -12,16 +13,18 @@ class OwnerShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final location = GoRouterState.of(context).matchedLocation;
+    final l = AppLocalizations.of(context)!;
 
     int currentIndex = 0;
     if (location == '/owner/shops') currentIndex = 0;
     if (location == '/owner/dashboard') currentIndex = 0;
     if (location == '/owner/products') currentIndex = 1;
     if (location == '/owner/sales') currentIndex = 2;
+    if (location == '/owner/categories') currentIndex = 3;
     if (location == '/owner/stock' ||
         location == '/owner/workers' ||
         location == '/owner/settings') {
-      currentIndex = 3;
+      currentIndex = 4;
     }
 
     return Scaffold(
@@ -45,30 +48,38 @@ class OwnerShell extends ConsumerWidget {
                 context.go('/owner/sales');
                 break;
               case 3:
-                context.go('/owner/stock');
+                context.go('/owner/categories');
+                break;
+              case 4:
+                context.go('/owner/settings');
                 break;
             }
           },
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home',
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home),
+              label: l.home,
             ),
             NavigationDestination(
-              icon: Icon(Icons.inventory_2_outlined),
-              selectedIcon: Icon(Icons.inventory_2),
-              label: 'Products',
+              icon: const Icon(Icons.inventory_2_outlined),
+              selectedIcon: const Icon(Icons.inventory_2),
+              label: l.products,
             ),
             NavigationDestination(
-              icon: Icon(Icons.receipt_long_outlined),
-              selectedIcon: Icon(Icons.receipt_long),
-              label: 'Sales',
+              icon: const Icon(Icons.receipt_long_outlined),
+              selectedIcon: const Icon(Icons.receipt_long),
+              label: l.sales,
             ),
             NavigationDestination(
-              icon: Icon(Icons.more_horiz_outlined),
-              selectedIcon: Icon(Icons.more_horiz),
-              label: 'More',
+              icon: const Icon(Icons.label_outlined),
+              selectedIcon: const Icon(Icons.label),
+              label: l.categories,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.more_horiz_outlined),
+              selectedIcon: const Icon(Icons.more_horiz),
+              label: l.more,
             ),
           ],
         ),

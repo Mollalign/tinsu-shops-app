@@ -14,6 +14,7 @@ class ApiConstants {
 
   // Owner
   static const String ownerDashboard = '$apiV1/owner/dashboard';
+  static const String ownerChangePin = '$apiV1/owners/me/pin';
 
   // Shops
   static const String shops = '$apiV1/shops';

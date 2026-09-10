@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/workers_repository.dart';
 import '../../domain/worker_model.dart';
@@ -21,17 +22,17 @@ class WorkersScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId,
       orElse: () => null,
     );
 
-    // No shop selected yet — prompt the owner to pick one.
     if (shopId == null || shopId.isEmpty) {
       return Scaffold(
         backgroundColor: AppTheme.background,
-        appBar: AppBar(title: const Text('Workers')),
+        appBar: AppBar(title: Text(l.workers)),
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -40,13 +41,13 @@ class WorkersScreen extends ConsumerWidget {
                   size: 48, color: AppTheme.outline),
               const SizedBox(height: 16),
               Text(
-                'No shop selected',
+                l.noShopSelected,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => context.go('/owner/shops'),
-                child: const Text('Select a shop'),
+                child: Text(l.selectAShop),
               ),
             ],
           ),
@@ -58,11 +59,11 @@ class WorkersScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Workers')),
+      appBar: AppBar(title: Text(l.workers)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/owner/workers/add'),
         icon: const Icon(Icons.person_add_outlined),
-        label: const Text('Add Worker'),
+        label: Text(l.addWorker),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SafeArea(
@@ -70,15 +71,15 @@ class WorkersScreen extends ConsumerWidget {
         child: workersAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => ErrorState(
-            message: e is AppError ? e.toUserMessage() : 'Could not load workers.',
+            message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadWorkers,
             onRetry: () => ref.invalidate(shopWorkersListProvider(shopId)),
           ),
           data: (workers) {
             if (workers.isEmpty) {
-              return const EmptyState(
+              return EmptyState(
                 icon: Icons.people_outline,
-                title: 'No workers yet',
-                description: 'Add your first worker.',
+                title: l.noWorkers,
+                description: l.noWorkersDesc,
               );
             }
             final bottomPad = MediaQuery.viewPaddingOf(context).bottom + 88;
@@ -111,6 +112,7 @@ class _WorkerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final initials = worker.name
         .trim()
         .split(' ')
@@ -158,7 +160,7 @@ class _WorkerTile extends StatelessWidget {
                           ),
                     ),
                     Text(
-                      worker.isActive ? 'Worker' : 'Disabled',
+                      worker.isActive ? l.workerRole : l.disabledStatus,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: worker.isActive
                                 ? AppTheme.outline

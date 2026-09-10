@@ -1,23 +1,20 @@
+import '../../../l10n/app_localizations.dart';
+
 /// Application-level error hierarchy.
 /// Never expose raw DioException or SocketException to users.
 sealed class AppError {
   const AppError();
 
-  String toUserMessage([String? locale]) {
+  /// Returns a localized user-facing message using the provided [AppLocalizations].
+  String toUserMessage(AppLocalizations l) {
     return switch (this) {
-      NetworkError() => locale == 'am'
-          ? 'ኔትወርክዎን ያረጋግጡ እና እንደገና ይሞክሩ።'
-          : 'Please check your connection and try again.',
-      ServerError() => locale == 'am'
-          ? 'ስህተት ተፈጠረ። እንደገና ይሞክሩ።'
-          : 'Something went wrong. Please try again.',
-      UnauthorizedError() => locale == 'am'
-          ? 'ክፍለ ጊዜዎ ጊዜው አልፎበታል። እንደገና ይግቡ።'
-          : 'Your session has expired. Please log in again.',
+      NetworkError() => l.errorNetwork,
+      ServerError() => l.errorServer,
+      UnauthorizedError() => l.errorUnauthorized,
       InsufficientStockError(:final productName, :final available) =>
-        'Only $available of "$productName" are available.',
+        l.errorInsufficientStock(available, productName),
+      NotFoundError() => l.errorNotFound,
       ValidationError(:final message) => message,
-      NotFoundError() => 'The requested item was not found.',
       GenericError(:final message) => message,
     };
   }
@@ -53,5 +50,5 @@ final class NotFoundError extends AppError {
 
 final class GenericError extends AppError {
   final String message;
-  const GenericError([this.message = 'An error occurred. Please try again.']);
+  const GenericError([this.message = '']);
 }

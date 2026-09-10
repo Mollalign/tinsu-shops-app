@@ -6,6 +6,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/components.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/auth_repository.dart';
 import '../session_provider.dart';
 
@@ -67,15 +68,19 @@ class _OwnerQuickLoginScreenState
           );
       if (mounted) context.go('/owner/shops');
     } on AppError catch (e) {
-      setState(() {
-        _error = e.toUserMessage();
-        _pin = '';
-      });
+      if (mounted) {
+        setState(() {
+          _error = e.toUserMessage(AppLocalizations.of(context)!);
+          _pin = '';
+        });
+      }
     } catch (_) {
-      setState(() {
-        _error = 'Incorrect PIN. Please try again.';
-        _pin = '';
-      });
+      if (mounted) {
+        setState(() {
+          _error = AppLocalizations.of(context)!.invalidCredentials;
+          _pin = '';
+        });
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -88,6 +93,7 @@ class _OwnerQuickLoginScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final firstName = widget.ownerName.split(' ').first;
 
     return Scaffold(
@@ -113,7 +119,7 @@ class _OwnerQuickLoginScreenState
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Welcome back,',
+                    l.welcomeBack,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: AppTheme.outline,
                         ),
@@ -130,7 +136,7 @@ class _OwnerQuickLoginScreenState
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Enter your PIN to continue',
+                    l.enterPin,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -196,7 +202,7 @@ class _OwnerQuickLoginScreenState
             TextButton(
               onPressed: _switchAccount,
               child: Text(
-                'Use another account',
+                l.useAnotherAccount,
                 style: TextStyle(
                   color: AppTheme.outline,
                   decoration: TextDecoration.underline,

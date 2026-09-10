@@ -8,6 +8,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../products/data/categories_repository.dart';
 import '../../../products/data/products_repository.dart';
@@ -126,12 +127,18 @@ class _SellScreenState extends ConsumerState<SellScreen> {
       }
     } on InsufficientStockError catch (e) {
       // Don't clear the cart — let the worker adjust
-      setState(() => _checkoutError = e.toUserMessage());
+      if (mounted) {
+        setState(() => _checkoutError = e.toUserMessage(AppLocalizations.of(context)!));
+      }
     } on AppError catch (e) {
-      setState(() => _checkoutError = e.toUserMessage());
+      if (mounted) {
+        setState(() => _checkoutError = e.toUserMessage(AppLocalizations.of(context)!));
+      }
     } catch (_) {
-      setState(() =>
-          _checkoutError = "Couldn't complete the sale. Please try again.");
+      if (mounted) {
+        setState(() =>
+            _checkoutError = AppLocalizations.of(context)!.errorGeneric);
+      }
     } finally {
       if (mounted) setState(() => _checkingOut = false);
     }
@@ -139,6 +146,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final cart = ref.watch(cartProvider);
 
@@ -172,7 +180,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                 onChanged: (v) => _onSearch(shopId, v),
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText: 'Search products or categories…',
+                  hintText: l.searchProductsHint,
                   prefixIcon:
                       const Icon(Icons.search, color: AppTheme.outline),
                   suffixIcon: _searchCtrl.text.isNotEmpty
@@ -286,21 +294,22 @@ class _SellHeader extends ConsumerWidget {
   const _SellHeader({required this.workerName});
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('End Shift?'),
-        content: const Text('This will clear your cart and log you out.'),
+        title: Text(l.endShiftTitle),
+        content: Text(l.endShiftContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: AppTheme.error),
+            child: Text(
+              l.logout,
+              style: const TextStyle(color: AppTheme.error),
             ),
           ),
         ],
@@ -314,6 +323,7 @@ class _SellHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final initial = workerName.isNotEmpty ? workerName[0].toUpperCase() : '?';
 
     return Container(
@@ -348,7 +358,7 @@ class _SellHeader extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Sell',
+                  l.sell,
                   style:
                       Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w700,
@@ -368,7 +378,7 @@ class _SellHeader extends ConsumerWidget {
 
           // ── End shift icon ──
           Tooltip(
-            message: 'End Shift',
+            message: l.endShift,
             child: IconButton(
               icon: const Icon(Icons.exit_to_app,
                   size: 22, color: AppTheme.outline),
@@ -400,6 +410,7 @@ class _CartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 10, 12, 12),
       decoration: BoxDecoration(
@@ -434,7 +445,7 @@ class _CartBar extends StatelessWidget {
                         children: [
                           TextSpan(
                             text:
-                                '${cart.totalItems} item${cart.totalItems > 1 ? 's' : ''}',
+                                '${cart.totalItems} ${l.items}',
                             style: const TextStyle(
                               color: AppTheme.onSurfaceVariant,
                               fontSize: 14,
@@ -477,21 +488,21 @@ class _CartBar extends StatelessWidget {
               ),
               child: checking
                   ? const SizedBox(
-                      width: 20,
+                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2.5),
                     )
-                  : const Row(
+                  : Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Complete Sale',
-                          style: TextStyle(
+                          l.completeSale,
+                          style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w700),
                         ),
-                        SizedBox(width: 4),
-                        Icon(Icons.arrow_forward, size: 16),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.arrow_forward, size: 16),
                       ],
                     ),
             ),
@@ -518,6 +529,7 @@ class _CategoryFilterBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final async = ref.watch(shopCategoriesProvider(shopId));
     // Always show All + Recent even while loading or on error
     final List<CategoryModel> cats = async.maybeWhen(
@@ -531,12 +543,12 @@ class _CategoryFilterBar extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         children: [
           _CategoryChip(
-            label: 'All',
+            label: l.all,
             selected: selectedId == null,
             onTap: () => onSelected(null),
           ),
           _CategoryChip(
-            label: 'Recent',
+            label: l.recent,
             icon: Icons.star_rounded,
             selected: selectedId == _kRecentCategory,
             onTap: () => onSelected(_kRecentCategory),
@@ -627,23 +639,24 @@ class _ProductGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     if (_isRecent) {
       final async = ref.watch(recentProductsProvider(shopId));
       return async.when(
         loading: () => ProductGridSkeleton(columns: _columns(context)),
         error: (e, _) => ErrorState(
           message: e is AppError
-              ? e.toUserMessage()
-              : 'Could not load recent products.',
+              ? e.toUserMessage(l)
+              : l.couldNotLoadProducts,
           onRetry: () => ref.invalidate(recentProductsProvider(shopId)),
         ),
         data: (products) {
           final active = products.where((p) => p.isActive).toList();
           if (active.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               icon: Icons.history_outlined,
-              title: 'No recent products',
-              description: 'Products you sell will appear here.',
+              title: l.noRecentProducts,
+              description: l.noRecentProductsDesc,
             );
           }
           return _buildGrid(context, ref, active,
@@ -659,17 +672,17 @@ class _ProductGrid extends ConsumerWidget {
       loading: () => ProductGridSkeleton(columns: _columns(context)),
       error: (e, _) => ErrorState(
         message:
-            e is AppError ? e.toUserMessage() : 'Could not load products.',
+            e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
         onRetry: () => ref
             .invalidate(shopProductsProvider(shopId, categoryId: categoryId)),
       ),
       data: (products) {
         final active = products.where((p) => p.isActive).toList();
         if (active.isEmpty) {
-          return const EmptyState(
+          return EmptyState(
             icon: Icons.inventory_2_outlined,
-            title: 'No products',
-            description: 'No products in this category.',
+            title: l.noProducts,
+            description: l.noProductsInCategory,
           );
         }
         return _buildGrid(context, ref, active,
@@ -718,6 +731,7 @@ class _SearchResultList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     // Error state — keep previous results visible below the banner
     if (searchState.hasError) {
       return Column(
@@ -741,7 +755,7 @@ class _SearchResultList extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: onRetry,
-                  child: const Text('Retry'),
+                  child: Text(l.retry),
                 ),
               ],
             ),
@@ -765,9 +779,8 @@ class _SearchResultList extends StatelessWidget {
     if (!hasCategoryMatch && !hasProducts) {
       return EmptyState(
         icon: Icons.search_off,
-        title: 'No results',
-        description:
-            'No products or categories matched\n"${searchState.normalizedQuery}".',
+        title: l.noSearchResults,
+        description: l.noSearchResultsDesc(searchState.normalizedQuery),
       );
     }
 
@@ -788,6 +801,7 @@ class _ResultsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final hasCategoryMatch = result.matchedCategory != null;
     final hasProducts = result.items.isNotEmpty;
 
@@ -805,7 +819,7 @@ class _ResultsBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(2, 14, 2, 6),
             child: Text(
-              'Products',
+              l.products,
               style: Theme.of(context)
                   .textTheme
                   .labelSmall
@@ -836,6 +850,7 @@ class _CategoryMatchBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -868,7 +883,7 @@ class _CategoryMatchBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Category',
+                    l.category,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: AppTheme.outline,
                           letterSpacing: 0.4,
@@ -884,7 +899,7 @@ class _CategoryMatchBanner extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${match.productCount} product${match.productCount == 1 ? '' : 's'}',
+                    '${match.productCount} ${l.products}',
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
@@ -912,6 +927,7 @@ class _TapProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     // Granular selector — only rebuilds when THIS product's qty changes
     final qty = ref.watch(
       cartProvider.select((s) => s.quantityFor(product.id)),
@@ -1052,9 +1068,9 @@ class _TapProductCard extends ConsumerWidget {
                         color: AppTheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Text(
-                        'Out of stock',
-                        style: TextStyle(
+                      child: Text(
+                        l.outOfStock,
+                        style: const TextStyle(
                           fontSize: 11,
                           color: AppTheme.outline,
                           fontWeight: FontWeight.w500,
@@ -1075,15 +1091,15 @@ class _TapProductCard extends ConsumerWidget {
                               color: AppTheme.primary, width: 1.5),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add,
+                            const Icon(Icons.add,
                                 size: 16, color: AppTheme.primary),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Text(
-                              'Add',
-                              style: TextStyle(
+                              l.add,
+                              style: const TextStyle(
                                 fontSize: 13,
                                 color: AppTheme.primary,
                                 fontWeight: FontWeight.w700,
@@ -1283,6 +1299,7 @@ class _SearchProductTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final qty = ref.watch(
       cartProvider.select((s) => s.quantityFor(product.id)),
     );
@@ -1342,8 +1359,8 @@ class _SearchProductTile extends ConsumerWidget {
               if (qty > 0)
                 _QtyBadge(qty: qty)
               else if (product.isOutOfStock)
-                const Text('Out of stock',
-                    style: TextStyle(color: AppTheme.outline, fontSize: 12)),
+                Text(l.outOfStock,
+                    style: const TextStyle(color: AppTheme.outline, fontSize: 12)),
             ],
           ),
         ),

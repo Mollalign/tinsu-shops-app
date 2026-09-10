@@ -30,10 +30,13 @@ class WorkersRepository {
   Future<WorkerCreatedModel> createWorker({
     required String shopId,
     required String name,
+    String? pin,
   }) async {
     try {
       final res = await _dio.post(ApiConstants.workers(shopId), data: {
         'name': name,
+        // null → backend auto-generates; non-null → backend uses provided PIN
+        'pin': pin,
       });
       return WorkerCreatedModel.fromJson(res.data);
     } on DioException catch (e) {
@@ -44,6 +47,27 @@ class WorkersRepository {
   Future<WorkerModel> getWorker(String shopId, String workerId) async {
     try {
       final res = await _dio.get(ApiConstants.worker(shopId, workerId));
+      return WorkerModel.fromJson(res.data);
+    } on DioException catch (e) {
+      throw extractError(e);
+    }
+  }
+
+  /// Update worker fields. Pass only the fields that should change.
+  Future<WorkerModel> updateWorker(
+    String shopId,
+    String workerId, {
+    String? name,
+    bool? isActive,
+  }) async {
+    try {
+      final data = <String, dynamic>{};
+      if (name != null) data['name'] = name;
+      if (isActive != null) data['is_active'] = isActive;
+      final res = await _dio.patch(
+        ApiConstants.worker(shopId, workerId),
+        data: data,
+      );
       return WorkerModel.fromJson(res.data);
     } on DioException catch (e) {
       throw extractError(e);
@@ -63,16 +87,9 @@ class WorkersRepository {
     }
   }
 
+  /// Toggle worker active status via PATCH.
   Future<WorkerModel> toggleWorker(
       String shopId, String workerId, bool enable) async {
-    try {
-      final res = await _dio.patch(
-        ApiConstants.worker(shopId, workerId),
-        data: {'is_active': enable},
-      );
-      return WorkerModel.fromJson(res.data);
-    } on DioException catch (e) {
-      throw extractError(e);
-    }
+    return updateWorker(shopId, workerId, isActive: enable);
   }
 }

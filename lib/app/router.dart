@@ -29,6 +29,7 @@ import '../features/workers/presentation/screens/worker_detail_screen.dart';
 import '../features/shops/presentation/screens/shops_screen.dart';
 import '../features/shops/presentation/screens/add_shop_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
+import '../features/settings/presentation/screens/change_pin_screen.dart';
 import '../features/auth/presentation/screens/splash_screen.dart';
 import '../features/auth/domain/user_model.dart';
 import 'owner_shell.dart';
@@ -215,6 +216,9 @@ GoRouter router(Ref ref) {
               path: '/owner/sales',
               builder: (_, __) => const SalesHistoryScreen()),
           GoRoute(
+              path: '/owner/categories',
+              builder: (_, __) => const CategoriesScreen()),
+          GoRoute(
               path: '/owner/stock', builder: (_, __) => const StockScreen()),
           GoRoute(
               path: '/owner/workers',
@@ -226,9 +230,6 @@ GoRouter router(Ref ref) {
       ),
 
       // ── Owner detail routes (outside shell) ──
-      GoRoute(
-          path: '/owner/categories',
-          builder: (_, __) => const CategoriesScreen()),
       GoRoute(
           path: '/owner/products/add',
           builder: (_, __) => const AddProductScreen()),
@@ -266,6 +267,9 @@ GoRouter router(Ref ref) {
       GoRoute(
           path: '/owner/shops/add',
           builder: (_, __) => const AddShopScreen()),
+      GoRoute(
+          path: '/owner/change-pin',
+          builder: (_, __) => const ChangePinScreen()),
     ],
   );
 }

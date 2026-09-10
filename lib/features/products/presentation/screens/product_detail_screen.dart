@@ -8,6 +8,7 @@ import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/buttons.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/products_repository.dart';
 import '../../domain/product_model.dart';
@@ -24,6 +25,7 @@ class ProductDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -35,7 +37,7 @@ class ProductDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: const Text('Product'),
+        title: Text(l.productLabel),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
@@ -47,12 +49,13 @@ class ProductDetailScreen extends ConsumerWidget {
       body: productAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorState(
-          message: e is AppError ? e.toUserMessage() : 'Could not load product.',
+          message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
           onRetry: () => ref.invalidate(productDetailProvider(shopId, productId)),
         ),
         data: (product) => _ProductDetailBody(
           product: product,
           shopId: shopId,
+          l: l,
         ),
       ),
     );
@@ -62,7 +65,8 @@ class ProductDetailScreen extends ConsumerWidget {
 class _ProductDetailBody extends StatelessWidget {
   final ProductModel product;
   final String shopId;
-  const _ProductDetailBody({required this.product, required this.shopId});
+  final AppLocalizations l;
+  const _ProductDetailBody({required this.product, required this.shopId, required this.l});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +98,7 @@ class _ProductDetailBody extends StatelessWidget {
                       child: Text(product.name,
                           style: Theme.of(context).textTheme.headlineSmall),
                     ),
-                    _StatusBadge(product: product),
+                    _StatusBadge(product: product, l: l),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -102,7 +106,7 @@ class _ProductDetailBody extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _InfoCard(
-                        label: 'Selling price',
+                        label: l.sellingPrice,
                         value: Formatters.currency(product.price),
                         valueColor: AppTheme.primary,
                       ),
@@ -110,7 +114,7 @@ class _ProductDetailBody extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: _InfoCard(
-                        label: 'Current stock',
+                        label: l.currentStock,
                         value: '${product.stockQuantity}',
                         valueColor: product.isOutOfStock
                             ? AppTheme.error
@@ -124,20 +128,20 @@ class _ProductDetailBody extends StatelessWidget {
                 if (product.categoryName != null) ...[
                   const SizedBox(height: 12),
                   _InfoCard(
-                    label: 'Category',
+                    label: l.categoryOptional,
                     value: product.categoryName!,
                   ),
                 ],
                 const SizedBox(height: 24),
                 PrimaryButton(
-                  label: 'Restock',
+                  label: l.restock,
                   icon: Icons.add_circle_outline,
                   onPressed: () =>
                       context.push('/owner/products/${product.id}/restock'),
                 ),
                 const SizedBox(height: 12),
                 SecondaryButton(
-                  label: 'Edit Product',
+                  label: l.editProduct,
                   icon: Icons.edit_outlined,
                   onPressed: () =>
                       context.push('/owner/products/${product.id}/edit'),
@@ -186,7 +190,8 @@ class _InfoCard extends StatelessWidget {
 
 class _StatusBadge extends StatelessWidget {
   final ProductModel product;
-  const _StatusBadge({required this.product});
+  final AppLocalizations l;
+  const _StatusBadge({required this.product, required this.l});
 
   @override
   Widget build(BuildContext context) {
@@ -195,15 +200,15 @@ class _StatusBadge extends StatelessWidget {
     if (product.isOutOfStock) {
       bg = AppTheme.outOfStockBg;
       fg = AppTheme.outOfStockText;
-      label = 'Out of stock';
+      label = l.outOfStock;
     } else if (product.isLowStock) {
       bg = AppTheme.lowStockBg;
       fg = AppTheme.lowStockText;
-      label = 'Low stock';
+      label = l.lowStock;
     } else {
       bg = AppTheme.primaryContainer;
       fg = AppTheme.primary;
-      label = 'In stock';
+      label = l.inStock;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

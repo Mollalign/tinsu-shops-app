@@ -4,6 +4,8 @@
   "tagline": "Simple selling, powerful results",
 
   "signIn": "Sign In",
+  "signInToOwnerAccount": "Sign in to your owner account",
+  "loginAsWorker": "Login as Worker",
   "logout": "Logout",
   "phoneNumber": "Phone number",
   "pin": "PIN",
@@ -11,6 +13,7 @@
   "welcomeBack": "Welcome back",
   "invalidCredentials": "Invalid phone or PIN. Please try again.",
   "selectShop": "Select Shop",
+  "selectYourShop": "Select your shop to continue",
   "whoAreYou": "Who are you?",
   "loading": "Loading...",
   "retry": "Retry",
@@ -22,16 +25,27 @@
   "add": "Add",
   "search": "Search",
   "searchProduct": "Search product",
+  "searchProductsHint": "Search products or categories…",
   "noResultsFound": "No results found",
+  "clear": "Clear",
 
   "myShops": "My Shops",
   "allShops": "All Shops",
   "addShop": "Add Shop",
   "shopName": "Shop name",
   "location": "Location",
+  "locationOptional": "Location (optional)",
   "phone": "Phone",
+  "phoneOptional": "Phone (optional)",
   "createShop": "Create Shop",
   "switchShop": "Switch Shop",
+  "shopCreated": "Shop created",
+  "shopsLabel": "Shops",
+  "shopsSubtitle": "View and switch shops",
+  "noShopsYet": "No shops yet",
+  "noShopsDesc": "Add your first shop to get started.",
+  "noShopSelected": "No shop selected",
+  "selectAShop": "Select a shop",
 
   "dashboard": "Dashboard",
   "todaySales": "Today's Sales",
@@ -51,28 +65,43 @@
   "howDidCustomerPay": "How did the customer pay?",
 
   "products": "Products",
+  "productLabel": "Product",
   "addProduct": "Add Product",
   "editProduct": "Edit Product",
   "productName": "Product name",
   "sellingPrice": "Selling price",
   "startingStock": "Starting stock",
   "category": "Category",
+  "categoryOptional": "Category (optional)",
   "saveProduct": "Save Product",
   "saveChanges": "Save Changes",
   "deleteProduct": "Delete Product",
   "deactivateProduct": "Deactivate Product",
+  "deactivate": "Deactivate",
+  "deactivateProductTitle": "Deactivate Product?",
+  "deactivateProductContent": "This product will be hidden. Historical sales are preserved.",
   "addPhoto": "Add Photo",
   "noProducts": "No products yet",
   "noProductsDesc": "Add your first product to start selling.",
+  "noProductsMatched": "No products matched \"{query}\". Try a different name or category.",
+  "@noProductsMatched": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
   "outOfStock": "Out of stock",
   "lowStock": "Low Stock",
   "inStock": "In Stock",
+  "inactive": "Inactive",
   "stockLeft": "{count} left",
   "@stockLeft": {
     "placeholders": {
       "count": {"type": "int"}
     }
   },
+  "productSaved": "Product saved",
+  "productUpdated": "Product updated",
+  "noCategoriesForProducts": "No categories yet",
 
   "stock": "Stock",
   "currentStock": "Current stock",
@@ -91,6 +120,26 @@
       "count": {"type": "int"}
     }
   },
+  "stockSubtitle": "Manage inventory levels",
+  "management": "Management",
+
+  "categories": "Categories",
+  "addCategory": "Add Category",
+  "categoryName": "Category name",
+  "categoryHint": "e.g. Drinks",
+  "renameCategory": "Rename Category",
+  "newName": "New name",
+  "rename": "Rename",
+  "deleteCategoryTitle": "Delete \"{name}\"?",
+  "@deleteCategoryTitle": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "deleteCategoryContent": "Products in this category will remain but will have no category assigned.",
+  "noCategoriesYet": "No categories yet",
+  "noCategoriesDesc": "Add categories to help organise your products.",
+  "couldNotLoadCategories": "Could not load categories.",
 
   "currentSale": "Current Sale",
   "total": "Total",
@@ -111,6 +160,8 @@
   "products2": "products",
   "noSalesToday": "No sales today",
   "noSalesTodayDesc": "Sales will appear here after something is sold.",
+  "noSalesHistory": "No sales yet",
+  "noSalesHistoryDesc": "Sales will appear here after the first sale.",
   "mySalesToday": "My Sales Today",
   "couldNotCompleteSale": "We couldn't complete the sale.",
   "tryAgain": "Try Again",
@@ -118,6 +169,8 @@
   "notEnoughStock": "Not enough stock",
   "cartEmpty": "Cart is empty",
   "cartEmptyDesc": "Tap a product to start selling.",
+  "saleEmpty": "Your sale is empty",
+  "saleEmptyDesc": "Tap a product to add it.",
   "itemsWithCount": "{count} item{plural} · {total} ETB",
   "@itemsWithCount": {
     "placeholders": {
@@ -126,13 +179,44 @@
       "total": {"type": "String"}
     }
   },
+  "completeSale": "Complete Sale",
+  "completing": "Completing...",
+  "recentLabel": "Recent",
+  "noRecentProducts": "No recent products",
+  "noRecentProductsDesc": "Products you sell will appear here.",
+  "noProductsInCategory": "No products in this category.",
+  "noSearchResults": "No results",
+  "noSearchResultsDesc": "No products or categories matched \"{query}\".",
+  "@noSearchResultsDesc": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
+  "endShift": "End Shift",
+  "endShiftTitle": "End Shift?",
+  "endShiftContent": "This will clear your cart and log you out.",
+  "clearSaleTitle": "Clear sale?",
+  "clearSaleContent": "All items will be removed.",
+  "backToProducts": "← Back to Products",
+  "couldNotLoadSales": "Could not load sales.",
+  "couldNotLoadSale": "Could not load sale.",
+  "couldNotLoadProducts": "Could not load products.",
+  "couldNotLoadShops": "Could not load shops.",
+  "couldNotLoadReport": "Could not load report.",
+  "dateLabel": "Date",
 
   "workers": "Workers",
   "addWorker": "Add Worker",
+  "addNewWorker": "Add a new worker",
   "workerName": "Name",
+  "workerNameHint": "e.g. Hana",
   "workerAdded": "Worker Added",
+  "workerCreated": "Worker Created",
+  "workerUpdated": "Worker updated",
   "pinAutoGenerated": "PIN Auto-generated",
   "sharePinWithWorker": "Share this PIN with the worker.",
+  "shareWithWorker": "Share this with the worker.",
+  "pinOnlyShownOnce": "This is the only time it will be shown.",
   "copyPin": "Copy PIN",
   "pinCopied": "PIN copied to clipboard",
   "noWorkers": "No workers yet",
@@ -141,11 +225,29 @@
   "disableWorker": "Disable Worker",
   "enableWorker": "Enable Worker",
   "workerRole": "Worker",
+  "ownerLabel": "Owner",
   "workerDisabled": "Worker disabled",
   "workerEnabled": "Worker enabled",
   "pinReset": "PIN has been reset",
+  "activeStatus": "Active",
+  "disabledStatus": "Disabled",
+  "workerNameEmpty": "Name cannot be empty.",
+  "workerNameRequired": "Name is required.",
+  "couldNotLoadWorkers": "Could not load workers.",
+  "couldNotLoadWorker": "Could not load worker.",
+  "workersSubtitle": "Manage your team",
+  "generateAutomatically": "Generate automatically",
+  "enterManually": "Enter manually",
+  "createWorker": "Create Worker",
+  "pinDigitsHint": "4+ digits",
+  "confirmPin": "Confirm PIN",
+  "pinMustBe4Digits": "PIN must be at least 4 digits.",
+  "pinMustBeDigitsOnly": "PIN must contain only digits.",
+  "pinsMustMatch": "PINs do not match.",
+  "newPinsMustMatch": "New PIN and confirmation do not match.",
 
   "settings": "Settings",
+  "more": "More",
   "account": "Account",
   "language": "Language",
   "security": "Security",
@@ -154,6 +256,19 @@
   "english": "English",
   "amharic": "አማርኛ",
   "chooseLanguage": "Choose Language",
+  "preferences": "Preferences",
+  "support": "Support",
+  "changePin": "Change PIN",
+  "changePinSubtitle": "Update your login PIN",
+  "currentPin": "Current PIN",
+  "newPin": "New PIN",
+  "confirmNewPin": "Confirm New PIN",
+  "pinChangedSuccess": "PIN changed successfully.",
+  "updateLoginPin": "Update your login PIN",
+  "enterCurrentPinHint": "Enter your current PIN to confirm, then set a new one.",
+  "currentPinRequired": "Current PIN is required.",
+  "newPinMustBe4Digits": "New PIN must be at least 4 digits.",
+  "newPinsMustMatch": "New PIN and confirmation do not match.",
 
   "goodMorning": "Good morning, {name}",
   "@goodMorning": {
@@ -174,18 +289,24 @@
     }
   },
 
+  "nameRequired": "Name is required.",
+  "priceRequired": "Price is required.",
+  "priceInvalid": "Enter a valid price.",
+  "stockInvalid": "Enter a whole number.",
+
   "errorNetwork": "Please check your connection and try again.",
   "errorServer": "Something went wrong. Please try again.",
   "errorUnauthorized": "Your session has expired. Please log in again.",
-  "errorInsufficientStock": "Only {count} items are available.",
+  "errorInsufficientStock": "Only {count} of \"{productName}\" available.",
   "@errorInsufficientStock": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {"type": "int"},
+      "productName": {"type": "String"}
     }
   },
+  "errorNotFound": "The requested item was not found.",
   "errorGeneric": "An error occurred. Please try again.",
 
-  "more": "More",
   "salesHistory": "Sales History",
   "saleDetails": "Sale Details",
   "soldBy": "Sold by",
@@ -194,5 +315,28 @@
   "totalToday": "Total Today",
 
   "confirmLogout": "Are you sure you want to logout?",
-  "currencySymbol": "ETB"
+  "currencySymbol": "ETB",
+  "home": "Home",
+  "shopLabel": "Shop",
+
+  "recentSales": "Recent Sales",
+  "allStocked": "All products well-stocked",
+  "allStockedDesc": "No products need attention right now.",
+  "stockRemaining": "{count} remaining",
+  "@stockRemaining": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "currentStockValue": "Current stock: {count}",
+  "@currentStockValue": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "noProductsFilter": "No products match the selected filter.",
+  "useAnotherAccount": "Use another account",
+  "recent": "Recent",
+  "all": "All",
+  "stockLabel": "Stock"
 }

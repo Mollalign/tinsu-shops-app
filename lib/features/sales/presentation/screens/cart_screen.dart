@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../cart_provider.dart';
 import '../../../products/domain/product_model.dart';
 import '../../domain/cart_item_model.dart';
@@ -14,12 +15,13 @@ class CartScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final cart = ref.watch(cartProvider);
 
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: const Text('Current Sale'),
+        title: Text(l.currentSale),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -28,16 +30,15 @@ class CartScreen extends ConsumerWidget {
           if (!cart.isEmpty)
             TextButton(
               onPressed: () => _confirmClear(context, ref),
-              child:
-                  const Text('Clear', style: TextStyle(color: AppTheme.error)),
+              child: Text(l.clear, style: const TextStyle(color: AppTheme.error)),
             ),
         ],
       ),
       body: cart.isEmpty
-          ? const EmptyState(
+          ? EmptyState(
               icon: Icons.shopping_cart_outlined,
-              title: 'Your sale is empty',
-              description: 'Tap a product to add it.',
+              title: l.saleEmpty,
+              description: l.saleEmptyDesc,
             )
           : Column(
               children: [
@@ -72,7 +73,7 @@ class CartScreen extends ConsumerWidget {
                         mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Total',
+                          Text(l.total,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium
@@ -94,7 +95,7 @@ class CartScreen extends ConsumerWidget {
                         width: double.infinity,
                         child: TextButton(
                           onPressed: () => context.pop(),
-                          child: const Text('← Back to Products'),
+                          child: Text(l.backToProducts),
                         ),
                       ),
                     ],
@@ -106,23 +107,24 @@ class CartScreen extends ConsumerWidget {
   }
 
   void _confirmClear(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Clear sale?'),
-        content: const Text('All items will be removed.'),
+        title: Text(l.clearSaleTitle),
+        content: Text(l.clearSaleContent),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel')),
+              child: Text(l.cancel)),
           TextButton(
             onPressed: () {
               ref.read(cartProvider.notifier).clear();
               Navigator.pop(context);
               context.pop();
             },
-            child: const Text('Clear',
-                style: TextStyle(color: AppTheme.error)),
+            child: Text(l.clear,
+                style: const TextStyle(color: AppTheme.error)),
           ),
         ],
       ),

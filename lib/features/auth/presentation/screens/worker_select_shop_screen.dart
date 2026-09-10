@@ -8,6 +8,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../shops/domain/shop_model.dart';
 
 part 'worker_select_shop_screen.g.dart';
@@ -40,6 +41,7 @@ class WorkerSelectShopScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final shopsAsync = ref.watch(publicShopsProvider);
 
     return Scaffold(
@@ -68,7 +70,7 @@ class WorkerSelectShopScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Tinsu-Shops',
+                        l.appName,
                         style:
                             Theme.of(context).textTheme.titleLarge?.copyWith(
                                   color: AppTheme.primary,
@@ -79,12 +81,12 @@ class WorkerSelectShopScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 40),
                   Text(
-                    'Select Shop',
+                    l.selectShop,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Which shop are you working at today?',
+                    l.selectYourShop,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -98,8 +100,8 @@ class WorkerSelectShopScreen extends ConsumerWidget {
                 ),
                 error: (e, _) => ErrorState(
                   message: e is AppError
-                      ? e.toUserMessage()
-                      : 'Could not load shops.',
+                      ? e.toUserMessage(l)
+                      : l.couldNotLoadShops,
                   onRetry: () => ref.invalidate(publicShopsProvider),
                 ),
                 data: (shops) => ListView.separated(
@@ -117,12 +119,12 @@ class WorkerSelectShopScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(24),
               child: TextButton(
                 onPressed: () => context.go('/login'),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.admin_panel_settings_outlined, size: 18),
-                    SizedBox(width: 8),
-                    Text('Owner Login'),
+                    const Icon(Icons.admin_panel_settings_outlined, size: 18),
+                    const SizedBox(width: 8),
+                    Text(l.ownerLabel),
                   ],
                 ),
               ),

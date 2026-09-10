@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../dashboard/data/dashboard_repository.dart';
 import '../../../dashboard/domain/dashboard_model.dart';
 import '../../../sales/data/sales_repository.dart';
 import '../../../sales/domain/sale_model.dart';
 import '../../../sales/presentation/cart_provider.dart';
-import 'package:go_router/go_router.dart';
-
 
 part 'worker_today_screen.g.dart';
 
@@ -29,21 +29,22 @@ class WorkerTodayScreen extends ConsumerWidget {
   const WorkerTodayScreen({super.key});
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('End Shift?'),
-        content: const Text('This will clear your cart and log you out.'),
+        title: Text(l.endShift),
+        content: Text(l.endShiftContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: AppTheme.error),
+            child: Text(
+              l.logout,
+              style: const TextStyle(color: AppTheme.error),
             ),
           ),
         ],
@@ -57,6 +58,7 @@ class WorkerTodayScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (user, shopId) => shopId ?? user.shopId ?? '',
@@ -93,7 +95,7 @@ class WorkerTodayScreen extends ConsumerWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('My Sales Today',
+                              Text(l.mySalesToday,
                                   style: Theme.of(context).textTheme.headlineSmall),
                               if (workerName.isNotEmpty)
                                 Text(
@@ -106,7 +108,7 @@ class WorkerTodayScreen extends ConsumerWidget {
                             ],
                           ),
                           Tooltip(
-                            message: 'End Shift',
+                            message: l.endShift,
                             child: IconButton(
                               icon: const Icon(Icons.logout, size: 22, color: AppTheme.outline),
                               onPressed: () => _confirmLogout(context, ref),
@@ -118,15 +120,15 @@ class WorkerTodayScreen extends ConsumerWidget {
                       // ── Summary card ──
                       reportAsync.when(
                         loading: () => _SummarySkeleton(),
-                        error: (e, _) => _InlinError(
+                        error: (e, _) => _InlineError(
                           message: e is AppError
-                              ? e.toUserMessage()
-                              : 'Could not load today\'s report.',
+                              ? e.toUserMessage(l)
+                              : l.couldNotLoadReport,
                         ),
-                        data: (report) => _SummaryCard(report: report),
+                        data: (report) => _SummaryCard(report: report, l: l),
                       ),
                       const SizedBox(height: 24),
-                      Text('Recent Sales',
+                      Text(l.recentSales,
                           style: Theme.of(context).textTheme.titleMedium),
                       const SizedBox(height: 12),
                     ],
@@ -143,18 +145,17 @@ class WorkerTodayScreen extends ConsumerWidget {
                 error: (e, _) => SliverToBoxAdapter(
                   child: ErrorState(
                     message: e is AppError
-                        ? e.toUserMessage()
-                        : 'Could not load sales.',
+                        ? e.toUserMessage(l)
+                        : l.couldNotLoadSales,
                   ),
                 ),
                 data: (sales) {
                   if (sales.isEmpty) {
-                    return const SliverToBoxAdapter(
+                    return SliverToBoxAdapter(
                       child: EmptyState(
                         icon: Icons.receipt_long_outlined,
-                        title: 'No sales yet today',
-                        description:
-                            'Your sales will appear here after completing a sale.',
+                        title: l.noSalesToday,
+                        description: l.noSalesTodayDesc,
                       ),
                     );
                   }
@@ -182,7 +183,8 @@ class WorkerTodayScreen extends ConsumerWidget {
 
 class _SummaryCard extends StatelessWidget {
   final WorkerTodayReport report;
-  const _SummaryCard({required this.report});
+  final AppLocalizations l;
+  const _SummaryCard({required this.report, required this.l});
 
   @override
   Widget build(BuildContext context) {
@@ -210,9 +212,9 @@ class _SummaryCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              _Stat('${report.numberOfSales}', 'sales'),
+              _Stat('${report.numberOfSales}', l.sales),
               const SizedBox(width: 24),
-              _Stat('${report.itemsSold}', 'items'),
+              _Stat('${report.itemsSold}', l.items),
             ],
           ),
         ],
@@ -288,9 +290,9 @@ class _SummarySkeleton extends StatelessWidget {
       );
 }
 
-class _InlinError extends StatelessWidget {
+class _InlineError extends StatelessWidget {
   final String message;
-  const _InlinError({required this.message});
+  const _InlineError({required this.message});
 
   @override
   Widget build(BuildContext context) => Container(

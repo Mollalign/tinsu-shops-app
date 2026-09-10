@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../dashboard/data/dashboard_repository.dart';
 import '../../../dashboard/domain/dashboard_model.dart';
@@ -33,6 +34,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (_, shopId) => shopId ?? '',
@@ -40,8 +42,6 @@ class OwnerDashboardScreen extends ConsumerWidget {
     );
 
     if (shopId.isEmpty) {
-      // No shop selected yet — redirect to shop picker after the frame
-      // (cannot call context.go during build)
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) context.go('/owner/shops');
       });
@@ -59,14 +59,14 @@ class OwnerDashboardScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           session.maybeWhen(
-            authenticated: (u, _) => u.name.isNotEmpty ? u.name : 'Dashboard',
-            orElse: () => 'Dashboard',
+            authenticated: (u, _) => u.name.isNotEmpty ? u.name : l.dashboard,
+            orElse: () => l.dashboard,
           ),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.swap_horiz),
-            tooltip: 'Switch Shop',
+            tooltip: l.switchShop,
             onPressed: () => context.go('/owner/shops'),
           ),
         ],
@@ -86,12 +86,13 @@ class OwnerDashboardScreen extends ConsumerWidget {
               loading: () => _Skeleton(height: 150),
               error: (e, _) => _InlineError(
                 message: e is AppError
-                    ? e.toUserMessage()
-                    : 'Could not load report.',
+                    ? e.toUserMessage(l)
+                    : l.couldNotLoadReport,
                 onRetry: () =>
                     ref.invalidate(shopTodayReportProvider(shopId)),
+                retryLabel: l.retry,
               ),
-              data: (report) => _SalesHero(report: report),
+              data: (report) => _SalesHero(report: report, l: l),
             ),
             const SizedBox(height: 20),
 
@@ -99,7 +100,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
             lowStockAsync.maybeWhen(
               data: (products) {
                 if (products.isEmpty) return const SizedBox.shrink();
-                return _LowStockSection(products: products);
+                return _LowStockSection(products: products, l: l);
               },
               orElse: () => const SizedBox.shrink(),
             ),
@@ -108,7 +109,7 @@ class OwnerDashboardScreen extends ConsumerWidget {
             workersAsync.maybeWhen(
               data: (workers) {
                 if (workers.isEmpty) return const SizedBox.shrink();
-                return _WorkerSalesSection(workers: workers);
+                return _WorkerSalesSection(workers: workers, l: l);
               },
               orElse: () => const SizedBox.shrink(),
             ),
@@ -121,7 +122,8 @@ class OwnerDashboardScreen extends ConsumerWidget {
 
 class _SalesHero extends StatelessWidget {
   final TodayReport report;
-  const _SalesHero({required this.report});
+  final AppLocalizations l;
+  const _SalesHero({required this.report, required this.l});
 
   @override
   Widget build(BuildContext context) {
@@ -139,8 +141,8 @@ class _SalesHero extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Today's Sales",
-              style: TextStyle(color: Colors.white70, fontSize: 14)),
+          Text(l.todaySales,
+              style: const TextStyle(color: Colors.white70, fontSize: 14)),
           const SizedBox(height: 4),
           Text(
             Formatters.currency(report.total),
@@ -153,9 +155,9 @@ class _SalesHero extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              _HeroStat('${report.numberOfSales}', 'sales'),
+              _HeroStat('${report.numberOfSales}', l.sales),
               const SizedBox(width: 24),
-              _HeroStat('${report.itemsSold}', 'items'),
+              _HeroStat('${report.itemsSold}', l.items),
             ],
           ),
         ],
@@ -187,7 +189,8 @@ class _HeroStat extends StatelessWidget {
 
 class _LowStockSection extends StatelessWidget {
   final List<ProductModel> products;
-  const _LowStockSection({required this.products});
+  final AppLocalizations l;
+  const _LowStockSection({required this.products, required this.l});
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +202,7 @@ class _LowStockSection extends StatelessWidget {
             const Icon(Icons.warning_amber,
                 color: AppTheme.warning, size: 18),
             const SizedBox(width: 6),
-            Text('Low Stock',
+            Text(l.lowStock,
                 style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
@@ -213,7 +216,7 @@ class _LowStockSection extends StatelessWidget {
           child: Column(
             children: products
                 .take(8)
-                .map((p) => _LowStockRow(product: p))
+                .map((p) => _LowStockRow(product: p, outLabel: l.outOfStock))
                 .toList(),
           ),
         ),
@@ -225,7 +228,8 @@ class _LowStockSection extends StatelessWidget {
 
 class _LowStockRow extends StatelessWidget {
   final ProductModel product;
-  const _LowStockRow({required this.product});
+  final String outLabel;
+  const _LowStockRow({required this.product, required this.outLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +242,7 @@ class _LowStockRow extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium),
           ),
           Text(
-            product.isOutOfStock ? 'Out' : '${product.stockQuantity}',
+            product.isOutOfStock ? outLabel : '${product.stockQuantity}',
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 14,
@@ -255,19 +259,18 @@ class _LowStockRow extends StatelessWidget {
 
 class _WorkerSalesSection extends StatelessWidget {
   final List<WorkerModel> workers;
-  const _WorkerSalesSection({required this.workers});
+  final AppLocalizations l;
+  const _WorkerSalesSection({required this.workers, required this.l});
 
   @override
   Widget build(BuildContext context) {
-    // Note: per-worker sales totals require a dedicated endpoint.
-    // For now show the active workers list as a roster.
     final active = workers.where((w) => w.isActive).toList();
     if (active.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Workers',
+        Text(l.workers,
             style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 10),
         Container(
@@ -328,7 +331,8 @@ class _Skeleton extends StatelessWidget {
 class _InlineError extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
-  const _InlineError({required this.message, this.onRetry});
+  final String? retryLabel;
+  const _InlineError({required this.message, this.onRetry, this.retryLabel});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -347,8 +351,8 @@ class _InlineError extends StatelessWidget {
             if (onRetry != null)
               TextButton(
                   onPressed: onRetry,
-                  child: const Text('Retry',
-                      style: TextStyle(color: AppTheme.error))),
+                  child: Text(retryLabel ?? 'Retry',
+                      style: const TextStyle(color: AppTheme.error))),
           ],
         ),
       );

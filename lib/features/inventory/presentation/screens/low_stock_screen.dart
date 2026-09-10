@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../products/domain/product_model.dart';
 import '../../../products/presentation/screens/products_screen.dart';
@@ -14,6 +15,7 @@ class LowStockScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -24,11 +26,11 @@ class LowStockScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Low Stock')),
+      appBar: AppBar(title: Text(l.lowStock)),
       body: productsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorState(
-          message: e is AppError ? e.toUserMessage() : 'Could not load.',
+          message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
         ),
         data: (products) {
           final lowStock = products
@@ -37,10 +39,10 @@ class LowStockScreen extends ConsumerWidget {
             ..sort((a, b) => a.stockQuantity.compareTo(b.stockQuantity));
 
           if (lowStock.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               icon: Icons.check_circle_outline,
-              title: 'All products well-stocked',
-              description: 'No products need attention right now.',
+              title: l.allStocked,
+              description: l.allStockedDesc,
             );
           }
 
@@ -60,7 +62,7 @@ class LowStockScreen extends ConsumerWidget {
                           color: AppTheme.lowStockText, size: 20),
                       const SizedBox(width: 8),
                       Text(
-                        '${lowStock.length} products need attention',
+                        l.productsNeedAttention(lowStock.length),
                         style: const TextStyle(
                           color: AppTheme.lowStockText,
                           fontWeight: FontWeight.w600,
@@ -104,8 +106,8 @@ class LowStockScreen extends ConsumerWidget {
                                   const SizedBox(height: 4),
                                   Text(
                                     p.isOutOfStock
-                                        ? 'Out of stock'
-                                        : '${p.stockQuantity} remaining',
+                                        ? l.outOfStock
+                                        : l.stockRemaining(p.stockQuantity),
                                     style: TextStyle(
                                       fontSize: 13,
                                       color: p.isOutOfStock
@@ -124,9 +126,9 @@ class LowStockScreen extends ConsumerWidget {
                                 color: AppTheme.primaryContainer,
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Text(
-                                'Restock',
-                                style: TextStyle(
+                              child: Text(
+                                l.restock,
+                                style: const TextStyle(
                                   color: AppTheme.primary,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13,

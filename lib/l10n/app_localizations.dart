@@ -116,6 +116,18 @@ abstract class AppLocalizations {
   /// **'Sign In'**
   String get signIn;
 
+  /// No description provided for @signInToOwnerAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to your owner account'**
+  String get signInToOwnerAccount;
+
+  /// No description provided for @loginAsWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Login as Worker'**
+  String get loginAsWorker;
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
@@ -157,6 +169,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Shop'**
   String get selectShop;
+
+  /// No description provided for @selectYourShop.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your shop to continue'**
+  String get selectYourShop;
 
   /// No description provided for @whoAreYou.
   ///
@@ -224,11 +242,23 @@ abstract class AppLocalizations {
   /// **'Search product'**
   String get searchProduct;
 
+  /// No description provided for @searchProductsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products or categories…'**
+  String get searchProductsHint;
+
   /// No description provided for @noResultsFound.
   ///
   /// In en, this message translates to:
   /// **'No results found'**
   String get noResultsFound;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
 
   /// No description provided for @myShops.
   ///
@@ -260,11 +290,23 @@ abstract class AppLocalizations {
   /// **'Location'**
   String get location;
 
+  /// No description provided for @locationOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Location (optional)'**
+  String get locationOptional;
+
   /// No description provided for @phone.
   ///
   /// In en, this message translates to:
   /// **'Phone'**
   String get phone;
+
+  /// No description provided for @phoneOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (optional)'**
+  String get phoneOptional;
 
   /// No description provided for @createShop.
   ///
@@ -277,6 +319,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Switch Shop'**
   String get switchShop;
+
+  /// No description provided for @shopCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop created'**
+  String get shopCreated;
+
+  /// No description provided for @shopsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Shops'**
+  String get shopsLabel;
+
+  /// No description provided for @shopsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View and switch shops'**
+  String get shopsSubtitle;
+
+  /// No description provided for @noShopsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No shops yet'**
+  String get noShopsYet;
+
+  /// No description provided for @noShopsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first shop to get started.'**
+  String get noShopsDesc;
+
+  /// No description provided for @noShopSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No shop selected'**
+  String get noShopSelected;
+
+  /// No description provided for @selectAShop.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a shop'**
+  String get selectAShop;
 
   /// No description provided for @dashboard.
   ///
@@ -374,6 +458,12 @@ abstract class AppLocalizations {
   /// **'Products'**
   String get products;
 
+  /// No description provided for @productLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get productLabel;
+
   /// No description provided for @addProduct.
   ///
   /// In en, this message translates to:
@@ -410,6 +500,12 @@ abstract class AppLocalizations {
   /// **'Category'**
   String get category;
 
+  /// No description provided for @categoryOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Category (optional)'**
+  String get categoryOptional;
+
   /// No description provided for @saveProduct.
   ///
   /// In en, this message translates to:
@@ -434,6 +530,24 @@ abstract class AppLocalizations {
   /// **'Deactivate Product'**
   String get deactivateProduct;
 
+  /// No description provided for @deactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivate;
+
+  /// No description provided for @deactivateProductTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate Product?'**
+  String get deactivateProductTitle;
+
+  /// No description provided for @deactivateProductContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This product will be hidden. Historical sales are preserved.'**
+  String get deactivateProductContent;
+
   /// No description provided for @addPhoto.
   ///
   /// In en, this message translates to:
@@ -451,6 +565,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add your first product to start selling.'**
   String get noProductsDesc;
+
+  /// No description provided for @noProductsMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'No products matched \"{query}\". Try a different name or category.'**
+  String noProductsMatched(String query);
 
   /// No description provided for @outOfStock.
   ///
@@ -470,11 +590,35 @@ abstract class AppLocalizations {
   /// **'In Stock'**
   String get inStock;
 
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
   /// No description provided for @stockLeft.
   ///
   /// In en, this message translates to:
   /// **'{count} left'**
   String stockLeft(int count);
+
+  /// No description provided for @productSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Product saved'**
+  String get productSaved;
+
+  /// No description provided for @productUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Product updated'**
+  String get productUpdated;
+
+  /// No description provided for @noCategoriesForProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories yet'**
+  String get noCategoriesForProducts;
 
   /// No description provided for @stock.
   ///
@@ -547,6 +691,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} products need attention'**
   String productsNeedAttention(int count);
+
+  /// No description provided for @stockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage inventory levels'**
+  String get stockSubtitle;
+
+  /// No description provided for @management.
+  ///
+  /// In en, this message translates to:
+  /// **'Management'**
+  String get management;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @addCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Category'**
+  String get addCategory;
+
+  /// No description provided for @categoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Category name'**
+  String get categoryName;
+
+  /// No description provided for @categoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Drinks'**
+  String get categoryHint;
+
+  /// No description provided for @renameCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename Category'**
+  String get renameCategory;
+
+  /// No description provided for @newName.
+  ///
+  /// In en, this message translates to:
+  /// **'New name'**
+  String get newName;
+
+  /// No description provided for @rename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rename;
+
+  /// No description provided for @deleteCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String deleteCategoryTitle(String name);
+
+  /// No description provided for @deleteCategoryContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Products in this category will remain but will have no category assigned.'**
+  String get deleteCategoryContent;
+
+  /// No description provided for @noCategoriesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories yet'**
+  String get noCategoriesYet;
+
+  /// No description provided for @noCategoriesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Add categories to help organise your products.'**
+  String get noCategoriesDesc;
+
+  /// No description provided for @couldNotLoadCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load categories.'**
+  String get couldNotLoadCategories;
 
   /// No description provided for @currentSale.
   ///
@@ -632,6 +860,18 @@ abstract class AppLocalizations {
   /// **'Sales will appear here after something is sold.'**
   String get noSalesTodayDesc;
 
+  /// No description provided for @noSalesHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales yet'**
+  String get noSalesHistory;
+
+  /// No description provided for @noSalesHistoryDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales will appear here after the first sale.'**
+  String get noSalesHistoryDesc;
+
   /// No description provided for @mySalesToday.
   ///
   /// In en, this message translates to:
@@ -674,11 +914,143 @@ abstract class AppLocalizations {
   /// **'Tap a product to start selling.'**
   String get cartEmptyDesc;
 
+  /// No description provided for @saleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sale is empty'**
+  String get saleEmpty;
+
+  /// No description provided for @saleEmptyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a product to add it.'**
+  String get saleEmptyDesc;
+
   /// No description provided for @itemsWithCount.
   ///
   /// In en, this message translates to:
   /// **'{count} item{plural} · {total} ETB'**
   String itemsWithCount(int count, String plural, String total);
+
+  /// No description provided for @completeSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Sale'**
+  String get completeSale;
+
+  /// No description provided for @completing.
+  ///
+  /// In en, this message translates to:
+  /// **'Completing...'**
+  String get completing;
+
+  /// No description provided for @recentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recentLabel;
+
+  /// No description provided for @noRecentProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent products'**
+  String get noRecentProducts;
+
+  /// No description provided for @noRecentProductsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Products you sell will appear here.'**
+  String get noRecentProductsDesc;
+
+  /// No description provided for @noProductsInCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No products in this category.'**
+  String get noProductsInCategory;
+
+  /// No description provided for @noSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get noSearchResults;
+
+  /// No description provided for @noSearchResultsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'No products or categories matched \"{query}\".'**
+  String noSearchResultsDesc(String query);
+
+  /// No description provided for @endShift.
+  ///
+  /// In en, this message translates to:
+  /// **'End Shift'**
+  String get endShift;
+
+  /// No description provided for @endShiftTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End Shift?'**
+  String get endShiftTitle;
+
+  /// No description provided for @endShiftContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This will clear your cart and log you out.'**
+  String get endShiftContent;
+
+  /// No description provided for @clearSaleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear sale?'**
+  String get clearSaleTitle;
+
+  /// No description provided for @clearSaleContent.
+  ///
+  /// In en, this message translates to:
+  /// **'All items will be removed.'**
+  String get clearSaleContent;
+
+  /// No description provided for @backToProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'← Back to Products'**
+  String get backToProducts;
+
+  /// No description provided for @couldNotLoadSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load sales.'**
+  String get couldNotLoadSales;
+
+  /// No description provided for @couldNotLoadSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load sale.'**
+  String get couldNotLoadSale;
+
+  /// No description provided for @couldNotLoadProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load products.'**
+  String get couldNotLoadProducts;
+
+  /// No description provided for @couldNotLoadShops.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load shops.'**
+  String get couldNotLoadShops;
+
+  /// No description provided for @couldNotLoadReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load report.'**
+  String get couldNotLoadReport;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get dateLabel;
 
   /// No description provided for @workers.
   ///
@@ -692,17 +1064,41 @@ abstract class AppLocalizations {
   /// **'Add Worker'**
   String get addWorker;
 
+  /// No description provided for @addNewWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a new worker'**
+  String get addNewWorker;
+
   /// No description provided for @workerName.
   ///
   /// In en, this message translates to:
   /// **'Name'**
   String get workerName;
 
+  /// No description provided for @workerNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Hana'**
+  String get workerNameHint;
+
   /// No description provided for @workerAdded.
   ///
   /// In en, this message translates to:
   /// **'Worker Added'**
   String get workerAdded;
+
+  /// No description provided for @workerCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Worker Created'**
+  String get workerCreated;
+
+  /// No description provided for @workerUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Worker updated'**
+  String get workerUpdated;
 
   /// No description provided for @pinAutoGenerated.
   ///
@@ -715,6 +1111,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share this PIN with the worker.'**
   String get sharePinWithWorker;
+
+  /// No description provided for @shareWithWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this with the worker.'**
+  String get shareWithWorker;
+
+  /// No description provided for @pinOnlyShownOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the only time it will be shown.'**
+  String get pinOnlyShownOnce;
 
   /// No description provided for @copyPin.
   ///
@@ -764,6 +1172,12 @@ abstract class AppLocalizations {
   /// **'Worker'**
   String get workerRole;
 
+  /// No description provided for @ownerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get ownerLabel;
+
   /// No description provided for @workerDisabled.
   ///
   /// In en, this message translates to:
@@ -782,11 +1196,113 @@ abstract class AppLocalizations {
   /// **'PIN has been reset'**
   String get pinReset;
 
+  /// No description provided for @activeStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activeStatus;
+
+  /// No description provided for @disabledStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabledStatus;
+
+  /// No description provided for @workerNameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot be empty.'**
+  String get workerNameEmpty;
+
+  /// No description provided for @workerNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get workerNameRequired;
+
+  /// No description provided for @couldNotLoadWorkers.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load workers.'**
+  String get couldNotLoadWorkers;
+
+  /// No description provided for @couldNotLoadWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load worker.'**
+  String get couldNotLoadWorker;
+
+  /// No description provided for @workersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your team'**
+  String get workersSubtitle;
+
+  /// No description provided for @generateAutomatically.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate automatically'**
+  String get generateAutomatically;
+
+  /// No description provided for @enterManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter manually'**
+  String get enterManually;
+
+  /// No description provided for @createWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Worker'**
+  String get createWorker;
+
+  /// No description provided for @pinDigitsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'4+ digits'**
+  String get pinDigitsHint;
+
+  /// No description provided for @confirmPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm PIN'**
+  String get confirmPin;
+
+  /// No description provided for @pinMustBe4Digits.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN must be at least 4 digits.'**
+  String get pinMustBe4Digits;
+
+  /// No description provided for @pinMustBeDigitsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN must contain only digits.'**
+  String get pinMustBeDigitsOnly;
+
+  /// No description provided for @pinsMustMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'PINs do not match.'**
+  String get pinsMustMatch;
+
+  /// No description provided for @newPinsMustMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'New PIN and confirmation do not match.'**
+  String get newPinsMustMatch;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more;
 
   /// No description provided for @account.
   ///
@@ -836,6 +1352,78 @@ abstract class AppLocalizations {
   /// **'Choose Language'**
   String get chooseLanguage;
 
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @changePin.
+  ///
+  /// In en, this message translates to:
+  /// **'Change PIN'**
+  String get changePin;
+
+  /// No description provided for @changePinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your login PIN'**
+  String get changePinSubtitle;
+
+  /// No description provided for @currentPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Current PIN'**
+  String get currentPin;
+
+  /// No description provided for @newPin.
+  ///
+  /// In en, this message translates to:
+  /// **'New PIN'**
+  String get newPin;
+
+  /// No description provided for @confirmNewPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm New PIN'**
+  String get confirmNewPin;
+
+  /// No description provided for @pinChangedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN changed successfully.'**
+  String get pinChangedSuccess;
+
+  /// No description provided for @updateLoginPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your login PIN'**
+  String get updateLoginPin;
+
+  /// No description provided for @enterCurrentPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your current PIN to confirm, then set a new one.'**
+  String get enterCurrentPinHint;
+
+  /// No description provided for @currentPinRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Current PIN is required.'**
+  String get currentPinRequired;
+
+  /// No description provided for @newPinMustBe4Digits.
+  ///
+  /// In en, this message translates to:
+  /// **'New PIN must be at least 4 digits.'**
+  String get newPinMustBe4Digits;
+
   /// No description provided for @goodMorning.
   ///
   /// In en, this message translates to:
@@ -853,6 +1441,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Good evening, {name}'**
   String goodEvening(String name);
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get nameRequired;
+
+  /// No description provided for @priceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Price is required.'**
+  String get priceRequired;
+
+  /// No description provided for @priceInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid price.'**
+  String get priceInvalid;
+
+  /// No description provided for @stockInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number.'**
+  String get stockInvalid;
 
   /// No description provided for @errorNetwork.
   ///
@@ -875,20 +1487,20 @@ abstract class AppLocalizations {
   /// No description provided for @errorInsufficientStock.
   ///
   /// In en, this message translates to:
-  /// **'Only {count} items are available.'**
-  String errorInsufficientStock(int count);
+  /// **'Only {count} of \"{productName}\" available.'**
+  String errorInsufficientStock(int count, String productName);
+
+  /// No description provided for @errorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The requested item was not found.'**
+  String get errorNotFound;
 
   /// No description provided for @errorGeneric.
   ///
   /// In en, this message translates to:
   /// **'An error occurred. Please try again.'**
   String get errorGeneric;
-
-  /// No description provided for @more.
-  ///
-  /// In en, this message translates to:
-  /// **'More'**
-  String get more;
 
   /// No description provided for @salesHistory.
   ///
@@ -937,6 +1549,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ETB'**
   String get currencySymbol;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @shopLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopLabel;
+
+  /// No description provided for @recentSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Sales'**
+  String get recentSales;
+
+  /// No description provided for @allStocked.
+  ///
+  /// In en, this message translates to:
+  /// **'All products well-stocked'**
+  String get allStocked;
+
+  /// No description provided for @allStockedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'No products need attention right now.'**
+  String get allStockedDesc;
+
+  /// No description provided for @stockRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} remaining'**
+  String stockRemaining(int count);
+
+  /// No description provided for @currentStockValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Current stock: {count}'**
+  String currentStockValue(int count);
+
+  /// No description provided for @noProductsFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match the selected filter.'**
+  String get noProductsFilter;
+
+  /// No description provided for @useAnotherAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another account'**
+  String get useAnotherAccount;
+
+  /// No description provided for @recent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recent;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @stockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get stockLabel;
 }
 
 class _AppLocalizationsDelegate

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/states.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../products/domain/product_model.dart';
 import '../../../products/presentation/screens/products_screen.dart';
@@ -21,6 +22,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -30,7 +32,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Stock')),
+      appBar: AppBar(title: Text(l.stockLabel)),
       body: Column(
         children: [
           // Filter chips
@@ -38,11 +40,11 @@ class _StockScreenState extends ConsumerState<StockScreen> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             child: Row(
               children: [
-                _FilterChip(label: 'All', selected: _filter == 0, onTap: () => setState(() => _filter = 0)),
+                _FilterChip(label: l.all, selected: _filter == 0, onTap: () => setState(() => _filter = 0)),
                 const SizedBox(width: 8),
-                _FilterChip(label: 'Low Stock', selected: _filter == 1, onTap: () => setState(() => _filter = 1)),
+                _FilterChip(label: l.lowStock, selected: _filter == 1, onTap: () => setState(() => _filter = 1)),
                 const SizedBox(width: 8),
-                _FilterChip(label: 'Out of Stock', selected: _filter == 2, onTap: () => setState(() => _filter = 2)),
+                _FilterChip(label: l.outOfStock, selected: _filter == 2, onTap: () => setState(() => _filter = 2)),
               ],
             ),
           ),
@@ -50,7 +52,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
             child: productsAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => ErrorState(
-                message: e is AppError ? e.toUserMessage() : 'Could not load stock.',
+                message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
                 onRetry: () => ref.invalidate(ownerProductsProvider(shopId)),
               ),
               data: (products) {
@@ -60,10 +62,10 @@ class _StockScreenState extends ConsumerState<StockScreen> {
                 filtered.sort((a, b) => a.stockQuantity.compareTo(b.stockQuantity));
 
                 if (filtered.isEmpty) {
-                  return const EmptyState(
+                  return EmptyState(
                     icon: Icons.inventory_2_outlined,
-                    title: 'No products',
-                    description: 'No products match the selected filter.',
+                    title: l.noProducts,
+                    description: l.noProductsFilter,
                   );
                 }
                 return RefreshIndicator(
@@ -75,6 +77,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
                     separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (context, i) => _StockTile(
                       product: filtered[i],
+                      outOfStockLabel: l.outOfStock,
                       onTap: () => context.push(
                           '/owner/products/${filtered[i].id}/restock'),
                     ),
@@ -124,7 +127,8 @@ class _FilterChip extends StatelessWidget {
 class _StockTile extends StatelessWidget {
   final ProductModel product;
   final VoidCallback onTap;
-  const _StockTile({required this.product, required this.onTap});
+  final String outOfStockLabel;
+  const _StockTile({required this.product, required this.onTap, required this.outOfStockLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +157,7 @@ class _StockTile extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              isOut ? 'Out of stock' : '${product.stockQuantity}',
+              isOut ? outOfStockLabel : '${product.stockQuantity}',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: isOut
                         ? AppTheme.outOfStockText

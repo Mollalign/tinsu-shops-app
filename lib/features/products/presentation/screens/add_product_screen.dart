@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/widgets/buttons.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/categories_repository.dart';
 import '../../data/products_repository.dart';
@@ -57,12 +58,12 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
       ref.invalidate(ownerProductsProvider(shopId));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product saved')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.productSaved)),
         );
         context.pop();
       }
     } on AppError catch (e) {
-      setState(() => _error = e.toUserMessage());
+      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -76,12 +77,12 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
         selected: _selectedCategory,
       ),
     );
-    // picked == null if user tapped "No Category"
     if (mounted) setState(() => _selectedCategory = picked);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
       authenticated: (u, shopId) => shopId ?? '',
@@ -89,7 +90,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Product')),
+      appBar: AppBar(title: Text(l.addProduct)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -112,7 +113,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                       Icon(Icons.add_a_photo_outlined,
                           size: 32, color: AppTheme.outline),
                       SizedBox(height: 6),
-                      Text('Add Photo',
+                      Text('Photo',
                           style: TextStyle(
                               fontSize: 12, color: AppTheme.outline)),
                     ],
@@ -122,25 +123,25 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
               const SizedBox(height: 24),
               TextFormField(
                 controller: _nameCtrl,
-                decoration: const InputDecoration(labelText: 'Product name'),
+                decoration: InputDecoration(labelText: l.productName),
                 textCapitalization: TextCapitalization.words,
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Name is required' : null,
+                    v == null || v.trim().isEmpty ? l.nameRequired : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _priceCtrl,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(
-                  labelText: 'Selling price',
+                decoration: InputDecoration(
+                  labelText: l.sellingPrice,
                   suffixText: 'ETB',
                 ),
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Price is required';
+                  if (v == null || v.trim().isEmpty) return l.priceRequired;
                   if (double.tryParse(v.trim()) == null ||
                       double.parse(v.trim()) <= 0) {
-                    return 'Enter a valid price';
+                    return l.priceInvalid;
                   }
                   return null;
                 },
@@ -149,11 +150,11 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
               TextFormField(
                 controller: _stockCtrl,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Starting stock'),
+                decoration: InputDecoration(labelText: l.startingStock),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return null;
                   if (int.tryParse(v.trim()) == null) {
-                    return 'Enter a whole number';
+                    return l.stockInvalid;
                   }
                   return null;
                 },
@@ -185,8 +186,8 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                             child: Text(
                               _selectedCategory?.name ??
                                   (cats.isEmpty
-                                      ? 'No categories — add from Settings'
-                                      : 'Category (optional)'),
+                                      ? l.noCategoriesForProducts
+                                      : l.categoryOptional),
                               style: TextStyle(
                                 color: _selectedCategory != null
                                     ? AppTheme.onBackground
@@ -216,7 +217,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                 const SizedBox(height: 16),
               ],
               PrimaryButton(
-                label: 'Save Product',
+                label: l.saveProduct,
                 onPressed: _save,
                 loading: _loading,
               ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../../auth/domain/user_model.dart';
 import '../../../../app/locale_provider.dart';
@@ -12,6 +13,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final currentLocale = ref.watch(localeNotifierProvider);
 
@@ -23,7 +25,7 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(l.more)),
       body: ListView(
         children: [
           // Profile header
@@ -51,7 +53,7 @@ class SettingsScreen extends ConsumerWidget {
                     Text(user?.name ?? '',
                         style: Theme.of(context).textTheme.titleMedium),
                     Text(
-                      isOwner ? 'Owner' : 'Worker',
+                      isOwner ? l.ownerLabel : l.workerRole,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
@@ -64,41 +66,50 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // Language
-          _SectionHeader('Preferences'),
-          _SettingsTile(
-            icon: Icons.language_outlined,
-            title: 'Language',
-            subtitle: currentLocale.languageCode == 'am' ? 'አማርኛ' : 'English',
-            onTap: () => _showLanguagePicker(context, ref, currentLocale.languageCode),
-          ),
-
           if (isOwner) ...[
-            const SizedBox(height: 16),
-            _SectionHeader('Management'),
+            _SectionHeader(l.management),
             _SettingsTile(
-              icon: Icons.store_outlined,
-              title: 'Shops',
-              onTap: () => context.go('/owner/shops'),
+              icon: Icons.warehouse_outlined,
+              title: l.stock,
+              subtitle: l.stockSubtitle,
+              onTap: () => context.go('/owner/stock'),
             ),
             _SettingsTile(
               icon: Icons.people_outline,
-              title: 'Workers',
+              title: l.workers,
+              subtitle: l.workersSubtitle,
               onTap: () => context.go('/owner/workers'),
             ),
             _SettingsTile(
-              icon: Icons.label_outline,
-              title: 'Categories',
-              subtitle: 'Organise your products',
-              onTap: () => context.push('/owner/categories'),
+              icon: Icons.store_outlined,
+              title: l.shopsLabel,
+              subtitle: l.shopsSubtitle,
+              onTap: () => context.go('/owner/shops'),
+            ),
+            const SizedBox(height: 16),
+            _SectionHeader(l.account),
+            _SettingsTile(
+              icon: Icons.lock_outline,
+              title: l.changePin,
+              subtitle: l.changePinSubtitle,
+              onTap: () => context.push('/owner/change-pin'),
             ),
           ],
 
           const SizedBox(height: 16),
-          _SectionHeader('Support'),
+          _SectionHeader(l.preferences),
+          _SettingsTile(
+            icon: Icons.language_outlined,
+            title: l.language,
+            subtitle: currentLocale.languageCode == 'am' ? l.amharic : l.english,
+            onTap: () => _showLanguagePicker(context, ref, currentLocale.languageCode),
+          ),
+
+          const SizedBox(height: 16),
+          _SectionHeader(l.support),
           _SettingsTile(
             icon: Icons.help_outline,
-            title: 'Help',
+            title: l.help,
             onTap: () {},
           ),
           const SizedBox(height: 16),
@@ -114,7 +125,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               onPressed: () => _logout(context, ref),
               icon: const Icon(Icons.logout),
-              label: const Text('Logout'),
+              label: Text(l.logout),
             ),
           ),
           const SizedBox(height: 40),
@@ -125,6 +136,7 @@ class SettingsScreen extends ConsumerWidget {
 
   void _showLanguagePicker(
       BuildContext context, WidgetRef ref, String current) {
+    final l = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -136,12 +148,12 @@ class SettingsScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Choose Language',
+            Text(l.chooseLanguage,
                 style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 16),
             _LangOption(
-              label: 'አማርኛ',
-              subtitle: 'Amharic',
+              label: l.amharic,
+              subtitle: 'አማርኛ',
               code: 'am',
               selected: current == 'am',
               onTap: () {
@@ -153,7 +165,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             _LangOption(
-              label: 'English',
+              label: l.english,
               subtitle: 'English',
               code: 'en',
               selected: current == 'en',
@@ -171,29 +183,26 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _logout(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: Text(l.logout),
+        content: Text(l.confirmLogout),
         actions: [
           TextButton(
-            // Use dialogCtx — NOT the outer context — so we only
-            // pop the dialog, not a GoRouter page.
             onPressed: () => Navigator.of(dialogCtx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogCtx).pop(true),
-            child: const Text('Logout',
-                style: TextStyle(color: AppTheme.error)),
+            child: Text(l.logout,
+                style: const TextStyle(color: AppTheme.error)),
           ),
         ],
       ),
     );
     if (confirmed == true) {
-      // Defer to next frame so the dialog close animation finishes
-      // before GoRouter re-evaluates and redirects to /login.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(sessionProvider.notifier).logout();
       });
@@ -306,7 +315,8 @@ class _LangOption extends StatelessWidget {
                 ),
               ),
               if (selected)
-                const Icon(Icons.check_circle, color: AppTheme.primary),
+                const Icon(Icons.check_circle,
+                    color: AppTheme.primary, size: 22),
             ],
           ),
         ),
