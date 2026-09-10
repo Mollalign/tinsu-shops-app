@@ -10,7 +10,6 @@ import '../features/auth/presentation/screens/worker_select_worker_screen.dart';
 import '../features/auth/presentation/screens/worker_pin_screen.dart';
 import '../features/auth/presentation/session_provider.dart';
 import '../features/dashboard/presentation/screens/owner_dashboard_screen.dart';
-import '../features/dashboard/presentation/screens/worker_today_screen.dart';
 import '../features/products/presentation/screens/products_screen.dart';
 import '../features/products/presentation/screens/add_product_screen.dart';
 import '../features/products/presentation/screens/categories_screen.dart';
@@ -91,8 +90,7 @@ GoRouter router(Ref ref) {
             return '/login';
           }
           if (path.startsWith('/owner') ||
-              path.startsWith('/worker/sell') ||
-              path.startsWith('/worker/today')) {
+              path.startsWith('/worker/sell')) {
             if (rememberedPhone != null && rememberedPhone.isNotEmpty) {
               return '/owner/quick-login';
             }
@@ -120,7 +118,7 @@ GoRouter router(Ref ref) {
             return '/worker/sell';
           }
           if (user.role == UserRole.owner &&
-              (path == '/worker/sell' || path == '/worker/today')) {
+              path == '/worker/sell') {
             return '/owner/shops';
           }
           // Owner has no shop selected yet — redirect non-shops routes to
@@ -181,14 +179,11 @@ GoRouter router(Ref ref) {
         },
       ),
 
-      // ── Worker shell (Sell + Today) ──
+      // ── Worker shell (Sell only) ──
       ShellRoute(
         builder: (context, state, child) => WorkerShell(child: child),
         routes: [
           GoRoute(path: '/worker/sell', builder: (_, __) => const SellScreen()),
-          GoRoute(
-              path: '/worker/today',
-              builder: (_, __) => const WorkerTodayScreen()),
         ],
       ),
 

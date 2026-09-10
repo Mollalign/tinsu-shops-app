@@ -50,23 +50,33 @@ class CartScreen extends ConsumerWidget {
                         _CartItemRow(item: cart.items[i]),
                   ),
                 ),
-                // Total + note
+                // Total footer
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                   decoration: BoxDecoration(
                     color: AppTheme.surface,
                     border:
                         Border(top: BorderSide(color: AppTheme.divider)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 12,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         mainAxisAlignment:
                             MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Estimated Total',
-                              style:
-                                  Theme.of(context).textTheme.titleMedium),
+                          Text('Total',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600)),
                           Text(
                             Formatters.currency(cart.estimatedTotal),
                             style: Theme.of(context)
@@ -79,18 +89,13 @@ class CartScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Actual total is calculated at sale time.',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: AppTheme.outline),
-                      ),
-                      const SizedBox(height: 4),
-                      TextButton(
-                        onPressed: () => context.pop(),
-                        child: const Text('← Back to Products'),
+                      const SizedBox(height: 14),
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextButton(
+                          onPressed: () => context.pop(),
+                          child: const Text('← Back to Products'),
+                        ),
                       ),
                     ],
                   ),
@@ -142,7 +147,7 @@ class _CartItemRow extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          // Name + unit price
+          // Name + price × qty
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,10 +159,13 @@ class _CartItemRow extends ConsumerWidget {
                       .titleSmall
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
-                  '${Formatters.currency(item.product.price)} each',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  '${Formatters.currency(item.product.price)} × ${item.quantity}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: AppTheme.outline),
                 ),
               ],
             ),
@@ -216,17 +224,17 @@ class _StepBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 36,
-        height: 36,
+        width: 44,
+        height: 44,
         decoration: BoxDecoration(
           color: enabled
               ? (color?.withValues(alpha: 0.1) ?? AppTheme.primaryContainer)
               : AppTheme.divider,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
           icon,
-          size: 18,
+          size: 20,
           color: enabled
               ? (color ?? AppTheme.primary)
               : AppTheme.outline,

@@ -23,6 +23,10 @@ import '../cart_provider.dart';
 
 part 'sell_screen.g.dart';
 
+/// Sentinel value for the "Recent" pseudo-category filter chip.
+/// Must not collide with real category UUIDs.
+const String _kRecentCategory = '__recent__';
+
 @riverpod
 Future<List<CategoryModel>> shopCategories(Ref ref, String shopId) =>
     ref.watch(categoriesRepositoryProvider).listCategories(shopId);
@@ -58,7 +62,8 @@ class SellScreen extends ConsumerStatefulWidget {
 class _SellScreenState extends ConsumerState<SellScreen> {
   final _searchCtrl = TextEditingController();
   String _query = '';
-  String? _selectedCategoryId; // null = All
+  // null = All, '__recent__' = Recent filter, otherwise = category UUID
+  String? _selectedCategoryId;
   Timer? _debounce;
   bool _checkingOut = false;
   String? _checkoutError;
@@ -155,7 +160,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
         child: Column(
           children: [
             // ── Header ──
-            _SellHeader(workerName: workerName, cart: cart),
+            _SellHeader(workerName: workerName),
 
             // ── Search ──
             Padding(
@@ -165,7 +170,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                 onChanged: _onSearch,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText: 'Search products or categories',
+                  hintText: 'Search products...',
                   prefixIcon:
                       const Icon(Icons.search, color: AppTheme.outline),
                   suffixIcon: _query.isNotEmpty
@@ -214,11 +219,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                 ),
               ),
 
-            // ── Recently Sold (hidden when no history) ──
-            if (_query.isEmpty)
-              _RecentlySoldSection(shopId: shopId),
-
-            // ── Category filter ──
+            // ── Category / Recent filter chips ──
             _CategoryFilterBar(
               shopId: shopId,
               selectedId: _selectedCategoryId,
@@ -226,7 +227,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                   setState(() => _selectedCategoryId = id),
             ),
 
-            // ── Product grid ──
+            // ── Product grid or search results ──
             Expanded(
               child: _query.isEmpty
                   ? _ProductGrid(
@@ -236,7 +237,10 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                   : _SearchResultList(
                       shopId: shopId,
                       query: _query,
-                      categoryId: _selectedCategoryId,
+                      // When searching while Recent is active, search all products
+                      categoryId: _selectedCategoryId == _kRecentCategory
+                          ? null
+                          : _selectedCategoryId,
                       onCategorySelected: (id) {
                         _searchCtrl.clear();
                         setState(() {
@@ -268,8 +272,7 @@ class _SellScreenState extends ConsumerState<SellScreen> {
 
 class _SellHeader extends ConsumerWidget {
   final String workerName;
-  final CartState cart;
-  const _SellHeader({required this.workerName, required this.cart});
+  const _SellHeader({required this.workerName});
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
@@ -293,7 +296,6 @@ class _SellHeader extends ConsumerWidget {
       ),
     );
     if (confirmed != true) return;
-    // Clear the cart first, then log out
     ref.read(cartProvider.notifier).clear();
     await ref.read(sessionProvider.notifier).logout();
     if (context.mounted) context.go('/worker/select');
@@ -301,20 +303,45 @@ class _SellHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final initial = workerName.isNotEmpty ? workerName[0].toUpperCase() : '?';
+
     return Container(
       color: AppTheme.surface,
       padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
       child: Row(
         children: [
+          // ── Worker avatar ──
+          Container(
+            width: 42,
+            height: 42,
+            decoration: const BoxDecoration(
+              color: AppTheme.primaryContainer,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                initial,
+                style: const TextStyle(
+                  color: AppTheme.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          // ── Title + worker name ──
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Sell',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                  style:
+                      Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                 ),
                 if (workerName.isNotEmpty)
                   Text(
@@ -327,39 +354,13 @@ class _SellHeader extends ConsumerWidget {
               ],
             ),
           ),
-          if (!cart.isEmpty)
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.shopping_cart_outlined,
-                        size: 16, color: AppTheme.primary),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${cart.totalItems}',
-                      style: const TextStyle(
-                        color: AppTheme.primary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          const SizedBox(width: 4),
-          // Logout button
+
+          // ── End shift icon ──
           Tooltip(
             message: 'End Shift',
             child: IconButton(
-              icon: const Icon(Icons.logout, size: 22, color: AppTheme.outline),
+              icon: const Icon(Icons.exit_to_app,
+                  size: 22, color: AppTheme.outline),
               onPressed: () => _confirmLogout(context, ref),
             ),
           ),
@@ -389,53 +390,80 @@ class _CartBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+      padding: const EdgeInsets.fromLTRB(16, 10, 12, 12),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
-        border: Border(top: BorderSide(color: AppTheme.divider)),
+        color: AppTheme.primaryContainer,
+        border: Border(
+            top: BorderSide(
+                color: AppTheme.primary.withValues(alpha: 0.2))),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, -4),
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
         children: [
-          // Summary row — tappable to open cart detail
-          GestureDetector(
-            onTap: onViewCart,
-            child: Row(
-              children: [
-                const Icon(Icons.shopping_cart_outlined,
-                    size: 18, color: AppTheme.outline),
-                const SizedBox(width: 6),
-                Text(
-                  '${cart.totalItems} item${cart.totalItems > 1 ? 's' : ''}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const Spacer(),
-                Text(
-                  Formatters.currency(cart.estimatedTotal),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.primary,
+          // Summary info — tappable to view cart detail
+          Expanded(
+            child: GestureDetector(
+              onTap: onViewCart,
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                children: [
+                  const Icon(Icons.shopping_cart_rounded,
+                      size: 20, color: AppTheme.primary),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                '${cart.totalItems} item${cart.totalItems > 1 ? 's' : ''}',
+                            style: const TextStyle(
+                              color: AppTheme.onSurfaceVariant,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const TextSpan(
+                            text: '  ·  ',
+                            style: TextStyle(
+                              color: AppTheme.outline,
+                              fontSize: 14,
+                            ),
+                          ),
+                          TextSpan(
+                            text: Formatters.currency(cart.estimatedTotal),
+                            style: const TextStyle(
+                              color: AppTheme.primary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(Icons.chevron_right,
-                    size: 18, color: AppTheme.outline),
-              ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 8),
-          // Complete Sale button — full width, prominent
+          const SizedBox(width: 12),
+
+          // Complete Sale button
           SizedBox(
-            width: double.infinity,
+            height: 48,
             child: ElevatedButton(
               onPressed: checking ? null : onComplete,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                minimumSize: Size.zero,
+              ),
               child: checking
                   ? const SizedBox(
                       width: 20,
@@ -443,9 +471,18 @@ class _CartBar extends StatelessWidget {
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2.5),
                     )
-                  : const Text('Complete Sale',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w700)),
+                  : const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Complete Sale',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.arrow_forward, size: 16),
+                      ],
+                    ),
             ),
           ),
         ],
@@ -471,41 +508,50 @@ class _CategoryFilterBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(shopCategoriesProvider(shopId));
-    return async.when(
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (cats) {
-        if (cats.isEmpty) return const SizedBox.shrink();
-        return SizedBox(
-          height: 36,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            children: [
-              _CategoryChip(
-                label: 'All',
-                selected: selectedId == null,
-                onTap: () => onSelected(null),
-              ),
-              ...cats.map((c) => _CategoryChip(
-                    label: c.name,
-                    selected: selectedId == c.id,
-                    onTap: () => onSelected(c.id),
-                  )),
-            ],
+    // Always show All + Recent even while loading or on error
+    final List<CategoryModel> cats = async.maybeWhen(
+      data: (c) => c,
+      orElse: () => [],
+    );
+    return SizedBox(
+      height: 44,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        children: [
+          _CategoryChip(
+            label: 'All',
+            selected: selectedId == null,
+            onTap: () => onSelected(null),
           ),
-        );
-      },
+          _CategoryChip(
+            label: 'Recent',
+            icon: Icons.star_rounded,
+            selected: selectedId == _kRecentCategory,
+            onTap: () => onSelected(_kRecentCategory),
+          ),
+          ...cats.map((c) => _CategoryChip(
+                label: c.name,
+                selected: selectedId == c.id,
+                onTap: () => onSelected(c.id),
+              )),
+        ],
+      ),
     );
   }
 }
 
 class _CategoryChip extends StatelessWidget {
   final String label;
+  final IconData? icon;
   final bool selected;
   final VoidCallback onTap;
-  const _CategoryChip(
-      {required this.label, required this.selected, required this.onTap});
+  const _CategoryChip({
+    required this.label,
+    this.icon,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -515,7 +561,7 @@ class _CategoryChip extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: selected ? AppTheme.primary : AppTheme.surfaceVariant,
             borderRadius: BorderRadius.circular(20),
@@ -523,13 +569,26 @@ class _CategoryChip extends StatelessWidget {
               color: selected ? AppTheme.primary : AppTheme.divider,
             ),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: selected ? Colors.white : AppTheme.onSurfaceVariant,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(
+                  icon,
+                  size: 14,
+                  color: selected ? Colors.white : AppTheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 4),
+              ],
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: selected ? Colors.white : AppTheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -546,16 +605,52 @@ class _ProductGrid extends ConsumerWidget {
   final String? categoryId;
   const _ProductGrid({required this.shopId, this.categoryId});
 
+  bool get _isRecent => categoryId == _kRecentCategory;
+
+  int _columns(BuildContext context) {
+    final w = MediaQuery.sizeOf(context).width;
+    if (w >= 840) return 5;
+    if (w >= 600) return 3;
+    return 2;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(shopProductsProvider(shopId, categoryId: categoryId));
+    if (_isRecent) {
+      final async = ref.watch(recentProductsProvider(shopId));
+      return async.when(
+        loading: () => ProductGridSkeleton(columns: _columns(context)),
+        error: (e, _) => ErrorState(
+          message: e is AppError
+              ? e.toUserMessage()
+              : 'Could not load recent products.',
+          onRetry: () => ref.invalidate(recentProductsProvider(shopId)),
+        ),
+        data: (products) {
+          final active = products.where((p) => p.isActive).toList();
+          if (active.isEmpty) {
+            return const EmptyState(
+              icon: Icons.history_outlined,
+              title: 'No recent products',
+              description: 'Products you sell will appear here.',
+            );
+          }
+          return _buildGrid(context, ref, active,
+              onRefresh: () => ref.invalidate(recentProductsProvider(shopId)));
+        },
+      );
+    }
 
+    // All / category
+    final async =
+        ref.watch(shopProductsProvider(shopId, categoryId: categoryId));
     return async.when(
-      loading: () => const ProductGridSkeleton(),
+      loading: () => ProductGridSkeleton(columns: _columns(context)),
       error: (e, _) => ErrorState(
         message:
             e is AppError ? e.toUserMessage() : 'Could not load products.',
-        onRetry: () => ref.invalidate(shopProductsProvider(shopId, categoryId: categoryId)),
+        onRetry: () => ref
+            .invalidate(shopProductsProvider(shopId, categoryId: categoryId)),
       ),
       data: (products) {
         final active = products.where((p) => p.isActive).toList();
@@ -566,23 +661,35 @@ class _ProductGrid extends ConsumerWidget {
             description: 'No products in this category.',
           );
         }
-        return RefreshIndicator(
-          color: AppTheme.primary,
-          onRefresh: () async =>
-              ref.invalidate(shopProductsProvider(shopId, categoryId: categoryId)),
-          child: GridView.builder(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.78,
-            ),
-            itemCount: active.length,
-            itemBuilder: (context, i) => _TapProductCard(product: active[i]),
-          ),
-        );
+        return _buildGrid(context, ref, active,
+            onRefresh: () => ref
+                .invalidate(shopProductsProvider(shopId, categoryId: categoryId)));
       },
+    );
+  }
+
+  Widget _buildGrid(
+    BuildContext context,
+    WidgetRef ref,
+    List<ProductModel> products, {
+    required VoidCallback onRefresh,
+  }) {
+    final cols = _columns(context);
+    return RefreshIndicator(
+      color: AppTheme.primary,
+      onRefresh: () async => onRefresh(),
+      child: GridView.builder(
+        // 120 px of bottom padding clears cart bar + nav bar
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 120),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: cols,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.72,
+        ),
+        itemCount: products.length,
+        itemBuilder: (context, i) => _TapProductCard(product: products[i]),
+      ),
     );
   }
 }
@@ -751,7 +858,7 @@ class _TapProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Only listen to the quantity for THIS product — avoids full grid rebuild
+    // Granular selector — only rebuilds when THIS product's qty changes
     final qty = ref.watch(
       cartProvider.select((s) => s.quantityFor(product.id)),
     );
@@ -760,40 +867,43 @@ class _TapProductCard extends ConsumerWidget {
     final isLow = product.isLowStock;
     final isSelected = qty > 0;
 
-    return GestureDetector(
-      onTap: isOut ? null : () => ref.read(cartProvider.notifier).addProduct(product),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(
-            color: isSelected ? AppTheme.primary : AppTheme.divider,
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppTheme.primary.withValues(alpha: 0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(
+          color: isSelected ? AppTheme.primary : AppTheme.divider,
+          width: isSelected ? 2 : 1,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ── Photo ──
-            Expanded(
-              flex: 5,
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: AppTheme.primary.withValues(alpha: 0.15),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ── Photo area — tap image to add to cart ──
+          Expanded(
+            flex: 5,
+            child: GestureDetector(
+              onTap: isOut
+                  ? null
+                  : () =>
+                      ref.read(cartProvider.notifier).addProduct(product),
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(AppTheme.radiusMd - 1),
@@ -809,7 +919,7 @@ class _TapProductCard extends ConsumerWidget {
                         left: 6,
                         child: _StockBadge(isOut: isOut),
                       ),
-                    // Quantity badge — top right
+                    // Cart quantity badge — top right
                     if (isSelected)
                       Positioned(
                         top: 6,
@@ -820,42 +930,197 @@ class _TapProductCard extends ConsumerWidget {
                 ),
               ),
             ),
-            // ── Info ──
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      product.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style:
-                          Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: isOut ? AppTheme.outline : null,
-                              ),
-                    ),
-                    Text(
-                      Formatters.currency(product.price),
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall
-                          ?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color:
-                                isOut ? AppTheme.outline : AppTheme.primary,
+          ),
+
+          // ── Info + controls ──
+          Expanded(
+            flex: 4,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 7, 10, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Product name
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                          color: isOut ? AppTheme.outline : null,
+                        ),
+                  ),
+
+                  // Price + stock left text
+                  Row(
+                    children: [
+                      Text(
+                        Formatters.currency(product.price),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: isOut
+                                  ? AppTheme.outline
+                                  : AppTheme.primary,
+                            ),
+                      ),
+                      if (isLow && !isOut) ...[
+                        const SizedBox(width: 5),
+                        Flexible(
+                          child: Text(
+                            '· ${product.stockQuantity} left',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppTheme.lowStockText,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
+                        ),
+                      ],
+                    ],
+                  ),
+
+                  // ── Add button or qty stepper ──
+                  if (isOut)
+                    // Out of stock
+                    Container(
+                      height: 34,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceVariant,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'Out of stock',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppTheme.outline,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )
+                  else if (!isSelected)
+                    // + Add button
+                    GestureDetector(
+                      onTap: () => ref
+                          .read(cartProvider.notifier)
+                          .addProduct(product),
+                      child: Container(
+                        height: 34,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: AppTheme.primary, width: 1.5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add,
+                                size: 16, color: AppTheme.primary),
+                            SizedBox(width: 4),
+                            Text(
+                              'Add',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppTheme.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    // − qty + stepper
+                    SizedBox(
+                      height: 34,
+                      child: Row(
+                        children: [
+                          _CardStepBtn(
+                            icon: qty > 1
+                                ? Icons.remove
+                                : Icons.delete_outline,
+                            color: qty == 1
+                                ? AppTheme.error
+                                : AppTheme.primary,
+                            onTap: () => ref
+                                .read(cartProvider.notifier)
+                                .decrement(product.id),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: AnimatedSwitcher(
+                                duration:
+                                    const Duration(milliseconds: 150),
+                                child: Text(
+                                  '$qty',
+                                  key: ValueKey(qty),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppTheme.onBackground,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          _CardStepBtn(
+                            icon: Icons.add,
+                            color: AppTheme.primary,
+                            onTap: qty < product.stockQuantity
+                                ? () => ref
+                                    .read(cartProvider.notifier)
+                                    .increment(product.id)
+                                : null,
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                ],
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Small square step button used inside the product card.
+class _CardStepBtn extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback? onTap;
+  const _CardStepBtn(
+      {required this.icon, required this.color, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onTap != null;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: enabled
+              ? color.withValues(alpha: 0.12)
+              : AppTheme.divider,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          size: 17,
+          color: enabled ? color : AppTheme.outline,
         ),
       ),
     );
@@ -1023,9 +1288,8 @@ class _SearchProductTile extends ConsumerWidget {
               if (qty > 0)
                 _QtyBadge(qty: qty)
               else if (product.isOutOfStock)
-                const Text('Out',
-                    style:
-                        TextStyle(color: AppTheme.error, fontSize: 12)),
+                const Text('Out of stock',
+                    style: TextStyle(color: AppTheme.outline, fontSize: 12)),
             ],
           ),
         ),
@@ -1034,215 +1298,26 @@ class _SearchProductTile extends ConsumerWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────
-// Recently Sold section
-// ─────────────────────────────────────────────────────────
 
-class _RecentlySoldSection extends ConsumerWidget {
-  final String shopId;
-  const _RecentlySoldSection({required this.shopId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(recentProductsProvider(shopId));
-
-    return async.when(
-      // Small placeholder while loading — does not block the product grid
-      loading: () => const SizedBox(
-        height: 112,
-        child: Center(
-          child: SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
-      ),
-      // Silently hide on error — this is a non-critical enhancement
-      error: (_, __) => const SizedBox.shrink(),
-      data: (products) {
-        if (products.isEmpty) return const SizedBox.shrink();
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-              child: Text(
-                'Recently Sold',
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: AppTheme.outline,
-                      letterSpacing: 0.5,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-            ),
-            SizedBox(
-              height: 96,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
-                itemCount: products.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
-                itemBuilder: (ctx, i) =>
-                    _RecentProductCard(product: products[i]),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-/// Compact tap-to-add card for the Recently Sold horizontal list.
-class _RecentProductCard extends ConsumerWidget {
-  final ProductModel product;
-  const _RecentProductCard({required this.product});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isOut = product.isOutOfStock;
-    final qty = ref.watch(
-      cartProvider.select((s) => s.quantityFor(product.id)),
-    );
-
-    return GestureDetector(
-      onTap: isOut
-          ? null
-          : () => ref.read(cartProvider.notifier).addProduct(product),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        width: 72,
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(
-            color: qty > 0 ? AppTheme.primary : AppTheme.divider,
-            width: qty > 0 ? 2 : 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 4,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ── Photo ──
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppTheme.radiusMd - 1),
-                ),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _ProductPhoto(url: product.photoUrl, isOut: isOut),
-                    // Out of stock badge
-                    if (isOut)
-                      Positioned(
-                        top: 3,
-                        left: 3,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: AppTheme.outOfStockBg,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            'Out',
-                            style: TextStyle(
-                              fontSize: 8,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.outOfStockText,
-                            ),
-                          ),
-                        ),
-                      ),
-                    // In-cart quantity badge
-                    if (qty > 0)
-                      Positioned(
-                        top: 3,
-                        right: 3,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primary,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            '×$qty',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            // ── Name + price ──
-            Padding(
-              padding: const EdgeInsets.fromLTRB(5, 4, 5, 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    product.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: isOut ? AppTheme.outline : null,
-                    ),
-                  ),
-                  Text(
-                    Formatters.currency(product.price),
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: isOut ? AppTheme.outline : AppTheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────
 // Skeleton for loading
 // ─────────────────────────────────────────────────────────
 
 class ProductGridSkeleton extends StatelessWidget {
-  const ProductGridSkeleton({super.key});
+  final int columns;
+  const ProductGridSkeleton({super.key, this.columns = 2});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columns,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        childAspectRatio: 0.78,
+        childAspectRatio: 0.72,
       ),
       itemCount: 6,
       itemBuilder: (_, __) => const _SkeletonCard(),

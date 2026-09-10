@@ -4,6 +4,7 @@ class ApiConstants {
 
   static String get baseUrl {
     return 'http://127.0.0.1:8000';
+    // return 'https://tinsu-shops-api.vercel.app';
   }
   static const String apiV1 = '/api/v1';
 
@@ -31,6 +32,8 @@ class ApiConstants {
       '$apiV1/shops/$shopId/workers/$workerId/reset-pin';
   static String workerToday(String shopId) =>
       '$apiV1/shops/$shopId/workers/me/today';
+  static String workerRecentProducts(String shopId) =>
+      '$apiV1/shops/$shopId/workers/me/recent-products';
 
   // Products
   static String products(String shopId) =>
