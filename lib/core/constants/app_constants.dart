@@ -15,8 +15,8 @@ class AppConstants {
   static const String keyOwnerPhone = 'owner_phone';
   static const String keyLanguage = 'language';
 
-  // Debounce
-  static const int searchDebounceMs = 400;
+  // Debounce — 300 ms balances perceived immediacy with reduced API calls
+  static const int searchDebounceMs = 300;
 
   // Pagination
   static const int defaultPageSize = 20;

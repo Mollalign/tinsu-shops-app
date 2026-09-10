@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/states.dart';
@@ -16,6 +14,7 @@ import '../../../products/data/products_repository.dart';
 import '../../../products/domain/category_model.dart';
 import '../../../products/domain/product_model.dart';
 import '../../../products/domain/product_search_result.dart';
+import '../../../products/presentation/product_search_controller.dart';
 import '../../../sales/data/sales_repository.dart';
 import '../../domain/sale_model.dart';
 import '../../domain/cart_item_model.dart';
@@ -61,29 +60,27 @@ class SellScreen extends ConsumerStatefulWidget {
 
 class _SellScreenState extends ConsumerState<SellScreen> {
   final _searchCtrl = TextEditingController();
-  String _query = '';
   // null = All, '__recent__' = Recent filter, otherwise = category UUID
   String? _selectedCategoryId;
-  Timer? _debounce;
   bool _checkingOut = false;
   String? _checkoutError;
 
   @override
   void dispose() {
     _searchCtrl.dispose();
-    _debounce?.cancel();
     super.dispose();
   }
 
-  void _onSearch(String value) {
-    _debounce?.cancel();
-    _debounce = Timer(
-      const Duration(milliseconds: AppConstants.searchDebounceMs),
-      () {
-        if (mounted) setState(() => _query = value.trim());
-      },
-    );
+  void _onSearch(String shopId, String value) {
+    ref
+        .read(productSearchControllerProvider(shopId).notifier)
+        .onQueryChanged(value, categoryId: _effectiveCategoryId);
   }
+
+  /// Converts __recent__ to null for the search controller (searches all).
+  String? get _effectiveCategoryId =>
+      _selectedCategoryId == _kRecentCategory ? null : _selectedCategoryId;
+
 
   Future<void> _completeSale() async {
     final cart = ref.read(cartProvider);
@@ -154,6 +151,11 @@ class _SellScreenState extends ConsumerState<SellScreen> {
       orElse: () => '',
     );
 
+    // Watch the search controller — one stable notifier per shop.
+    final searchState = ref.watch(productSearchControllerProvider(shopId));
+    final searchNotifier =
+        ref.read(productSearchControllerProvider(shopId).notifier);
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: SafeArea(
@@ -164,21 +166,21 @@ class _SellScreenState extends ConsumerState<SellScreen> {
 
             // ── Search ──
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
               child: TextField(
                 controller: _searchCtrl,
-                onChanged: _onSearch,
+                onChanged: (v) => _onSearch(shopId, v),
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText: 'Search products...',
+                  hintText: 'Search products or categories…',
                   prefixIcon:
                       const Icon(Icons.search, color: AppTheme.outline),
-                  suffixIcon: _query.isNotEmpty
+                  suffixIcon: _searchCtrl.text.isNotEmpty
                       ? IconButton(
                           icon: const Icon(Icons.clear, size: 18),
                           onPressed: () {
                             _searchCtrl.clear();
-                            setState(() => _query = '');
+                            searchNotifier.clear();
                           },
                         )
                       : null,
@@ -186,6 +188,16 @@ class _SellScreenState extends ConsumerState<SellScreen> {
                 ),
               ),
             ),
+
+            // ── Inline search-loading bar (2 px) ──
+            if (searchState.isSearching)
+              const LinearProgressIndicator(
+                minHeight: 2,
+                color: AppTheme.primary,
+                backgroundColor: AppTheme.primaryContainer,
+              )
+            else
+              const SizedBox(height: 2),
 
             // ── Error banner ──
             if (_checkoutError != null)
@@ -223,31 +235,30 @@ class _SellScreenState extends ConsumerState<SellScreen> {
             _CategoryFilterBar(
               shopId: shopId,
               selectedId: _selectedCategoryId,
-              onSelected: (id) =>
-                  setState(() => _selectedCategoryId = id),
+              onSelected: (id) {
+                setState(() => _selectedCategoryId = id);
+                // Notify controller of the category change (re-fetch if searching)
+                searchNotifier.onCategoryChanged(
+                  id == _kRecentCategory ? null : id,
+                );
+              },
             ),
 
             // ── Product grid or search results ──
             Expanded(
-              child: _query.isEmpty
-                  ? _ProductGrid(
-                      shopId: shopId,
-                      categoryId: _selectedCategoryId,
-                    )
-                  : _SearchResultList(
-                      shopId: shopId,
-                      query: _query,
-                      // When searching while Recent is active, search all products
-                      categoryId: _selectedCategoryId == _kRecentCategory
-                          ? null
-                          : _selectedCategoryId,
+              child: searchState.hasActiveSearch
+                  ? _SearchResultList(
+                      searchState: searchState,
+                      onRetry: searchNotifier.retry,
                       onCategorySelected: (id) {
                         _searchCtrl.clear();
-                        setState(() {
-                          _query = '';
-                          _selectedCategoryId = id;
-                        });
+                        searchNotifier.clear();
+                        setState(() => _selectedCategoryId = id);
                       },
+                    )
+                  : _ProductGrid(
+                      shopId: shopId,
+                      categoryId: _selectedCategoryId,
                     ),
             ),
 
@@ -694,78 +705,121 @@ class _ProductGrid extends ConsumerWidget {
   }
 }
 
-class _SearchResultList extends ConsumerWidget {
-  final String shopId;
-  final String query;
-  final String? categoryId;
+class _SearchResultList extends StatelessWidget {
+  final ProductSearchState searchState;
+  final VoidCallback onRetry;
   final void Function(String categoryId) onCategorySelected;
 
   const _SearchResultList({
-    required this.shopId,
-    required this.query,
-    this.categoryId,
+    required this.searchState,
+    required this.onRetry,
     required this.onCategorySelected,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async =
-        ref.watch(productSearchProvider(shopId, query, categoryId: categoryId));
-
-    return async.when(
-      loading: () => const Center(
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
-      ),
-      error: (e, _) => ErrorState(
-        message: e is AppError ? e.toUserMessage() : 'Search failed.',
-      ),
-      data: (result) {
-        final hasCategoryMatch = result.matchedCategory != null;
-        final hasProducts = result.items.isNotEmpty;
-
-        if (!hasCategoryMatch && !hasProducts) {
-          return const EmptyState(
-            icon: Icons.search_off,
-            title: 'No results',
-            description: 'Try a different product or category name.',
-          );
-        }
-
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          children: [
-            // ── Category match banner ──
-            if (hasCategoryMatch)
-              _CategoryMatchBanner(
-                match: result.matchedCategory!,
-                onTap: () => onCategorySelected(result.matchedCategory!.id),
-              ),
-            // ── Section label when both exist ──
-            if (hasCategoryMatch && hasProducts)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(2, 14, 2, 6),
-                child: Text(
-                  'Products',
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall
-                      ?.copyWith(color: AppTheme.outline, letterSpacing: 0.5),
-                ),
-              ),
-            // ── Product tiles ──
-            ...result.items.map(
-              (p) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _SearchProductTile(product: p),
-              ),
+  Widget build(BuildContext context) {
+    // Error state — keep previous results visible below the banner
+    if (searchState.hasError) {
+      return Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppTheme.errorContainer,
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
-          ],
-        );
-      },
+            child: Row(
+              children: [
+                const Icon(Icons.error_outline, color: AppTheme.error, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    searchState.errorMessage!,
+                    style: const TextStyle(color: AppTheme.error, fontSize: 13),
+                  ),
+                ),
+                TextButton(
+                  onPressed: onRetry,
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+          // Show stale results below the error banner if available
+          if (searchState.results != null && searchState.results!.items.isNotEmpty)
+            Expanded(child: _ResultsBody(result: searchState.results!, onCategorySelected: onCategorySelected)),
+        ],
+      );
+    }
+
+    // No results yet (first fetch for this query)
+    if (searchState.results == null) {
+      return const SizedBox.shrink();
+    }
+
+    final result = searchState.results!;
+    final hasCategoryMatch = result.matchedCategory != null;
+    final hasProducts = result.items.isNotEmpty;
+
+    if (!hasCategoryMatch && !hasProducts) {
+      return EmptyState(
+        icon: Icons.search_off,
+        title: 'No results',
+        description:
+            'No products or categories matched\n"${searchState.normalizedQuery}".',
+      );
+    }
+
+    return _ResultsBody(result: result, onCategorySelected: onCategorySelected);
+  }
+}
+
+/// The actual scrollable results body, extracted so it can be reused
+/// by both the happy-path and the error-with-stale-results paths.
+class _ResultsBody extends StatelessWidget {
+  final ProductSearchResult result;
+  final void Function(String categoryId) onCategorySelected;
+
+  const _ResultsBody({
+    required this.result,
+    required this.onCategorySelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasCategoryMatch = result.matchedCategory != null;
+    final hasProducts = result.items.isNotEmpty;
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      children: [
+        // ── Category match banner ──
+        if (hasCategoryMatch)
+          _CategoryMatchBanner(
+            match: result.matchedCategory!,
+            onTap: () => onCategorySelected(result.matchedCategory!.id),
+          ),
+        // ── Section label when both exist ──
+        if (hasCategoryMatch && hasProducts)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(2, 14, 2, 6),
+            child: Text(
+              'Products',
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(color: AppTheme.outline, letterSpacing: 0.5),
+            ),
+          ),
+        // ── Product tiles ──
+        ...result.items.map(
+          (p) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _SearchProductTile(product: p),
+          ),
+        ),
+      ],
     );
   }
 }
