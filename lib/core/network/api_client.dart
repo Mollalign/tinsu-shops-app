@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -24,6 +26,8 @@ Dio dio(Ref ref) {
   d.interceptors.add(AuthInterceptor(storage: storage, dio: d));
   d.interceptors.add(
     ErrorInterceptor(
+      dio: d,
+      onRefreshToken: () => attemptTokenRefresh(storage),
       onSessionExpired: () {
         ref.read(sessionProvider.notifier).expireSession();
       },
@@ -31,6 +35,42 @@ Dio dio(Ref ref) {
   );
 
   return d;
+}
+
+/// Attempts a token refresh using the stored refresh token.
+///
+/// Uses a bare [Dio] (no interceptors) to avoid recursive interception loops.
+/// Returns `true` and saves the new tokens on success, `false` on any failure.
+///
+/// Exposed at the library level so it can be tested independently.
+Future<bool> attemptTokenRefresh(SecureStorage storage) async {
+  final refreshToken = await storage.getRefreshToken();
+  if (refreshToken == null) return false;
+
+  final refreshDio = Dio(
+    BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 30),
+      contentType: 'application/json',
+    ),
+  );
+
+  try {
+    final res = await refreshDio.post(
+      ApiConstants.refresh,
+      data: {'refresh_token': refreshToken},
+    );
+    final newAccess = res.data['access_token'] as String?;
+    if (newAccess == null) return false;
+    await storage.saveAccessToken(newAccess);
+    // Persist the rotated refresh token when the server provides one
+    final newRefresh = res.data['refresh_token'] as String?;
+    if (newRefresh != null) await storage.saveRefreshToken(newRefresh);
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 /// Injects the Authorization header from secure storage
@@ -53,35 +93,102 @@ class AuthInterceptor extends Interceptor {
   }
 }
 
-/// Maps Dio exceptions to typed [AppError]
+/// Handles 401 responses by attempting a token refresh before giving up.
+///
+/// On a 401 (non-login, non-refresh, not already retried):
+///   1. Calls [onRefreshToken]. Multiple concurrent 401s share one refresh
+///      attempt via an internal [Completer].
+///   2. If refresh succeeds → retries the original request (which
+///      [AuthInterceptor] will now send with the fresh access token).
+///   3. If refresh fails → calls [onSessionExpired] and rejects.
+///
+/// Also maps all [DioException]s to typed [AppError]s.
 class ErrorInterceptor extends Interceptor {
+  /// The parent [Dio] instance — used to retry the original request after a
+  /// successful token refresh.  May be `null` in unit tests that only verify
+  /// error-mapping behaviour.
+  final Dio? dio;
+
+  /// Called once per 401 cycle (even when multiple requests fail concurrently).
+  /// Should return `true` when a fresh access token has been saved to storage.
+  final Future<bool> Function()? onRefreshToken;
+
+  /// Called when token refresh fails or is unavailable.
   final void Function()? onSessionExpired;
 
-  ErrorInterceptor({this.onSessionExpired});
+  ErrorInterceptor({
+    this.dio,
+    this.onRefreshToken,
+    this.onSessionExpired,
+  });
+
+  // Serialises concurrent refresh attempts: only one network call is made and
+  // all waiting requests share the result.
+  Completer<bool>? _refreshCompleter;
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     final statusCode = err.response?.statusCode;
     final path = err.requestOptions.path;
 
-    // Check if this is a 401 on an authenticated request.
-    // Exclude public login endpoints where 401 represents invalid credentials.
-    final isLoginEndpoint = path.contains('/auth/owner/login') ||
-        path.contains('/auth/worker/login');
+    // Endpoints that must never trigger automatic token refresh
+    final isAuthEndpoint = path.contains('/auth/owner/login') ||
+        path.contains('/auth/worker/login') ||
+        path.contains('/auth/refresh');
 
-    if (statusCode == 401 && !isLoginEndpoint) {
+    // Prevent infinite retry loops
+    final alreadyRetried = err.requestOptions.extra['_retried'] == true;
+
+    if (statusCode == 401 && !isAuthEndpoint && !alreadyRetried) {
+      final refreshed = await _doRefresh();
+
+      if (refreshed && dio != null) {
+        // Mark so that a second 401 on the retry does not loop
+        err.requestOptions.extra['_retried'] = true;
+        try {
+          // AuthInterceptor.onRequest will inject the new access token
+          final response = await dio!.fetch(err.requestOptions);
+          handler.resolve(response);
+          return;
+        } catch (_) {
+          // Retry itself failed — fall through to expire session
+        }
+      }
+
       onSessionExpired?.call();
     }
 
-    final error = _mapError(err);
     handler.reject(
       DioException(
         requestOptions: err.requestOptions,
-        error: error,
+        error: _mapError(err),
         type: err.type,
         response: err.response,
       ),
     );
+  }
+
+  /// Executes a single refresh attempt, queuing concurrent callers.
+  Future<bool> _doRefresh() async {
+    if (_refreshCompleter != null) {
+      // Another coroutine has already started a refresh; wait for its result
+      return _refreshCompleter!.future;
+    }
+
+    _refreshCompleter = Completer<bool>();
+    try {
+      final result = await (onRefreshToken?.call() ?? Future.value(false));
+      _refreshCompleter!.complete(result);
+      return result;
+    } catch (_) {
+      _refreshCompleter!.complete(false);
+      return false;
+    } finally {
+      _refreshCompleter = null;
+    }
   }
 
   AppError _mapError(DioException err) {

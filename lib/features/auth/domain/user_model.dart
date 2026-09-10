@@ -27,6 +27,7 @@ abstract class AuthResponse with _$AuthResponse {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory AuthResponse({
     required String accessToken,
+    String? refreshToken,
     required String tokenType,
     required UserModel user,
   }) = _AuthResponse;

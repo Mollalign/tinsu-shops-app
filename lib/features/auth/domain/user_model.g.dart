@@ -26,6 +26,7 @@ const _$UserRoleEnumMap = {UserRole.owner: 'owner', UserRole.worker: 'worker'};
 _AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) =>
     _AuthResponse(
       accessToken: json['access_token'] as String,
+      refreshToken: json['refresh_token'] as String?,
       tokenType: json['token_type'] as String,
       user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
@@ -33,6 +34,7 @@ _AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$AuthResponseToJson(_AuthResponse instance) =>
     <String, dynamic>{
       'access_token': instance.accessToken,
+      'refresh_token': instance.refreshToken,
       'token_type': instance.tokenType,
       'user': instance.user,
     };

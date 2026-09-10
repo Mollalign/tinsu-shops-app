@@ -90,7 +90,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get clear => 'አጽዳ';
 
   @override
-  String get myShops => 'ሱቆቼ';
+  String get myShops => 'የኔ ሱቆች';
 
   @override
   String get allShops => 'ሁሉም ሱቆች';

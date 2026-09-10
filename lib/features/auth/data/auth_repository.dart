@@ -57,6 +57,9 @@ class AuthRepository {
 
   Future<void> saveSession(AuthResponse auth, {String? ownerPhone}) async {
     await _storage.saveAccessToken(auth.accessToken);
+    if (auth.refreshToken != null) {
+      await _storage.saveRefreshToken(auth.refreshToken!);
+    }
     await _storage.saveSession(
       userId: auth.user.id,
       role: auth.user.role.name,

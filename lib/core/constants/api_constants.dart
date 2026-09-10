@@ -11,6 +11,7 @@ class ApiConstants {
   // Auth
   static const String ownerLogin = '$apiV1/auth/owner/login';
   static const String workerLogin = '$apiV1/auth/worker/login';
+  static const String refresh = '$apiV1/auth/refresh';
 
   // Owner
   static const String ownerDashboard = '$apiV1/owner/dashboard';

@@ -18,7 +18,7 @@ class SecureStorage {
     aOptions: _opts,
   );
 
-  // ── Token ─────────────────────────────────────────────────────────────────
+  // ── Access Token ──────────────────────────────────────────────────────────
   Future<void> saveAccessToken(String token) =>
       _storage.write(key: AppConstants.keyAccessToken, value: token);
 
@@ -27,6 +27,16 @@ class SecureStorage {
 
   Future<void> deleteAccessToken() =>
       _storage.delete(key: AppConstants.keyAccessToken);
+
+  // ── Refresh Token ─────────────────────────────────────────────────────────
+  Future<void> saveRefreshToken(String token) =>
+      _storage.write(key: AppConstants.keyRefreshToken, value: token);
+
+  Future<String?> getRefreshToken() =>
+      _storage.read(key: AppConstants.keyRefreshToken);
+
+  Future<void> deleteRefreshToken() =>
+      _storage.delete(key: AppConstants.keyRefreshToken);
 
   // ── Session ───────────────────────────────────────────────────────────────
   Future<void> saveSession({
@@ -75,6 +85,7 @@ class SecureStorage {
   Future<void> clearSession() async {
     await Future.wait([
       _storage.delete(key: AppConstants.keyAccessToken),
+      _storage.delete(key: AppConstants.keyRefreshToken),
       _storage.delete(key: AppConstants.keyUserId),
       _storage.delete(key: AppConstants.keyUserRole),
       _storage.delete(key: AppConstants.keyUserName),
