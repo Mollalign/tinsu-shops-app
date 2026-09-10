@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +23,8 @@ bool _isPermissionDenied(PlatformException e) {
 }
 
 /// Pick from camera or gallery. Returns null if the user cancelled.
-Future<File?> pickProductImage(ImageSource source) async {
+/// Returns an [XFile] which works on both mobile and web.
+Future<XFile?> pickProductImage(ImageSource source) async {
   try {
     final picker = ImagePicker();
     final xfile = await picker.pickImage(
@@ -30,13 +32,26 @@ Future<File?> pickProductImage(ImageSource source) async {
       maxWidth: 1600,
       imageQuality: 85,
     );
-    if (xfile == null) return null;
-    return File(xfile.path);
+    return xfile;
   } on PlatformException catch (e) {
     throw ImagePickFailed(permissionDenied: _isPermissionDenied(e));
   } catch (_) {
     throw const ImagePickFailed();
   }
+}
+
+/// Compress an [XFile] for upload. On web, returns the original bytes
+/// unmodified since dart:io compression is not available.
+/// Throws [ImageTooLargeFailed] if the result exceeds [kMaxProductImageBytes].
+Future<(String path, List<int> bytes)> prepareImageForUpload(XFile xfile) async {
+  if (kIsWeb) {
+    final bytes = await xfile.readAsBytes();
+    if (bytes.length > kMaxProductImageBytes) throw ImageTooLargeFailed();
+    return (xfile.path, bytes);
+  }
+  final file = await compressProductImage(File(xfile.path));
+  final bytes = await file.readAsBytes();
+  return (file.path, bytes);
 }
 
 /// Compress for upload. Falls back to the original file if compression fails.

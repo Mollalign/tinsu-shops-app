@@ -124,9 +124,9 @@ void main() {
     });
 
     test('new local image replaces existing', () {
-      final file = File('/tmp/fake.jpg');
+      final xfile = XFile('/tmp/fake.jpg');
       final sel = ProductImageSelection(
-        localFile: file,
+        localXFile: xfile,
         existingUrl: 'https://cdn/x.jpg',
       );
       expect(sel.hasNewImage, isTrue);
@@ -154,7 +154,7 @@ void main() {
     });
 
     testWidgets('selecting an image shows local preview', (tester) async {
-      final fake = File('${Directory.systemTemp.path}/tinsu_fake_preview.jpg');
+      final fake = XFile('${Directory.systemTemp.path}/tinsu_fake_preview.jpg');
       final imageKey = GlobalKey<ProductImagePickerState>();
       await tester.pumpWidget(
         _wrap(
@@ -238,7 +238,7 @@ void main() {
     });
 
     testWidgets('selected image survives parent rebuild', (tester) async {
-      final fake = File('${Directory.systemTemp.path}/tinsu_fake_rebuild.jpg');
+      final fake = XFile('${Directory.systemTemp.path}/tinsu_fake_rebuild.jpg');
       final imageKey = GlobalKey<ProductImagePickerState>();
       await tester.pumpWidget(
         _wrap(

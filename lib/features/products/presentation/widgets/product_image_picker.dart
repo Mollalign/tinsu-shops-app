@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,33 +10,34 @@ import '../../data/product_image_io.dart';
 
 /// Snapshot of the image the admin has chosen for create/edit.
 class ProductImageSelection {
-  final File? localFile;
+  /// The picked image as an [XFile], available on both mobile and web.
+  final XFile? localXFile;
   final String? existingUrl;
   final bool removed;
 
   const ProductImageSelection({
-    this.localFile,
+    this.localXFile,
     this.existingUrl,
     this.removed = false,
   });
 
-  bool get hasNewImage => localFile != null;
+  bool get hasNewImage => localXFile != null;
 
   bool get hasExisting =>
-      existingUrl != null && existingUrl!.isNotEmpty && !removed && localFile == null;
+      existingUrl != null && existingUrl!.isNotEmpty && !removed && localXFile == null;
 
-  bool get shouldClearRemote => removed && localFile == null;
+  bool get shouldClearRemote => removed && localXFile == null;
 
-  bool get hasPreview => localFile != null || hasExisting;
+  bool get hasPreview => localXFile != null || hasExisting;
 }
 
 /// Product photo picker used on Add and Edit Product.
 ///
-/// Owns the selected [File] so parent rebuilds do not lose it.
+/// Owns the selected [XFile] so parent rebuilds do not lose it.
 class ProductImagePicker extends StatefulWidget {
   final String? existingUrl;
   final bool uploading;
-  final Future<File?> Function(ImageSource source)? pickImage;
+  final Future<XFile?> Function(ImageSource source)? pickImage;
 
   /// When true, skip decoding local files (widget tests hang on Image.file).
   @visibleForTesting
@@ -54,12 +55,13 @@ class ProductImagePicker extends StatefulWidget {
 }
 
 class ProductImagePickerState extends State<ProductImagePicker> {
-  File? _localFile;
+  XFile? _localXFile;
+  Uint8List? _localBytes; // preview bytes — works on both web and mobile
   bool _removed = false;
   String? _pickError;
 
   ProductImageSelection get selection => ProductImageSelection(
-        localFile: _localFile,
+        localXFile: _localXFile,
         existingUrl: widget.existingUrl,
         removed: _removed,
       );
@@ -75,11 +77,24 @@ class ProductImagePickerState extends State<ProductImagePicker> {
           (ProductImagePicker.skipFileImageDecode
               ? (_) async => null
               : pickProductImage);
-      final file = await picker(source);
+      final xfile = await picker(source);
       if (!mounted) return;
-      if (file == null) return;
+      if (xfile == null) return;
+      // Read preview bytes eagerly so Image.memory works on web (Image.file
+      // is forbidden there). Skip in widget tests — dart:io I/O hangs the
+      // fake-async zone, and skipFileImageDecode already substitutes a placeholder.
+      Uint8List? bytes;
+      if (!ProductImagePicker.skipFileImageDecode) {
+        try {
+          bytes = await xfile.readAsBytes();
+        } catch (_) {
+          bytes = null;
+        }
+      }
+      if (!mounted) return;
       setState(() {
-        _localFile = file;
+        _localXFile = xfile;
+        _localBytes = bytes;
         _removed = false;
         _pickError = null;
       });
@@ -98,7 +113,8 @@ class ProductImagePickerState extends State<ProductImagePicker> {
 
   void _remove() {
     setState(() {
-      _localFile = null;
+      _localXFile = null;
+      _localBytes = null;
       _removed = true;
       _pickError = null;
     });
@@ -234,7 +250,7 @@ class ProductImagePickerState extends State<ProductImagePicker> {
   }
 
   Widget _preview(ProductImageSelection sel) {
-    if (sel.localFile != null) {
+    if (sel.localXFile != null) {
       final inTest = WidgetsBinding.instance.runtimeType
           .toString()
           .contains('TestWidgetsFlutterBinding');
@@ -245,13 +261,23 @@ class ProductImagePickerState extends State<ProductImagePicker> {
           child: Icon(Icons.image, color: AppTheme.outline),
         );
       }
-      return Image.file(
-        sel.localFile!,
-        key: const Key('product-image-local-preview'),
-        fit: BoxFit.cover,
-        width: 120,
-        height: 120,
-        errorBuilder: (_, __, ___) => const _EmptyPhoto(),
+      // Image.memory works on all platforms (web + mobile).
+      // Image.file would crash on Flutter Web.
+      final bytes = _localBytes;
+      if (bytes != null) {
+        return Image.memory(
+          bytes,
+          key: const Key('product-image-local-preview'),
+          fit: BoxFit.cover,
+          width: 120,
+          height: 120,
+          errorBuilder: (_, __, ___) => const _EmptyPhoto(),
+        );
+      }
+      return const ColoredBox(
+        key: Key('product-image-local-preview'),
+        color: AppTheme.surfaceVariant,
+        child: Icon(Icons.image, color: AppTheme.outline),
       );
     }
     if (sel.hasExisting) {

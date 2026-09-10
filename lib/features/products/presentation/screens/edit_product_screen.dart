@@ -89,10 +89,11 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
       if (sel != null && sel.hasNewImage) {
         setState(() => _uploading = true);
         try {
-          final compressed = await compressProductImage(sel.localFile!);
+          final (filePath, bytes) = await prepareImageForUpload(sel.localXFile!);
           photoUrl = await ref.read(productsRepositoryProvider).uploadProductImage(
                 shopId: shopId,
-                filePath: compressed.path,
+                filePath: filePath,
+                bytes: bytes,
               );
         } on AppError catch (e) {
           if (mounted) {

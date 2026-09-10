@@ -12,7 +12,7 @@ class AppLogo extends StatelessWidget {
 
   const AppLogo({super.key, this.size = 44, this.borderRadius = 10});
 
-  static const String assetPath = 'assets/icons/app-icon.jpeg';
+  static const String assetPath = 'assets/icons/app-icon.png';
 
   @override
   Widget build(BuildContext context) {

@@ -54,14 +54,15 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
 
     try {
       String? photoUrl;
-      final local = _imageKey.currentState?.selection.localFile;
-      if (local != null) {
+      final xfile = _imageKey.currentState?.selection.localXFile;
+      if (xfile != null) {
         setState(() => _uploading = true);
         try {
-          final compressed = await compressProductImage(local);
+          final (filePath, bytes) = await prepareImageForUpload(xfile);
           photoUrl = await ref.read(productsRepositoryProvider).uploadProductImage(
                 shopId: shopId,
-                filePath: compressed.path,
+                filePath: filePath,
+                bytes: bytes,
               );
         } on AppError catch (e) {
           if (mounted) {

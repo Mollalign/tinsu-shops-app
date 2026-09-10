@@ -137,17 +137,22 @@ class ProductsRepository {
   }
 
   /// Upload a product image. Returns the public URL to store as [photoUrl].
+  ///
+  /// On mobile, pass [filePath] (the local path after compression).
+  /// On web, [bytes] are used directly via [MultipartFile.fromBytes].
   Future<String> uploadProductImage({
     required String shopId,
     required String filePath,
+    List<int>? bytes,
   }) async {
     try {
-      final form = FormData.fromMap({
-        'file': await MultipartFile.fromFile(
-          filePath,
-          filename: 'product.jpg',
-        ),
-      });
+      final MultipartFile multipart;
+      if (bytes != null) {
+        multipart = MultipartFile.fromBytes(bytes, filename: 'product.jpg');
+      } else {
+        multipart = await MultipartFile.fromFile(filePath, filename: 'product.jpg');
+      }
+      final form = FormData.fromMap({'file': multipart});
       final res = await _dio.post(
         ApiConstants.uploadImage(shopId),
         data: form,
