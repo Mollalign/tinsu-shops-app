@@ -30,25 +30,21 @@ class _SystemHash {
 }
 
 /// Fetches active workers via the public (no-auth) endpoint.
-/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
 ///
 /// Copied from [publicShopWorkers].
 @ProviderFor(publicShopWorkers)
 const publicShopWorkersProvider = PublicShopWorkersFamily();
 
 /// Fetches active workers via the public (no-auth) endpoint.
-/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
 ///
 /// Copied from [publicShopWorkers].
 class PublicShopWorkersFamily extends Family<AsyncValue<List<WorkerModel>>> {
   /// Fetches active workers via the public (no-auth) endpoint.
-  /// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
   ///
   /// Copied from [publicShopWorkers].
   const PublicShopWorkersFamily();
 
   /// Fetches active workers via the public (no-auth) endpoint.
-  /// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
   ///
   /// Copied from [publicShopWorkers].
   PublicShopWorkersProvider call(String shopId) {
@@ -78,13 +74,11 @@ class PublicShopWorkersFamily extends Family<AsyncValue<List<WorkerModel>>> {
 }
 
 /// Fetches active workers via the public (no-auth) endpoint.
-/// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
 ///
 /// Copied from [publicShopWorkers].
 class PublicShopWorkersProvider
     extends AutoDisposeFutureProvider<List<WorkerModel>> {
   /// Fetches active workers via the public (no-auth) endpoint.
-  /// Workers haven't logged in yet, so we must NOT use the auth-injected Dio.
   ///
   /// Copied from [publicShopWorkers].
   PublicShopWorkersProvider(String shopId)

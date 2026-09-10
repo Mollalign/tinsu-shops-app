@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/constants/api_constants.dart';
+import '../../../core/errors/app_error.dart';
 import '../../../core/network/api_client.dart';
 import '../domain/product_model.dart';
 import '../domain/product_search_result.dart';
@@ -108,7 +109,7 @@ class ProductsRepository {
     int? lowStockThreshold,
     // Pass null explicitly to clear; don't include key to leave unchanged
     Object? categoryId = _absent,
-    String? photoUrl,
+    Object? photoUrl = _absent,
     bool? isActive,
   }) async {
     try {
@@ -116,18 +117,50 @@ class ProductsRepository {
         if (name != null) 'name': name,
         if (sellingPrice != null) 'selling_price': sellingPrice,
         if (lowStockThreshold != null) 'low_stock_threshold': lowStockThreshold,
-        if (photoUrl != null) 'photo_url': photoUrl,
         if (isActive != null) 'is_active': isActive,
       };
       // Only include category_id in the payload when the caller explicitly passed it
       if (!identical(categoryId, _absent)) {
         data['category_id'] = categoryId; // may be null (to clear)
       }
+      if (!identical(photoUrl, _absent)) {
+        data['photo_url'] = photoUrl; // may be null (to clear)
+      }
       final res = await _dio.patch(
         ApiConstants.product(shopId, productId),
         data: data,
       );
       return ProductModel.fromJson(res.data);
+    } on DioException catch (e) {
+      throw extractError(e);
+    }
+  }
+
+  /// Upload a product image. Returns the public URL to store as [photoUrl].
+  Future<String> uploadProductImage({
+    required String shopId,
+    required String filePath,
+  }) async {
+    try {
+      final form = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          filePath,
+          filename: 'product.jpg',
+        ),
+      });
+      final res = await _dio.post(
+        ApiConstants.uploadImage(shopId),
+        data: form,
+        options: Options(
+          sendTimeout: const Duration(seconds: 60),
+          receiveTimeout: const Duration(seconds: 60),
+        ),
+      );
+      final url = res.data['url'] as String?;
+      if (url == null || url.isEmpty) {
+        throw const GenericError();
+      }
+      return url;
     } on DioException catch (e) {
       throw extractError(e);
     }

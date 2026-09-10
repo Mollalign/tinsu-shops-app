@@ -205,28 +205,19 @@ class _ProductThumb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (url == null || url!.isEmpty) {
-      return Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: AppTheme.surfaceVariant,
-          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        ),
-        child: const Icon(Icons.inventory_2_outlined,
-            size: 20, color: AppTheme.outline),
-      );
-    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-      child: Image.network(url!, width: 44, height: 44, fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Container(
-                width: 44,
-                height: 44,
-                color: AppTheme.surfaceVariant,
-                child: const Icon(Icons.broken_image_outlined,
-                    size: 20, color: AppTheme.outline),
-              )),
+      child: SizedBox(
+        width: 44,
+        height: 44,
+        child: ProductNetworkImage(
+          url: url,
+          width: 44,
+          height: 44,
+          placeholderIcon: Icons.inventory_2_outlined,
+          placeholderSize: 20,
+        ),
+      ),
     );
   }
 }

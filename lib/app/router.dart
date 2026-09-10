@@ -54,6 +54,77 @@ class _SessionNotifier extends ChangeNotifier {
   }
 }
 
+/// Pure redirect evaluation logic based on route path and session state.
+String? evaluateRedirect({
+  required String path,
+  required SessionState session,
+}) {
+  return session.when(
+    // Still initialising — stay on splash
+    initial: () => path == '/splash' ? null : '/splash',
+    loading: () => path == '/splash' ? null : '/splash',
+
+    // Logged out
+    unauthenticated:
+        (rememberedPhone, rememberedName, isSessionExpired, lastRole) {
+      // Splash always navigates away
+      if (path == '/splash') {
+        if (rememberedPhone != null && rememberedPhone.isNotEmpty) {
+          return '/owner/quick-login';
+        }
+        return '/login';
+      }
+
+      final isOwnerProtected =
+          path.startsWith('/owner') && path != '/owner/quick-login';
+      final isWorkerProtected = path.startsWith('/worker/sell') ||
+          path.startsWith('/worker/cart') ||
+          path.startsWith('/worker/sale-complete');
+
+      if (isOwnerProtected || isWorkerProtected) {
+        if (lastRole == UserRole.worker || isWorkerProtected) {
+          return '/worker/select';
+        }
+        if (rememberedPhone != null && rememberedPhone.isNotEmpty) {
+          return '/owner/quick-login';
+        }
+        return '/login';
+      }
+      return null;
+    },
+
+    // Logged in
+    authenticated: (user, shopId) {
+      if (path == '/splash') {
+        return user.role == UserRole.owner ? '/owner/shops' : '/worker/sell';
+      }
+      if (path == '/login' ||
+          path == '/owner/quick-login' ||
+          path == '/worker/select' ||
+          path == '/worker/pin') {
+        return user.role == UserRole.owner ? '/owner/shops' : '/worker/sell';
+      }
+      if (user.role == UserRole.worker && path.startsWith('/owner')) {
+        return '/worker/sell';
+      }
+      if (user.role == UserRole.owner && path == '/worker/sell') {
+        return '/owner/shops';
+      }
+      // Owner has no shop selected yet — redirect non-shops routes to
+      // /owner/shops so they must pick a shop before accessing any data.
+      if (user.role == UserRole.owner &&
+          (shopId == null || shopId.isEmpty) &&
+          path != '/owner/shops' &&
+          path != '/owner/shops/add' &&
+          path != '/owner/settings' &&
+          path != '/owner/dashboard') {
+        return '/owner/shops';
+      }
+      return null;
+    },
+  );
+}
+
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
   // Keep a stable ChangeNotifier that mirrors sessionProvider.
@@ -71,71 +142,10 @@ GoRouter router(Ref ref) {
   return GoRouter(
     initialLocation: '/splash',
     refreshListenable: notifier,
-    redirect: (context, state) {
-      final path = state.matchedLocation;
-      final session = notifier.state;
-
-      return session.when(
-        // Still initialising — stay on splash
-        initial: () => path == '/splash' ? null : '/splash',
-        loading: () => path == '/splash' ? null : '/splash',
-
-        // Logged out
-        unauthenticated: (rememberedPhone, rememberedName) {
-          // Splash always navigates away
-          if (path == '/splash') {
-            // If we have a remembered owner phone, go to quick login
-            if (rememberedPhone != null && rememberedPhone.isNotEmpty) {
-              return '/owner/quick-login';
-            }
-            return '/login';
-          }
-          if (path.startsWith('/owner') ||
-              path.startsWith('/worker/sell')) {
-            if (rememberedPhone != null && rememberedPhone.isNotEmpty) {
-              return '/owner/quick-login';
-            }
-            return '/login';
-          }
-          return null;
-        },
-
-        // Logged in
-        authenticated: (user, shopId) {
-          if (path == '/splash') {
-            return user.role == UserRole.owner
-                ? '/owner/shops'
-                : '/worker/sell';
-          }
-          if (path == '/login' ||
-              path == '/owner/quick-login' ||
-              path == '/worker/select' ||
-              path == '/worker/pin') {
-            return user.role == UserRole.owner
-                ? '/owner/shops'
-                : '/worker/sell';
-          }
-          if (user.role == UserRole.worker && path.startsWith('/owner')) {
-            return '/worker/sell';
-          }
-          if (user.role == UserRole.owner &&
-              path == '/worker/sell') {
-            return '/owner/shops';
-          }
-          // Owner has no shop selected yet — redirect non-shops routes to
-          // /owner/shops so they must pick a shop before accessing any data.
-          if (user.role == UserRole.owner &&
-              (shopId == null || shopId.isEmpty) &&
-              path != '/owner/shops' &&
-              path != '/owner/shops/add' &&
-              path != '/owner/settings' &&
-              path != '/owner/dashboard') {
-            return '/owner/shops';
-          }
-          return null;
-        },
-      );
-    },
+    redirect: (context, state) => evaluateRedirect(
+      path: state.matchedLocation,
+      session: notifier.state,
+    ),
     routes: [
       GoRoute(path: '/splash', builder: (_, __) => const SplashScreen()),
       GoRoute(path: '/login', builder: (_, __) => const OwnerLoginScreen()),
@@ -145,11 +155,11 @@ GoRouter router(Ref ref) {
           // Read current session for remembered phone/name
           final session = ref.read(sessionProvider);
           final phone = session.maybeWhen(
-            unauthenticated: (phone, _) => phone ?? '',
+            unauthenticated: (phone, _, __, ___) => phone ?? '',
             orElse: () => '',
           );
           final name = session.maybeWhen(
-            unauthenticated: (_, name) => name ?? '',
+            unauthenticated: (_, name, __, ___) => name ?? '',
             orElse: () => '',
           );
           return OwnerQuickLoginScreen(ownerPhone: phone, ownerName: name);

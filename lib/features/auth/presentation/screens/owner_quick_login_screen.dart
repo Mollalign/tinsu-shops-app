@@ -35,6 +35,7 @@ class _OwnerQuickLoginScreenState
   String? _error;
 
   void _onKey(String key) {
+    ref.read(sessionProvider.notifier).clearSessionExpiredFlag();
     if (_pin.length < AppConstants.pinLength) {
       setState(() {
         _pin += key;
@@ -47,8 +48,12 @@ class _OwnerQuickLoginScreenState
   }
 
   void _onDelete() {
+    ref.read(sessionProvider.notifier).clearSessionExpiredFlag();
     if (_pin.isNotEmpty) {
-      setState(() => _pin = _pin.substring(0, _pin.length - 1));
+      setState(() {
+        _pin = _pin.substring(0, _pin.length - 1);
+        _error = null;
+      });
     }
   }
 
@@ -96,6 +101,13 @@ class _OwnerQuickLoginScreenState
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final firstName = widget.ownerName.split(' ').first;
+    final session = ref.watch(sessionProvider);
+    final isSessionExpired = session.maybeWhen(
+      unauthenticated: (_, __, isExpired, ___) => isExpired,
+      orElse: () => false,
+    );
+    final displayError =
+        _error ?? (isSessionExpired ? l.errorUnauthorized : null);
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -164,7 +176,7 @@ class _OwnerQuickLoginScreenState
             const SizedBox(height: 12),
 
             // ── Error message ────────────────────────────────────────
-            if (_error != null)
+            if (displayError != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Container(
@@ -180,10 +192,11 @@ class _OwnerQuickLoginScreenState
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          _error!,
+                          displayError,
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: AppTheme.error,
+                                    fontWeight: FontWeight.w600,
                                   ),
                         ),
                       ),

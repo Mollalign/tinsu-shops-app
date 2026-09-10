@@ -1,7 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../app/app.dart';
+import '../../../app/locale_provider.dart';
+import '../../../app/theme/app_theme.dart';
 import '../../../core/storage/secure_storage.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../sales/presentation/cart_provider.dart';
 import '../data/auth_repository.dart';
 import '../domain/user_model.dart';
 
@@ -21,6 +27,8 @@ class SessionState with _$SessionState {
   const factory SessionState.unauthenticated({
     String? rememberedPhone,
     String? rememberedName,
+    @Default(false) bool isSessionExpired,
+    UserRole? lastRole,
   }) = _Unauthenticated;
 }
 
@@ -111,6 +119,91 @@ class Session extends _$Session {
   Future<void> switchAccount() async {
     await ref.read(authRepositoryProvider).clearAll();
     state = const SessionState.unauthenticated();
+  }
+
+  bool _isExpiring = false;
+
+  /// Automatically invoked when an authenticated API request receives 401 Unauthorized.
+  /// Logs the user out, clears credentials, shows an expiration notification, and triggers redirect.
+  Future<void> expireSession() async {
+    if (_isExpiring) return;
+    _isExpiring = true;
+
+    try {
+      final user = currentUser;
+      final role = user?.role ?? (isWorker ? UserRole.worker : UserRole.owner);
+
+      // Clear worker cart if worker
+      if (role == UserRole.worker) {
+        try {
+          ref.read(cartProvider.notifier).clear();
+        } catch (_) {}
+      }
+
+      final storage = ref.read(secureStorageProvider);
+      // Only preserve remembered phone if the expired user was an owner
+      final phone =
+          role == UserRole.owner ? await storage.getOwnerPhone() : null;
+      final session = await storage.getSession();
+      final name = session['name'] ?? user?.name;
+
+      await storage.clearSession();
+
+      // Show global floating notification
+      _notifySessionExpired();
+
+      state = SessionState.unauthenticated(
+        rememberedPhone: phone,
+        rememberedName: name,
+        isSessionExpired: true,
+        lastRole: role,
+      );
+    } finally {
+      _isExpiring = false;
+    }
+  }
+
+  void _notifySessionExpired() {
+    try {
+      final locale = ref.read(localeNotifierProvider);
+      final l = lookupAppLocalizations(locale);
+      final message = l.errorUnauthorized;
+
+      rootScaffoldMessengerKey.currentState?.removeCurrentSnackBar();
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber_rounded,
+                  color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: AppTheme.error,
+          duration: const Duration(seconds: 4),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (_) {
+      // Avoid crashing if UI context is not yet available in testing/headless
+    }
+  }
+
+  /// Clears the session expired flag once displayed on the login screen
+  void clearSessionExpiredFlag() {
+    final s = state;
+    if (s is _Unauthenticated && s.isSessionExpired) {
+      state = s.copyWith(isSessionExpired: false);
+    }
   }
 
   UserModel? get currentUser {

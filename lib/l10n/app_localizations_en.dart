@@ -238,6 +238,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addPhoto => 'Add Photo';
 
   @override
+  String get productImage => 'Product Image';
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get changeImage => 'Change Image';
+
+  @override
+  String get removeImage => 'Remove Image';
+
+  @override
+  String get uploadingImage => 'Uploading image…';
+
+  @override
+  String get imageSelectFailed => 'Couldn\'t select the image.';
+
+  @override
+  String get imageTooLarge => 'Image is too large.';
+
+  @override
+  String get imageUploadFailed => 'Couldn\'t upload image. Please try again.';
+
+  @override
+  String get imagePermissionDenied =>
+      'Photo permission was denied. You can still save the product without an image.';
+
+  @override
   String get noProducts => 'No products yet';
 
   @override

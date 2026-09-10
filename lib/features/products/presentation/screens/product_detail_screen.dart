@@ -7,6 +7,7 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/buttons.dart';
+import '../../../../core/widgets/components.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
@@ -79,12 +80,11 @@ class _ProductDetailBody extends StatelessWidget {
             width: double.infinity,
             height: 200,
             color: AppTheme.surfaceVariant,
-            child: product.photoUrl != null
-                ? Image.network(product.photoUrl!, fit: BoxFit.cover)
-                : const Center(
-                    child: Icon(Icons.shopping_bag_outlined,
-                        size: 64, color: AppTheme.outline),
-                  ),
+            child: ProductNetworkImage(
+              url: product.photoUrl,
+              height: 200,
+              placeholderSize: 64,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(20),

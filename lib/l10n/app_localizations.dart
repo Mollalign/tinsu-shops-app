@@ -554,6 +554,66 @@ abstract class AppLocalizations {
   /// **'Add Photo'**
   String get addPhoto;
 
+  /// No description provided for @productImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Image'**
+  String get productImage;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @changeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Image'**
+  String get changeImage;
+
+  /// No description provided for @removeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Image'**
+  String get removeImage;
+
+  /// No description provided for @uploadingImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading image…'**
+  String get uploadingImage;
+
+  /// No description provided for @imageSelectFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t select the image.'**
+  String get imageSelectFailed;
+
+  /// No description provided for @imageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Image is too large.'**
+  String get imageTooLarge;
+
+  /// No description provided for @imageUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t upload image. Please try again.'**
+  String get imageUploadFailed;
+
+  /// No description provided for @imagePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo permission was denied. You can still save the product without an image.'**
+  String get imagePermissionDenied;
+
   /// No description provided for @noProducts.
   ///
   /// In en, this message translates to:

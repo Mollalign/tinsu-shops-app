@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../constants/api_constants.dart';
 import '../errors/app_error.dart';
 import '../storage/secure_storage.dart';
+import '../../features/auth/presentation/session_provider.dart';
 
 part 'api_client.g.dart';
 
@@ -21,7 +22,13 @@ Dio dio(Ref ref) {
   );
 
   d.interceptors.add(AuthInterceptor(storage: storage, dio: d));
-  d.interceptors.add(ErrorInterceptor());
+  d.interceptors.add(
+    ErrorInterceptor(
+      onSessionExpired: () {
+        ref.read(sessionProvider.notifier).expireSession();
+      },
+    ),
+  );
 
   return d;
 }
@@ -48,8 +55,24 @@ class AuthInterceptor extends Interceptor {
 
 /// Maps Dio exceptions to typed [AppError]
 class ErrorInterceptor extends Interceptor {
+  final void Function()? onSessionExpired;
+
+  ErrorInterceptor({this.onSessionExpired});
+
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
+    final statusCode = err.response?.statusCode;
+    final path = err.requestOptions.path;
+
+    // Check if this is a 401 on an authenticated request.
+    // Exclude public login endpoints where 401 represents invalid credentials.
+    final isLoginEndpoint = path.contains('/auth/owner/login') ||
+        path.contains('/auth/worker/login');
+
+    if (statusCode == 401 && !isLoginEndpoint) {
+      onSessionExpired?.call();
+    }
+
     final error = _mapError(err);
     handler.reject(
       DioException(

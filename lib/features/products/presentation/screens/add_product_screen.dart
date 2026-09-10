@@ -8,9 +8,11 @@ import '../../../../core/widgets/buttons.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/categories_repository.dart';
+import '../../data/product_image_io.dart';
 import '../../data/products_repository.dart';
 import '../../domain/category_model.dart';
 import '../widgets/category_picker.dart';
+import '../widgets/product_image_picker.dart';
 import 'products_screen.dart';
 
 class AddProductScreen extends ConsumerStatefulWidget {
@@ -22,11 +24,13 @@ class AddProductScreen extends ConsumerStatefulWidget {
 
 class _AddProductScreenState extends ConsumerState<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _imageKey = GlobalKey<ProductImagePickerState>();
   final _nameCtrl = TextEditingController();
   final _priceCtrl = TextEditingController();
   final _stockCtrl = TextEditingController(text: '0');
   CategoryModel? _selectedCategory;
   bool _loading = false;
+  bool _uploading = false;
   String? _error;
 
   @override
@@ -46,27 +50,65 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
       authenticated: (u, shopId) => shopId ?? '',
       orElse: () => '',
     );
+    final l = AppLocalizations.of(context)!;
 
     try {
+      String? photoUrl;
+      final local = _imageKey.currentState?.selection.localFile;
+      if (local != null) {
+        setState(() => _uploading = true);
+        try {
+          final compressed = await compressProductImage(local);
+          photoUrl = await ref.read(productsRepositoryProvider).uploadProductImage(
+                shopId: shopId,
+                filePath: compressed.path,
+              );
+        } on AppError catch (e) {
+          if (mounted) {
+            setState(() => _error = _uploadAwareMessage(e, l, uploading: true));
+          }
+          return;
+        } finally {
+          if (mounted) setState(() => _uploading = false);
+        }
+      }
       await ref.read(productsRepositoryProvider).createProduct(
             shopId: shopId,
             name: _nameCtrl.text.trim(),
             sellingPrice: double.parse(_priceCtrl.text.trim()),
             initialStock: int.tryParse(_stockCtrl.text.trim()) ?? 0,
             categoryId: _selectedCategory?.id,
+            photoUrl: photoUrl,
           );
       ref.invalidate(ownerProductsProvider(shopId));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.productSaved)),
+          SnackBar(content: Text(l.productSaved)),
         );
         context.pop();
       }
+    } on ImageTooLargeFailed {
+      if (mounted) setState(() => _error = l.imageTooLarge);
     } on AppError catch (e) {
-      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
+      if (mounted) {
+        setState(() => _error = _uploadAwareMessage(e, l, uploading: false));
+      }
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) setState(() { _loading = false; _uploading = false; });
     }
+  }
+
+  String _uploadAwareMessage(
+    AppError e,
+    AppLocalizations l, {
+    required bool uploading,
+  }) {
+    return switch (e) {
+      ValidationError(:final message) => message,
+      NetworkError() || ServerError() =>
+        uploading ? l.imageUploadFailed : e.toUserMessage(l),
+      _ => e.toUserMessage(l),
+    };
   }
 
   Future<void> _pickCategory(List<CategoryModel> cats) async {
@@ -98,27 +140,9 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: AppTheme.surfaceVariant,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    border: Border.all(color: AppTheme.divider),
-                  ),
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add_a_photo_outlined,
-                          size: 32, color: AppTheme.outline),
-                      SizedBox(height: 6),
-                      Text('Photo',
-                          style: TextStyle(
-                              fontSize: 12, color: AppTheme.outline)),
-                    ],
-                  ),
-                ),
+              ProductImagePicker(
+                key: _imageKey,
+                uploading: _uploading,
               ),
               const SizedBox(height: 24),
               TextFormField(

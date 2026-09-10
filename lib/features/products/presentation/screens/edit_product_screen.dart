@@ -9,10 +9,12 @@ import '../../../../core/widgets/states.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
 import '../../data/categories_repository.dart';
+import '../../data/product_image_io.dart';
 import '../../data/products_repository.dart';
 import '../../domain/category_model.dart';
 import '../../domain/product_model.dart';
 import '../widgets/category_picker.dart';
+import '../widgets/product_image_picker.dart';
 import 'product_detail_screen.dart';
 import 'products_screen.dart';
 
@@ -26,9 +28,11 @@ class EditProductScreen extends ConsumerStatefulWidget {
 
 class _EditProductScreenState extends ConsumerState<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _imageKey = GlobalKey<ProductImagePickerState>();
   late TextEditingController _nameCtrl;
   late TextEditingController _priceCtrl;
   bool _loading = false;
+  bool _uploading = false;
   String? _error;
   bool _initialized = false;
   CategoryModel? _selectedCategory;
@@ -78,7 +82,30 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
   Future<void> _save(String shopId, List<CategoryModel> cats) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() { _loading = true; _error = null; });
+    final l = AppLocalizations.of(context)!;
     try {
+      Object? photoUrl = _absent;
+      final sel = _imageKey.currentState?.selection;
+      if (sel != null && sel.hasNewImage) {
+        setState(() => _uploading = true);
+        try {
+          final compressed = await compressProductImage(sel.localFile!);
+          photoUrl = await ref.read(productsRepositoryProvider).uploadProductImage(
+                shopId: shopId,
+                filePath: compressed.path,
+              );
+        } on AppError catch (e) {
+          if (mounted) {
+            setState(() => _error = _uploadAwareMessage(e, l, uploading: true));
+          }
+          return;
+        } finally {
+          if (mounted) setState(() => _uploading = false);
+        }
+      } else if (sel != null && sel.shouldClearRemote) {
+        photoUrl = null;
+      }
+
       await ref.read(productsRepositoryProvider).updateProduct(
             shopId: shopId,
             productId: widget.productId,
@@ -87,20 +114,38 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
             categoryId: _categoryCleared
                 ? null
                 : (_selectedCategory != null ? _selectedCategory!.id : _absent),
+            photoUrl: photoUrl,
           );
       ref.invalidate(productDetailProvider(shopId, widget.productId));
       ref.invalidate(ownerProductsProvider(shopId));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.productUpdated)),
+          SnackBar(content: Text(l.productUpdated)),
         );
         context.pop();
       }
+    } on ImageTooLargeFailed {
+      if (mounted) setState(() => _error = l.imageTooLarge);
     } on AppError catch (e) {
-      if (mounted) setState(() => _error = e.toUserMessage(AppLocalizations.of(context)!));
+      if (mounted) {
+        setState(() => _error = _uploadAwareMessage(e, l, uploading: false));
+      }
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) setState(() { _loading = false; _uploading = false; });
     }
+  }
+
+  String _uploadAwareMessage(
+    AppError e,
+    AppLocalizations l, {
+    required bool uploading,
+  }) {
+    return switch (e) {
+      ValidationError(:final message) => message,
+      NetworkError() || ServerError() =>
+        uploading ? l.imageUploadFailed : e.toUserMessage(l),
+      _ => e.toUserMessage(l),
+    };
   }
 
   Future<void> _deactivate(String shopId) async {
@@ -172,6 +217,12 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
+                      ProductImagePicker(
+                        key: _imageKey,
+                        existingUrl: product.photoUrl,
+                        uploading: _uploading,
+                      ),
+                      const SizedBox(height: 24),
                       TextFormField(
                         controller: _nameCtrl,
                         decoration:

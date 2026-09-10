@@ -486,7 +486,7 @@ return $default(_that.worker,_that.pin);case _:
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _WorkerCreatedModel implements WorkerCreatedModel {
   const _WorkerCreatedModel({required this.worker, required this.pin});
   

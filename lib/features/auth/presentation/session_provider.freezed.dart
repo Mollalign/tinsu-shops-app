@@ -128,13 +128,13 @@ return unauthenticated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( UserModel user,  String? currentShopId)?  authenticated,TResult Function( String? rememberedPhone,  String? rememberedName)?  unauthenticated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( UserModel user,  String? currentShopId)?  authenticated,TResult Function( String? rememberedPhone,  String? rememberedName,  bool isSessionExpired,  UserRole? lastRole)?  unauthenticated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Authenticated() when authenticated != null:
 return authenticated(_that.user,_that.currentShopId);case _Unauthenticated() when unauthenticated != null:
-return unauthenticated(_that.rememberedPhone,_that.rememberedName);case _:
+return unauthenticated(_that.rememberedPhone,_that.rememberedName,_that.isSessionExpired,_that.lastRole);case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return unauthenticated(_that.rememberedPhone,_that.rememberedName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( UserModel user,  String? currentShopId)  authenticated,required TResult Function( String? rememberedPhone,  String? rememberedName)  unauthenticated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( UserModel user,  String? currentShopId)  authenticated,required TResult Function( String? rememberedPhone,  String? rememberedName,  bool isSessionExpired,  UserRole? lastRole)  unauthenticated,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Authenticated():
 return authenticated(_that.user,_that.currentShopId);case _Unauthenticated():
-return unauthenticated(_that.rememberedPhone,_that.rememberedName);case _:
+return unauthenticated(_that.rememberedPhone,_that.rememberedName,_that.isSessionExpired,_that.lastRole);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return unauthenticated(_that.rememberedPhone,_that.rememberedName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( UserModel user,  String? currentShopId)?  authenticated,TResult? Function( String? rememberedPhone,  String? rememberedName)?  unauthenticated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( UserModel user,  String? currentShopId)?  authenticated,TResult? Function( String? rememberedPhone,  String? rememberedName,  bool isSessionExpired,  UserRole? lastRole)?  unauthenticated,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Authenticated() when authenticated != null:
 return authenticated(_that.user,_that.currentShopId);case _Unauthenticated() when unauthenticated != null:
-return unauthenticated(_that.rememberedPhone,_that.rememberedName);case _:
+return unauthenticated(_that.rememberedPhone,_that.rememberedName,_that.isSessionExpired,_that.lastRole);case _:
   return null;
 
 }
@@ -334,11 +334,13 @@ $UserModelCopyWith<$Res> get user {
 
 
 class _Unauthenticated implements SessionState {
-  const _Unauthenticated({this.rememberedPhone, this.rememberedName});
+  const _Unauthenticated({this.rememberedPhone, this.rememberedName, this.isSessionExpired = false, this.lastRole});
   
 
  final  String? rememberedPhone;
  final  String? rememberedName;
+@JsonKey() final  bool isSessionExpired;
+ final  UserRole? lastRole;
 
 /// Create a copy of SessionState
 /// with the given fields replaced by the non-null parameter values.
@@ -350,16 +352,16 @@ _$UnauthenticatedCopyWith<_Unauthenticated> get copyWith => __$UnauthenticatedCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unauthenticated&&(identical(other.rememberedPhone, rememberedPhone) || other.rememberedPhone == rememberedPhone)&&(identical(other.rememberedName, rememberedName) || other.rememberedName == rememberedName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unauthenticated&&(identical(other.rememberedPhone, rememberedPhone) || other.rememberedPhone == rememberedPhone)&&(identical(other.rememberedName, rememberedName) || other.rememberedName == rememberedName)&&(identical(other.isSessionExpired, isSessionExpired) || other.isSessionExpired == isSessionExpired)&&(identical(other.lastRole, lastRole) || other.lastRole == lastRole));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rememberedPhone,rememberedName);
+int get hashCode => Object.hash(runtimeType,rememberedPhone,rememberedName,isSessionExpired,lastRole);
 
 @override
 String toString() {
-  return 'SessionState.unauthenticated(rememberedPhone: $rememberedPhone, rememberedName: $rememberedName)';
+  return 'SessionState.unauthenticated(rememberedPhone: $rememberedPhone, rememberedName: $rememberedName, isSessionExpired: $isSessionExpired, lastRole: $lastRole)';
 }
 
 
@@ -370,7 +372,7 @@ abstract mixin class _$UnauthenticatedCopyWith<$Res> implements $SessionStateCop
   factory _$UnauthenticatedCopyWith(_Unauthenticated value, $Res Function(_Unauthenticated) _then) = __$UnauthenticatedCopyWithImpl;
 @useResult
 $Res call({
- String? rememberedPhone, String? rememberedName
+ String? rememberedPhone, String? rememberedName, bool isSessionExpired, UserRole? lastRole
 });
 
 
@@ -387,11 +389,13 @@ class __$UnauthenticatedCopyWithImpl<$Res>
 
 /// Create a copy of SessionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? rememberedPhone = freezed,Object? rememberedName = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? rememberedPhone = freezed,Object? rememberedName = freezed,Object? isSessionExpired = null,Object? lastRole = freezed,}) {
   return _then(_Unauthenticated(
 rememberedPhone: freezed == rememberedPhone ? _self.rememberedPhone : rememberedPhone // ignore: cast_nullable_to_non_nullable
 as String?,rememberedName: freezed == rememberedName ? _self.rememberedName : rememberedName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,isSessionExpired: null == isSessionExpired ? _self.isSessionExpired : isSessionExpired // ignore: cast_nullable_to_non_nullable
+as bool,lastRole: freezed == lastRole ? _self.lastRole : lastRole // ignore: cast_nullable_to_non_nullable
+as UserRole?,
   ));
 }
 

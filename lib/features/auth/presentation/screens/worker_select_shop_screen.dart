@@ -11,6 +11,7 @@ import '../../../../core/widgets/language_toggle.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../shops/domain/shop_model.dart';
+import '../session_provider.dart';
 
 part 'worker_select_shop_screen.g.dart';
 
@@ -44,6 +45,11 @@ class WorkerSelectShopScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context)!;
     final shopsAsync = ref.watch(publicShopsProvider);
+    final session = ref.watch(sessionProvider);
+    final isSessionExpired = session.maybeWhen(
+      unauthenticated: (_, __, isExpired, ___) => isExpired,
+      orElse: () => false,
+    );
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -99,7 +105,36 @@ class WorkerSelectShopScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            if (isSessionExpired)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.errorContainer,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline,
+                          color: AppTheme.error, size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          l.errorUnauthorized,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppTheme.error,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            const SizedBox(height: 16),
             Expanded(
               child: shopsAsync.when(
                 loading: () => const Center(

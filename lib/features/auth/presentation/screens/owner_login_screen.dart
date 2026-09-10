@@ -31,14 +31,22 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
   }
 
   void _onKey(String key) {
+    ref.read(sessionProvider.notifier).clearSessionExpiredFlag();
     if (_pin.length < 4) {
-      setState(() => _pin += key);
+      setState(() {
+        _pin += key;
+        _error = null;
+      });
     }
   }
 
   void _onDelete() {
+    ref.read(sessionProvider.notifier).clearSessionExpiredFlag();
     if (_pin.isNotEmpty) {
-      setState(() => _pin = _pin.substring(0, _pin.length - 1));
+      setState(() {
+        _pin = _pin.substring(0, _pin.length - 1);
+        _error = null;
+      });
     }
   }
 
@@ -71,6 +79,13 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final canLogin = _phoneCtrl.text.trim().isNotEmpty && _pin.length == 4;
+    final session = ref.watch(sessionProvider);
+    final isSessionExpired = session.maybeWhen(
+      unauthenticated: (_, __, isExpired, ___) => isExpired,
+      orElse: () => false,
+    );
+    final displayError =
+        _error ?? (isSessionExpired ? l.errorUnauthorized : null);
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -127,7 +142,10 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
                 controller: _phoneCtrl,
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) {
+                  ref.read(sessionProvider.notifier).clearSessionExpiredFlag();
+                  setState(() => _error = null);
+                },
                 decoration: InputDecoration(
                   labelText: l.phoneNumber,
                   prefixIcon: const Icon(Icons.phone_outlined),
@@ -146,7 +164,7 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
               NumericKeypad(onKey: _onKey, onDelete: _onDelete),
               const SizedBox(height: 24),
 
-              if (_error != null) ...[
+              if (displayError != null) ...[
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -160,7 +178,7 @@ class _OwnerLoginScreenState extends ConsumerState<OwnerLoginScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          _error!,
+                          displayError,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: AppTheme.error,
                               ),

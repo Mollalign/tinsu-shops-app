@@ -51,7 +51,7 @@ class ProductCard extends StatelessWidget {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(AppTheme.radiusMd),
                       ),
-                      child: _ProductImage(
+                      child: ProductNetworkImage(
                         url: product.photoUrl,
                         isOutOfStock: isOutOfStock,
                       ),
@@ -130,25 +130,59 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-class _ProductImage extends StatelessWidget {
+class ProductNetworkImage extends StatelessWidget {
   final String? url;
   final bool isOutOfStock;
-  const _ProductImage({this.url, required this.isOutOfStock});
+  final double? width;
+  final double? height;
+  final IconData placeholderIcon;
+  final double placeholderSize;
+
+  /// Skip network fetches in widget tests (CachedNetworkImage can hang).
+  @visibleForTesting
+  static bool skipNetworkLoad = false;
+
+  const ProductNetworkImage({
+    super.key,
+    this.url,
+    this.isOutOfStock = false,
+    this.width,
+    this.height,
+    this.placeholderIcon = Icons.shopping_bag_outlined,
+    this.placeholderSize = 36,
+  });
 
   @override
   Widget build(BuildContext context) {
     Widget img;
     if (url != null && url!.isNotEmpty) {
-      img = CachedNetworkImage(
-        imageUrl: url!,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        placeholder: (_, __) => Container(color: AppTheme.surfaceVariant),
-        errorWidget: (_, __, ___) => _Placeholder(),
-      );
+      if (skipNetworkLoad) {
+        img = _ProductImagePlaceholder(
+          icon: placeholderIcon,
+          size: placeholderSize,
+        );
+      } else {
+        img = CachedNetworkImage(
+          imageUrl: url!,
+          fit: BoxFit.cover,
+          width: width ?? double.infinity,
+          height: height ?? double.infinity,
+          placeholder: (_, __) => Container(
+            width: width,
+            height: height,
+            color: AppTheme.surfaceVariant,
+          ),
+          errorWidget: (_, __, ___) => _ProductImagePlaceholder(
+            icon: placeholderIcon,
+            size: placeholderSize,
+          ),
+        );
+      }
     } else {
-      img = _Placeholder();
+      img = _ProductImagePlaceholder(
+        icon: placeholderIcon,
+        size: placeholderSize,
+      );
     }
     if (isOutOfStock) {
       return ColorFiltered(
@@ -165,14 +199,20 @@ class _ProductImage extends StatelessWidget {
   }
 }
 
-class _Placeholder extends StatelessWidget {
+class _ProductImagePlaceholder extends StatelessWidget {
+  final IconData icon;
+  final double size;
+  const _ProductImagePlaceholder({
+    this.icon = Icons.shopping_bag_outlined,
+    this.size = 36,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.surfaceVariant,
-      child: const Center(
-        child: Icon(Icons.shopping_bag_outlined,
-            size: 36, color: AppTheme.outline),
+      child: Center(
+        child: Icon(icon, size: size, color: AppTheme.outline),
       ),
     );
   }

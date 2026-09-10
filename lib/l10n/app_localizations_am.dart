@@ -238,6 +238,36 @@ class AppLocalizationsAm extends AppLocalizations {
   String get addPhoto => 'ፎቶ አስገባ';
 
   @override
+  String get productImage => 'የምርት ፎቶ';
+
+  @override
+  String get takePhoto => 'ፎቶ አንሳ';
+
+  @override
+  String get chooseFromGallery => 'ከጋለሪ ምረጥ';
+
+  @override
+  String get changeImage => 'ፎቶ ቀይር';
+
+  @override
+  String get removeImage => 'ፎቶ አስወግድ';
+
+  @override
+  String get uploadingImage => 'ፎቶ በመስቀል ላይ…';
+
+  @override
+  String get imageSelectFailed => 'ፎቶውን መምረጥ አልተቻለም።';
+
+  @override
+  String get imageTooLarge => 'ፎቶው በጣም ትልቅ ነው።';
+
+  @override
+  String get imageUploadFailed => 'ፎቶ መስቀል አልተቻለም። እባክዎ እንደገና ይሞክሩ።';
+
+  @override
+  String get imagePermissionDenied => 'የፎቶ ፈቃድ ተከልክሏል። ያለ ፎቶም ምርቱን ማስቀመጥ ይችላሉ።';
+
+  @override
   String get noProducts => 'ምንም ምርት የለም';
 
   @override

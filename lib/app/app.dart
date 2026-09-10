@@ -7,6 +7,9 @@ import 'locale_provider.dart';
 import 'router.dart';
 import 'theme/app_theme.dart';
 
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 class TinsuShopsApp extends ConsumerWidget {
   const TinsuShopsApp({super.key});
 
@@ -17,6 +20,7 @@ class TinsuShopsApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'Tinsu-Shops',
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       theme: AppTheme.light,
       locale: locale,
       supportedLocales: const [
