@@ -27,12 +27,69 @@ class ProductsScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductsScreenState extends ConsumerState<ProductsScreen> {
+  static const _pageSize = 30;
+
   final _searchCtrl = TextEditingController();
+  final _scrollCtrl = ScrollController();
+
+  // Pagination state
+  List<ProductModel> _items = [];
+  bool _loading = true;
+  bool _loadingMore = false;
+  bool _hasMore = false;
+  int _page = 0;
+  Object? _error; // AppError or generic Exception
+  String _loadedShopId = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollCtrl.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _searchCtrl.dispose();
+    _scrollCtrl.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    final pos = _scrollCtrl.position;
+    if (_hasMore && !_loadingMore && pos.pixels >= pos.maxScrollExtent - 400) {
+      _fetchPage(_page + 1);
+    }
+  }
+
+  Future<void> _fetchPage(int page, {bool reset = false}) async {
+    if (reset) {
+      setState(() { _loading = true; _error = null; });
+    } else {
+      setState(() => _loadingMore = true);
+    }
+    try {
+      final result = await ref
+          .read(productsRepositoryProvider)
+          .listProductsPage(_loadedShopId, page: page, pageSize: _pageSize);
+      if (!mounted) return;
+      setState(() {
+        _items = reset ? result.items : [..._items, ...result.items];
+        _page = result.page;
+        _hasMore = result.hasMore;
+        _loading = false;
+        _loadingMore = false;
+        _error = null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _loading = false; _loadingMore = false; _error = e; });
+    }
+  }
+
+  void _maybeLoad(String shopId) {
+    if (shopId == _loadedShopId || shopId.isEmpty) return;
+    _loadedShopId = shopId;
+    _fetchPage(1, reset: true);
   }
 
   @override
@@ -44,11 +101,12 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       orElse: () => '',
     );
 
+    // Trigger initial load (or reload on shop change) from build.
+    _maybeLoad(shopId);
+
     final searchState = ref.watch(productSearchControllerProvider(shopId));
     final searchCtrl =
         ref.read(productSearchControllerProvider(shopId).notifier);
-
-    final productsAsync = ref.watch(ownerProductsProvider(shopId));
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -68,8 +126,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
               child: TextField(
                 controller: _searchCtrl,
-                onChanged: (v) =>
-                    searchCtrl.onQueryChanged(v),
+                onChanged: (v) => searchCtrl.onQueryChanged(v),
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: l.searchProductsHint,
@@ -108,10 +165,24 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       onRetry: searchCtrl.retry,
                       shopId: shopId,
                     )
-                  : _ProductListView(
-                      productsAsync: productsAsync,
-                      shopId: shopId,
-                    ),
+                  : Builder(builder: (context) {
+                      final l2 = AppLocalizations.of(context)!;
+                      final errMsg = _error == null
+                          ? null
+                          : (_error is AppError
+                              ? (_error as AppError).toUserMessage(l2)
+                              : l2.couldNotLoadProducts);
+                      return _ProductListView(
+                        items: _items.where((p) => p.isActive).toList(),
+                        loading: _loading,
+                        loadingMore: _loadingMore,
+                        error: errMsg,
+                        hasMore: _hasMore,
+                        scrollCtrl: _scrollCtrl,
+                        onRefresh: () => _fetchPage(1, reset: true),
+                        shopId: shopId,
+                      );
+                    }),
             ),
           ],
         ),
@@ -224,55 +295,96 @@ class _ProductThumb extends StatelessWidget {
 
 // ── Normal product grid (no search active) ────────────────────────────────────
 
-class _ProductListView extends ConsumerWidget {
+class _ProductListView extends StatelessWidget {
   const _ProductListView({
-    required this.productsAsync,
+    required this.items,
+    required this.loading,
+    required this.loadingMore,
+    required this.error,
+    required this.hasMore,
+    required this.scrollCtrl,
+    required this.onRefresh,
     required this.shopId,
   });
 
-  final AsyncValue<List<ProductModel>> productsAsync;
+  final List<ProductModel> items;
+  final bool loading;
+  final bool loadingMore;
+  final String? error;
+  final bool hasMore;
+  final ScrollController scrollCtrl;
+  final Future<void> Function() onRefresh;
   final String shopId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    return productsAsync.when(
-      loading: () => const ProductGridSkeleton(),
-      error: (e, _) => ErrorState(
-        message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
-        onRetry: () => ref.invalidate(ownerProductsProvider(shopId)),
-      ),
-      data: (products) {
-        final active = products.where((p) => p.isActive).toList();
-        if (active.isEmpty) {
-          return EmptyState(
-            icon: Icons.inventory_2_outlined,
-            title: l.noProducts,
-            description: l.noProductsDesc,
-            actionLabel: l.addProduct,
-            onAction: () => context.push('/owner/products/add'),
+
+    if (loading) return const ProductGridSkeleton();
+
+    if (error != null && items.isEmpty) {
+      return ErrorState(
+        message: error!,
+        onRetry: onRefresh,
+      );
+    }
+
+    if (items.isEmpty) {
+      return EmptyState(
+        icon: Icons.inventory_2_outlined,
+        title: l.noProducts,
+        description: l.noProductsDesc,
+        actionLabel: l.addProduct,
+        onAction: () => context.push('/owner/products/add'),
+      );
+    }
+
+    final bottomPad = MediaQuery.viewPaddingOf(context).bottom + 88;
+    // Extra slot at the end for the loading spinner or end-of-list indicator.
+    final extraItem = (loadingMore || hasMore || error != null) ? 1 : 0;
+    final totalSlots = items.length + extraItem;
+
+    return RefreshIndicator(
+      color: AppTheme.primary,
+      onRefresh: onRefresh,
+      child: GridView.builder(
+        controller: scrollCtrl,
+        padding: EdgeInsets.fromLTRB(16, 8, 16, bottomPad),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.72,
+        ),
+        itemCount: totalSlots,
+        itemBuilder: (context, i) {
+          // Last slot = pagination footer
+          if (i >= items.length) {
+            if (loadingMore) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              );
+            }
+            if (error != null) {
+              return Center(
+                child: TextButton.icon(
+                  onPressed: onRefresh,
+                  icon: const Icon(Icons.refresh, size: 16),
+                  label: const Text('Retry'),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+          return ProductCard(
+            product: items[i],
+            onTap: () => context.push('/owner/products/${items[i].id}'),
           );
-        }
-        final bottomPad = MediaQuery.viewPaddingOf(context).bottom + 88;
-        return RefreshIndicator(
-          color: AppTheme.primary,
-          onRefresh: () async => ref.invalidate(ownerProductsProvider(shopId)),
-          child: GridView.builder(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, bottomPad),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.72,
-            ),
-            itemCount: active.length,
-            itemBuilder: (context, i) => ProductCard(
-              product: active[i],
-              onTap: () => context.push('/owner/products/${active[i].id}'),
-            ),
-          ),
-        );
-      },
+        },
+      ),
     );
   }
 }

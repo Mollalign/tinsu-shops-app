@@ -806,12 +806,31 @@ class _CategoryChip extends StatelessWidget {
 // Product grid — tap to add
 // ─────────────────────────────────────────────────────────
 
-class _ProductGrid extends ConsumerWidget {
+class _ProductGrid extends ConsumerStatefulWidget {
   final String shopId;
   final String? categoryId;
   const _ProductGrid({required this.shopId, this.categoryId});
 
-  bool get _isRecent => categoryId == _kRecentCategory;
+  @override
+  ConsumerState<_ProductGrid> createState() => _ProductGridState();
+}
+
+class _ProductGridState extends ConsumerState<_ProductGrid> {
+  static const _pageSize = 30;
+
+  final _scrollCtrl = ScrollController();
+
+  List<ProductModel> _items = [];
+  bool _loading = true;
+  bool _loadingMore = false;
+  bool _hasMore = false;
+  int _page = 0;
+  Object? _error;
+
+  // Track the last loaded category to reset when filter changes.
+  String? _loadedCategoryKey; // null means "all"
+
+  bool get _isRecent => widget.categoryId == _kRecentCategory;
 
   int _columns(BuildContext context) {
     final w = MediaQuery.sizeOf(context).width;
@@ -821,17 +840,139 @@ class _ProductGrid extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    _scrollCtrl.addListener(_onScroll);
+  }
+
+  @override
+  void didUpdateWidget(_ProductGrid old) {
+    super.didUpdateWidget(old);
+    // Reset pagination when the category filter changes.
+    if (old.categoryId != widget.categoryId) {
+      _reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final pos = _scrollCtrl.position;
+    if (_hasMore && !_loadingMore && pos.pixels >= pos.maxScrollExtent - 400) {
+      _fetchPage(_page + 1);
+    }
+  }
+
+  void _reset() {
+    setState(() {
+      _items = [];
+      _page = 0;
+      _hasMore = false;
+      _loading = true;
+      _error = null;
+      _loadedCategoryKey = null;
+    });
+  }
+
+  Future<void> _fetchPage(int page, {bool reset = false}) async {
+    // _isRecent is always handled via the Riverpod provider in build();
+    // this method is only called for the All / category branches.
+    if (reset) {
+      setState(() { _loading = true; _error = null; });
+    } else {
+      setState(() => _loadingMore = true);
+    }
+    try {
+      final result = await ref
+          .read(productsRepositoryProvider)
+          .listProductsPage(widget.shopId,
+              page: page,
+              pageSize: _pageSize,
+              categoryId: widget.categoryId);
+      if (!mounted) return;
+      setState(() {
+        _items = reset ? result.items : [..._items, ...result.items];
+        _page = result.page;
+        _hasMore = result.hasMore;
+        _loading = false;
+        _loadingMore = false;
+        _error = null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _loading = false; _loadingMore = false; _error = e; });
+    }
+  }
+
+  void _maybeLoad() {
+    final key = widget.categoryId ?? '__all__';
+    if (key == _loadedCategoryKey) return;
+    _loadedCategoryKey = key;
+    _fetchPage(1, reset: true);
+  }
+
+  Widget _buildGrid(List<ProductModel> products) {
+    final cols = _columns(context);
+    final active = products.where((p) => p.isActive).toList();
+    final extraItem = (_loadingMore || _hasMore || _error != null) ? 1 : 0;
+    final totalSlots = active.length + extraItem;
+
+    return RefreshIndicator(
+      color: AppTheme.primary,
+      onRefresh: () => _fetchPage(1, reset: true),
+      child: GridView.builder(
+        controller: _scrollCtrl,
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 120),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: cols,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.72,
+        ),
+        itemCount: totalSlots,
+        itemBuilder: (context, i) {
+          if (i >= active.length) {
+            if (_loadingMore) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              );
+            }
+            if (_error != null) {
+              return Center(
+                child: TextButton.icon(
+                  onPressed: () => _fetchPage(_page + 1),
+                  icon: const Icon(Icons.refresh, size: 16),
+                  label: const Text('Retry'),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+          return _TapProductCard(product: active[i]);
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+
+    // Recent category still uses the dedicated provider (small list, no paging).
     if (_isRecent) {
-      final async = ref.watch(recentProductsProvider(shopId));
+      final async = ref.watch(recentProductsProvider(widget.shopId));
       return async.when(
         loading: () => ProductGridSkeleton(columns: _columns(context)),
         error: (e, _) => ErrorState(
-          message: e is AppError
-              ? e.toUserMessage(l)
-              : l.couldNotLoadProducts,
-          onRetry: () => ref.invalidate(recentProductsProvider(shopId)),
+          message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
+          onRetry: () => ref.invalidate(recentProductsProvider(widget.shopId)),
         ),
         data: (products) {
           final active = products.where((p) => p.isActive).toList();
@@ -842,62 +983,52 @@ class _ProductGrid extends ConsumerWidget {
               description: l.noRecentProductsDesc,
             );
           }
-          return _buildGrid(context, ref, active,
-              onRefresh: () => ref.invalidate(recentProductsProvider(shopId)));
+          return RefreshIndicator(
+            color: AppTheme.primary,
+            onRefresh: () async =>
+                ref.invalidate(recentProductsProvider(widget.shopId)),
+            child: GridView.builder(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 120),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: _columns(context),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.72,
+              ),
+              itemCount: active.length,
+              itemBuilder: (context, i) => _TapProductCard(product: active[i]),
+            ),
+          );
         },
       );
     }
 
-    // All / category
-    final async =
-        ref.watch(shopProductsProvider(shopId, categoryId: categoryId));
-    return async.when(
-      loading: () => ProductGridSkeleton(columns: _columns(context)),
-      error: (e, _) => ErrorState(
-        message:
-            e is AppError ? e.toUserMessage(l) : l.couldNotLoadProducts,
-        onRetry: () => ref
-            .invalidate(shopProductsProvider(shopId, categoryId: categoryId)),
-      ),
-      data: (products) {
-        final active = products.where((p) => p.isActive).toList();
-        if (active.isEmpty) {
-          return EmptyState(
-            icon: Icons.inventory_2_outlined,
-            title: l.noProducts,
-            description: l.noProductsInCategory,
-          );
-        }
-        return _buildGrid(context, ref, active,
-            onRefresh: () => ref
-                .invalidate(shopProductsProvider(shopId, categoryId: categoryId)));
-      },
-    );
-  }
+    // All / category — infinite scroll via local state.
+    _maybeLoad();
 
-  Widget _buildGrid(
-    BuildContext context,
-    WidgetRef ref,
-    List<ProductModel> products, {
-    required VoidCallback onRefresh,
-  }) {
-    final cols = _columns(context);
-    return RefreshIndicator(
-      color: AppTheme.primary,
-      onRefresh: () async => onRefresh(),
-      child: GridView.builder(
-        // 120 px of bottom padding clears cart bar + nav bar
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 120),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: cols,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 0.72,
-        ),
-        itemCount: products.length,
-        itemBuilder: (context, i) => _TapProductCard(product: products[i]),
-      ),
-    );
+    if (_loading) {
+      return ProductGridSkeleton(columns: _columns(context));
+    }
+
+    if (_error != null && _items.isEmpty) {
+      return ErrorState(
+        message: _error is AppError
+            ? (_error as AppError).toUserMessage(l)
+            : l.couldNotLoadProducts,
+        onRetry: () => _fetchPage(1, reset: true),
+      );
+    }
+
+    final active = _items.where((p) => p.isActive).toList();
+    if (active.isEmpty) {
+      return EmptyState(
+        icon: Icons.inventory_2_outlined,
+        title: l.noProducts,
+        description: l.noProductsInCategory,
+      );
+    }
+
+    return _buildGrid(_items);
   }
 }
 

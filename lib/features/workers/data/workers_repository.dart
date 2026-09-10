@@ -18,7 +18,12 @@ class WorkersRepository {
 
   Future<List<WorkerModel>> listWorkers(String shopId) async {
     try {
-      final res = await _dio.get(ApiConstants.workers(shopId));
+      // page_size=200 covers any realistic shop; true pagination not needed
+      // for a staff list that grows slowly.
+      final res = await _dio.get(
+        ApiConstants.workers(shopId),
+        queryParameters: {'page_size': 200},
+      );
       // Backend returns Page[WorkerResponse]: {items: [...], page, total, ...}
       final items = (res.data['items'] as List);
       return items.map((e) => WorkerModel.fromJson(e as Map<String, dynamic>)).toList();

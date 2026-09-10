@@ -780,7 +780,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get workerSalesToday => 'የዛሬ ሽያጭ';
 
   @override
-  String get totalToday => 'የዛሬ ጠቅላላ';
+  String get totalToday => 'የዛሬ ጠቅላላ ሽያጭ';
 
   @override
   String get confirmLogout => 'እርግጠኛ ነዎት መውጣት ይፈልጋሉ?';

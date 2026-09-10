@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/constants/api_constants.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/utils/paged_result.dart';
 import '../domain/sale_model.dart';
 
 part 'sales_repository.g.dart';
@@ -40,18 +41,31 @@ class SalesRepository {
     }
   }
 
-  Future<List<SaleListItem>> listSales(String shopId, {int page = 1}) async {
+  /// Fetch a specific page with full pagination metadata.
+  /// Use this for infinite-scroll / load-more flows.
+  Future<PagedResult<SaleListItem>> listSalesPage(
+    String shopId, {
+    int page = 1,
+    int pageSize = 30,
+  }) async {
     try {
       final res = await _dio.get(
         ApiConstants.sales(shopId),
-        queryParameters: {'page': page, 'page_size': 30},
+        queryParameters: {'page': page, 'page_size': pageSize},
       );
-      final items = res.data['items'] as List;
-      return items.map((e) => SaleListItem.fromJson(e)).toList();
+      return PagedResult.fromJson(
+        res.data as Map<String, dynamic>,
+        SaleListItem.fromJson,
+      );
     } on DioException catch (e) {
       throw extractError(e);
     }
   }
+
+  /// Convenience wrapper that returns only items (page 1).
+  /// Used by the existing @riverpod providers so generated code stays valid.
+  Future<List<SaleListItem>> listSales(String shopId, {int page = 1}) =>
+      listSalesPage(shopId, page: page).then((r) => r.items);
 
   Future<SaleModel> getSale(String shopId, String saleId) async {
     try {
