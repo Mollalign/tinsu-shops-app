@@ -3,8 +3,8 @@ class ApiConstants {
   ApiConstants._();
 
   static String get baseUrl {
-    return 'http://127.0.0.1:8000';
-    // return 'https://tinsu-shops-api.vercel.app';
+    // return 'http://127.0.0.1:8000';
+    return 'https://tinsu-shops-api.vercel.app';
   }
   static const String apiV1 = '/api/v1';
 

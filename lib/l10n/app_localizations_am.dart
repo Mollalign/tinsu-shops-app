@@ -9,7 +9,7 @@ class AppLocalizationsAm extends AppLocalizations {
   AppLocalizationsAm([String locale = 'am']) : super(locale);
 
   @override
-  String get appName => 'የቲንሱ ሱቆች';
+  String get appName => 'Tinsu-Shops';
 
   @override
   String get tagline => 'ቀላል ሽያጭ፣ አስተማማኝ ውጤት';
@@ -72,7 +72,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get edit => 'አስተካክል';
 
   @override
-  String get add => 'አክል';
+  String get add => 'ጨምር';
 
   @override
   String get search => 'ፈልግ';
@@ -96,7 +96,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get allShops => 'ሁሉም ሱቆች';
 
   @override
-  String get addShop => 'ሱቅ አክል';
+  String get addShop => 'ሱቅ ጨምር';
 
   @override
   String get shopName => 'የሱቅ ስም';
@@ -192,7 +192,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get productLabel => 'ምርት';
 
   @override
-  String get addProduct => 'ምርት አክል';
+  String get addProduct => 'ምርት ጨምር';
 
   @override
   String get editProduct => 'ምርት አስተካክል';
@@ -222,10 +222,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get deleteProduct => 'ምርቱን ሰርዝ';
 
   @override
-  String get deactivateProduct => 'ምርቱን አቦዝን';
+  String get deactivateProduct => 'ምርቱን አቋርጥ';
 
   @override
-  String get deactivate => 'አቦዝን';
+  String get deactivate => 'አቋርጥ';
 
   @override
   String get deactivateProductTitle => 'ምርቱን ማቦዘን ይፈልጋሉ?';
@@ -235,7 +235,7 @@ class AppLocalizationsAm extends AppLocalizations {
       'ይህ ምርት ከሽያጭ ዝርዝር ይደበቃል። የቀደመ የሽያጭ ታሪክ ግን ይጠበቃል።';
 
   @override
-  String get addPhoto => 'ፎቶ አክል';
+  String get addPhoto => 'ፎቶ አስገባ';
 
   @override
   String get noProducts => 'ምንም ምርት የለም';
@@ -322,7 +322,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get categories => 'ምድቦች';
 
   @override
-  String get addCategory => 'ምድብ አክል';
+  String get addCategory => 'ምድብ አስገባ';
 
   @override
   String get categoryName => 'የምድብ ስም';
@@ -505,10 +505,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get workers => 'ሠራተኞች';
 
   @override
-  String get addWorker => 'ሠራተኛ አክል';
+  String get addWorker => 'ሠራተኛ ጨምር';
 
   @override
-  String get addNewWorker => 'አዲስ ሠራተኛ አክል';
+  String get addNewWorker => 'አዲስ ሠራተኛ ጨምር';
 
   @override
   String get workerName => 'ስም';
@@ -553,7 +553,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get resetPin => 'ፒን ዳግም አስጀምር';
 
   @override
-  String get disableWorker => 'ሠራተኛን አቦዝን';
+  String get disableWorker => 'ሠራተኛን አቋርጥ';
 
   @override
   String get enableWorker => 'ሠራተኛን አንቃ';
