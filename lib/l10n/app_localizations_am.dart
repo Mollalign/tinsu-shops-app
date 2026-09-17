@@ -880,4 +880,34 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get analyticsOpenButton => 'ትንተና';
+
+  @override
+  String get todaysOverview => 'የዛሬ አጠቃላይ እይታ';
+
+  @override
+  String get quickActions => 'ፈጣን ተግባራት';
+
+  @override
+  String get addStock => 'ክምችት ጨምር';
+
+  @override
+  String get viewAll => 'ሁሉንም ይመልከቱ →';
+
+  @override
+  String get allStockLooksGood => 'ሁሉም ክምችት በጥሩ ሁኔታ ላይ ነው';
+
+  @override
+  String get allStockLooksGoodDesc => 'በአሁኑ ጊዜ የሚሞላ ምርት የለም።';
+
+  @override
+  String get noSalesYetHome => 'እስካሁን ምንም ሽያጭ የለም';
+
+  @override
+  String get noSalesRecordedHomeDesc => 'ሽያጭ ሲመዘገብ እዚህ ይታያል።';
+
+  @override
+  String get selectShopSheet => 'ሱቅ ይምረጡ';
+
+  @override
+  String get couldNotLoadHome => 'ዳሽቦርዱን መጫን አልተቻለም።';
 }

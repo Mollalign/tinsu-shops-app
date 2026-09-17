@@ -1783,6 +1783,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Analytics'**
   String get analyticsOpenButton;
+
+  /// No description provided for @todaysOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Overview'**
+  String get todaysOverview;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get quickActions;
+
+  /// No description provided for @addStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Stock'**
+  String get addStock;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all →'**
+  String get viewAll;
+
+  /// No description provided for @allStockLooksGood.
+  ///
+  /// In en, this message translates to:
+  /// **'All stock looks good'**
+  String get allStockLooksGood;
+
+  /// No description provided for @allStockLooksGoodDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'No products currently need restocking.'**
+  String get allStockLooksGoodDesc;
+
+  /// No description provided for @noSalesYetHome.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales yet'**
+  String get noSalesYetHome;
+
+  /// No description provided for @noSalesRecordedHomeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Once sales are recorded, they will appear here.'**
+  String get noSalesRecordedHomeDesc;
+
+  /// No description provided for @selectShopSheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Shop'**
+  String get selectShopSheet;
+
+  /// No description provided for @couldNotLoadHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load dashboard.'**
+  String get couldNotLoadHome;
 }
 
 class _AppLocalizationsDelegate

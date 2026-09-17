@@ -105,3 +105,51 @@ abstract class OwnerDashboard with _$OwnerDashboard {
 extension OwnerDashboardX on OwnerDashboard {
   double get grandTotal => double.tryParse(totalTodaySales) ?? 0;
 }
+
+@freezed
+abstract class HomeLowStockItem with _$HomeLowStockItem {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory HomeLowStockItem({
+    required String id,
+    required String name,
+    required int stockQuantity,
+    required int lowStockThreshold,
+    @Default(false) bool isOutOfStock,
+  }) = _HomeLowStockItem;
+
+  factory HomeLowStockItem.fromJson(Map<String, dynamic> json) =>
+      _$HomeLowStockItemFromJson(json);
+}
+
+@freezed
+abstract class HomeRecentSaleItem with _$HomeRecentSaleItem {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory HomeRecentSaleItem({
+    required String id,
+    required DateTime createdAt,
+    required String soldByName,
+    @JsonKey(fromJson: _numToString) required String totalAmount,
+    required int itemsCount,
+  }) = _HomeRecentSaleItem;
+
+  factory HomeRecentSaleItem.fromJson(Map<String, dynamic> json) =>
+      _$HomeRecentSaleItemFromJson(json);
+}
+
+extension HomeRecentSaleItemX on HomeRecentSaleItem {
+  double get total => double.tryParse(totalAmount) ?? 0;
+}
+
+@freezed
+abstract class HomeSummary with _$HomeSummary {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory HomeSummary({
+    required TodayReport today,
+    @Default([]) List<HomeLowStockItem> lowStock,
+    @Default([]) List<HomeRecentSaleItem> recentSales,
+  }) = _HomeSummary;
+
+  factory HomeSummary.fromJson(Map<String, dynamic> json) =>
+      _$HomeSummaryFromJson(json);
+}
+

@@ -6,7 +6,7 @@ part of 'owner_dashboard_screen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$shopTodayReportHash() => r'122c54f36e10440d9e637d406707fed993b002e7';
+String _$shopHomeSummaryHash() => r'f390a3e59302d449c9c2e82a44ab7bc021a3653d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -28,6 +28,126 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [shopHomeSummary].
+@ProviderFor(shopHomeSummary)
+const shopHomeSummaryProvider = ShopHomeSummaryFamily();
+
+/// See also [shopHomeSummary].
+class ShopHomeSummaryFamily extends Family<AsyncValue<HomeSummary>> {
+  /// See also [shopHomeSummary].
+  const ShopHomeSummaryFamily();
+
+  /// See also [shopHomeSummary].
+  ShopHomeSummaryProvider call(String shopId) {
+    return ShopHomeSummaryProvider(shopId);
+  }
+
+  @override
+  ShopHomeSummaryProvider getProviderOverride(
+    covariant ShopHomeSummaryProvider provider,
+  ) {
+    return call(provider.shopId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'shopHomeSummaryProvider';
+}
+
+/// See also [shopHomeSummary].
+class ShopHomeSummaryProvider extends AutoDisposeFutureProvider<HomeSummary> {
+  /// See also [shopHomeSummary].
+  ShopHomeSummaryProvider(String shopId)
+    : this._internal(
+        (ref) => shopHomeSummary(ref as ShopHomeSummaryRef, shopId),
+        from: shopHomeSummaryProvider,
+        name: r'shopHomeSummaryProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$shopHomeSummaryHash,
+        dependencies: ShopHomeSummaryFamily._dependencies,
+        allTransitiveDependencies:
+            ShopHomeSummaryFamily._allTransitiveDependencies,
+        shopId: shopId,
+      );
+
+  ShopHomeSummaryProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.shopId,
+  }) : super.internal();
+
+  final String shopId;
+
+  @override
+  Override overrideWith(
+    FutureOr<HomeSummary> Function(ShopHomeSummaryRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ShopHomeSummaryProvider._internal(
+        (ref) => create(ref as ShopHomeSummaryRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        shopId: shopId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<HomeSummary> createElement() {
+    return _ShopHomeSummaryProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ShopHomeSummaryProvider && other.shopId == shopId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, shopId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ShopHomeSummaryRef on AutoDisposeFutureProviderRef<HomeSummary> {
+  /// The parameter `shopId` of this provider.
+  String get shopId;
+}
+
+class _ShopHomeSummaryProviderElement
+    extends AutoDisposeFutureProviderElement<HomeSummary>
+    with ShopHomeSummaryRef {
+  _ShopHomeSummaryProviderElement(super.provider);
+
+  @override
+  String get shopId => (origin as ShopHomeSummaryProvider).shopId;
+}
+
+String _$shopTodayReportHash() => r'122c54f36e10440d9e637d406707fed993b002e7';
 
 /// See also [shopTodayReport].
 @ProviderFor(shopTodayReport)
@@ -389,5 +509,23 @@ class _DashboardWorkersProviderElement
   String get shopId => (origin as DashboardWorkersProvider).shopId;
 }
 
+String _$dashboardShopsHash() => r'02a4e6556bb03d59e92e13d00f6dd8d9e532f8ee';
+
+/// See also [dashboardShops].
+@ProviderFor(dashboardShops)
+final dashboardShopsProvider =
+    AutoDisposeFutureProvider<List<ShopModel>>.internal(
+      dashboardShops,
+      name: r'dashboardShopsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$dashboardShopsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DashboardShopsRef = AutoDisposeFutureProviderRef<List<ShopModel>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

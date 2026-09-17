@@ -1,8 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 
 import '../../../../app/theme/app_theme.dart';
 import '../../../../core/errors/app_error.dart';
@@ -117,6 +119,11 @@ class _SalesAnalyticsScreenState extends ConsumerState<SalesAnalyticsScreen> {
       appBar: AppBar(
         title: Text(l.salesAnalytics),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.receipt_long_outlined),
+            tooltip: l.salesHistory,
+            onPressed: () => context.push('/owner/sales/history'),
+          ),
           // Date picker — only meaningful for daily/weekly/monthly
           if (_period != AnalyticsPeriod.yearly)
             IconButton(
@@ -135,6 +142,28 @@ class _SalesAnalyticsScreenState extends ConsumerState<SalesAnalyticsScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
           children: [
+            // ── Sales History action ───────────────────────────────────────
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.push('/owner/sales/history'),
+                    icon: const Icon(Icons.receipt_long_outlined, size: 18),
+                    label: Text(l.salesHistory),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppTheme.primary,
+                      side: const BorderSide(color: AppTheme.primary),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+
             // ── Period selector ────────────────────────────────────────────
             _PeriodSelector(current: _period, onChanged: _onPeriodChanged, l: l),
             const SizedBox(height: 16),

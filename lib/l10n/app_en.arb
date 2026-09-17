@@ -373,6 +373,18 @@
   },
   "analyticsPickDate": "Pick date",
   "analyticsNoWorkers": "No seller data for this period.",
-  "analyticsOpenButton": "Analytics"
+  "analyticsOpenButton": "Analytics",
+
+  "todaysOverview": "Today's Overview",
+  "quickActions": "Quick Actions",
+  "addStock": "Add Stock",
+  "viewAll": "View all →",
+  "allStockLooksGood": "All stock looks good",
+  "allStockLooksGoodDesc": "No products currently need restocking.",
+  "noSalesYetHome": "No sales yet",
+  "noSalesRecordedHomeDesc": "Once sales are recorded, they will appear here.",
+  "selectShopSheet": "Select Shop",
+  "couldNotLoadHome": "Could not load dashboard."
 }
+
 

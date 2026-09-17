@@ -82,3 +82,60 @@ Map<String, dynamic> _$OwnerDashboardToJson(_OwnerDashboard instance) =>
       'shops': instance.shops,
       'total_today_sales': instance.totalTodaySales,
     };
+
+_HomeLowStockItem _$HomeLowStockItemFromJson(Map<String, dynamic> json) =>
+    _HomeLowStockItem(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      stockQuantity: (json['stock_quantity'] as num).toInt(),
+      lowStockThreshold: (json['low_stock_threshold'] as num).toInt(),
+      isOutOfStock: json['is_out_of_stock'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$HomeLowStockItemToJson(_HomeLowStockItem instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'stock_quantity': instance.stockQuantity,
+      'low_stock_threshold': instance.lowStockThreshold,
+      'is_out_of_stock': instance.isOutOfStock,
+    };
+
+_HomeRecentSaleItem _$HomeRecentSaleItemFromJson(Map<String, dynamic> json) =>
+    _HomeRecentSaleItem(
+      id: json['id'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      soldByName: json['sold_by_name'] as String,
+      totalAmount: _numToString(json['total_amount']),
+      itemsCount: (json['items_count'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$HomeRecentSaleItemToJson(_HomeRecentSaleItem instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'created_at': instance.createdAt.toIso8601String(),
+      'sold_by_name': instance.soldByName,
+      'total_amount': instance.totalAmount,
+      'items_count': instance.itemsCount,
+    };
+
+_HomeSummary _$HomeSummaryFromJson(Map<String, dynamic> json) => _HomeSummary(
+  today: TodayReport.fromJson(json['today'] as Map<String, dynamic>),
+  lowStock:
+      (json['low_stock'] as List<dynamic>?)
+          ?.map((e) => HomeLowStockItem.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  recentSales:
+      (json['recent_sales'] as List<dynamic>?)
+          ?.map((e) => HomeRecentSaleItem.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$HomeSummaryToJson(_HomeSummary instance) =>
+    <String, dynamic>{
+      'today': instance.today,
+      'low_stock': instance.lowStock,
+      'recent_sales': instance.recentSales,
+    };

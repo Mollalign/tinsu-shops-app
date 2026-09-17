@@ -225,7 +225,7 @@ GoRouter router(Ref ref) {
               builder: (_, __) => const ProductsScreen()),
           GoRoute(
               path: '/owner/sales',
-              builder: (_, __) => const SalesHistoryScreen()),
+              builder: (_, __) => const SalesAnalyticsScreen()),
           GoRoute(
               path: '/owner/categories',
               builder: (_, __) => const CategoriesScreen()),
@@ -263,6 +263,10 @@ GoRouter router(Ref ref) {
           path: '/owner/low-stock',
           builder: (_, __) => const LowStockScreen()),
       GoRoute(
+        path: '/owner/sales/history',
+        builder: (_, __) => const SalesHistoryScreen(),
+      ),
+      GoRoute(
         path: '/owner/sales/:id',
         builder: (_, state) =>
             SaleDetailScreen(saleId: state.pathParameters['id']!),
@@ -282,8 +286,9 @@ GoRouter router(Ref ref) {
           path: '/owner/change-pin',
           builder: (_, __) => const ChangePinScreen()),
       GoRoute(
-          path: '/owner/analytics',
-          builder: (_, __) => const SalesAnalyticsScreen()),
+        path: '/owner/analytics',
+        redirect: (_, __) => '/owner/sales',
+      ),
     ],
   );
 }

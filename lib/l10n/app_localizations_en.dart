@@ -886,4 +886,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analyticsOpenButton => 'Analytics';
+
+  @override
+  String get todaysOverview => 'Today\'s Overview';
+
+  @override
+  String get quickActions => 'Quick Actions';
+
+  @override
+  String get addStock => 'Add Stock';
+
+  @override
+  String get viewAll => 'View all →';
+
+  @override
+  String get allStockLooksGood => 'All stock looks good';
+
+  @override
+  String get allStockLooksGoodDesc => 'No products currently need restocking.';
+
+  @override
+  String get noSalesYetHome => 'No sales yet';
+
+  @override
+  String get noSalesRecordedHomeDesc =>
+      'Once sales are recorded, they will appear here.';
+
+  @override
+  String get selectShopSheet => 'Select Shop';
+
+  @override
+  String get couldNotLoadHome => 'Could not load dashboard.';
 }

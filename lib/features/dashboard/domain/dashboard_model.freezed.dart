@@ -1417,4 +1417,853 @@ as String,
 
 }
 
+
+/// @nodoc
+mixin _$HomeLowStockItem {
+
+ String get id; String get name; int get stockQuantity; int get lowStockThreshold; bool get isOutOfStock;
+/// Create a copy of HomeLowStockItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HomeLowStockItemCopyWith<HomeLowStockItem> get copyWith => _$HomeLowStockItemCopyWithImpl<HomeLowStockItem>(this as HomeLowStockItem, _$identity);
+
+  /// Serializes this HomeLowStockItem to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeLowStockItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.stockQuantity, stockQuantity) || other.stockQuantity == stockQuantity)&&(identical(other.lowStockThreshold, lowStockThreshold) || other.lowStockThreshold == lowStockThreshold)&&(identical(other.isOutOfStock, isOutOfStock) || other.isOutOfStock == isOutOfStock));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,stockQuantity,lowStockThreshold,isOutOfStock);
+
+@override
+String toString() {
+  return 'HomeLowStockItem(id: $id, name: $name, stockQuantity: $stockQuantity, lowStockThreshold: $lowStockThreshold, isOutOfStock: $isOutOfStock)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HomeLowStockItemCopyWith<$Res>  {
+  factory $HomeLowStockItemCopyWith(HomeLowStockItem value, $Res Function(HomeLowStockItem) _then) = _$HomeLowStockItemCopyWithImpl;
+@useResult
+$Res call({
+ String id, String name, int stockQuantity, int lowStockThreshold, bool isOutOfStock
+});
+
+
+
+
+}
+/// @nodoc
+class _$HomeLowStockItemCopyWithImpl<$Res>
+    implements $HomeLowStockItemCopyWith<$Res> {
+  _$HomeLowStockItemCopyWithImpl(this._self, this._then);
+
+  final HomeLowStockItem _self;
+  final $Res Function(HomeLowStockItem) _then;
+
+/// Create a copy of HomeLowStockItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? stockQuantity = null,Object? lowStockThreshold = null,Object? isOutOfStock = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,stockQuantity: null == stockQuantity ? _self.stockQuantity : stockQuantity // ignore: cast_nullable_to_non_nullable
+as int,lowStockThreshold: null == lowStockThreshold ? _self.lowStockThreshold : lowStockThreshold // ignore: cast_nullable_to_non_nullable
+as int,isOutOfStock: null == isOutOfStock ? _self.isOutOfStock : isOutOfStock // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [HomeLowStockItem].
+extension HomeLowStockItemPatterns on HomeLowStockItem {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _HomeLowStockItem value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _HomeLowStockItem() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _HomeLowStockItem value)  $default,){
+final _that = this;
+switch (_that) {
+case _HomeLowStockItem():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _HomeLowStockItem value)?  $default,){
+final _that = this;
+switch (_that) {
+case _HomeLowStockItem() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int stockQuantity,  int lowStockThreshold,  bool isOutOfStock)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _HomeLowStockItem() when $default != null:
+return $default(_that.id,_that.name,_that.stockQuantity,_that.lowStockThreshold,_that.isOutOfStock);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int stockQuantity,  int lowStockThreshold,  bool isOutOfStock)  $default,) {final _that = this;
+switch (_that) {
+case _HomeLowStockItem():
+return $default(_that.id,_that.name,_that.stockQuantity,_that.lowStockThreshold,_that.isOutOfStock);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int stockQuantity,  int lowStockThreshold,  bool isOutOfStock)?  $default,) {final _that = this;
+switch (_that) {
+case _HomeLowStockItem() when $default != null:
+return $default(_that.id,_that.name,_that.stockQuantity,_that.lowStockThreshold,_that.isOutOfStock);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _HomeLowStockItem implements HomeLowStockItem {
+  const _HomeLowStockItem({required this.id, required this.name, required this.stockQuantity, required this.lowStockThreshold, this.isOutOfStock = false});
+  factory _HomeLowStockItem.fromJson(Map<String, dynamic> json) => _$HomeLowStockItemFromJson(json);
+
+@override final  String id;
+@override final  String name;
+@override final  int stockQuantity;
+@override final  int lowStockThreshold;
+@override@JsonKey() final  bool isOutOfStock;
+
+/// Create a copy of HomeLowStockItem
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$HomeLowStockItemCopyWith<_HomeLowStockItem> get copyWith => __$HomeLowStockItemCopyWithImpl<_HomeLowStockItem>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$HomeLowStockItemToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeLowStockItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.stockQuantity, stockQuantity) || other.stockQuantity == stockQuantity)&&(identical(other.lowStockThreshold, lowStockThreshold) || other.lowStockThreshold == lowStockThreshold)&&(identical(other.isOutOfStock, isOutOfStock) || other.isOutOfStock == isOutOfStock));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,stockQuantity,lowStockThreshold,isOutOfStock);
+
+@override
+String toString() {
+  return 'HomeLowStockItem(id: $id, name: $name, stockQuantity: $stockQuantity, lowStockThreshold: $lowStockThreshold, isOutOfStock: $isOutOfStock)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$HomeLowStockItemCopyWith<$Res> implements $HomeLowStockItemCopyWith<$Res> {
+  factory _$HomeLowStockItemCopyWith(_HomeLowStockItem value, $Res Function(_HomeLowStockItem) _then) = __$HomeLowStockItemCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String name, int stockQuantity, int lowStockThreshold, bool isOutOfStock
+});
+
+
+
+
+}
+/// @nodoc
+class __$HomeLowStockItemCopyWithImpl<$Res>
+    implements _$HomeLowStockItemCopyWith<$Res> {
+  __$HomeLowStockItemCopyWithImpl(this._self, this._then);
+
+  final _HomeLowStockItem _self;
+  final $Res Function(_HomeLowStockItem) _then;
+
+/// Create a copy of HomeLowStockItem
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? stockQuantity = null,Object? lowStockThreshold = null,Object? isOutOfStock = null,}) {
+  return _then(_HomeLowStockItem(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,stockQuantity: null == stockQuantity ? _self.stockQuantity : stockQuantity // ignore: cast_nullable_to_non_nullable
+as int,lowStockThreshold: null == lowStockThreshold ? _self.lowStockThreshold : lowStockThreshold // ignore: cast_nullable_to_non_nullable
+as int,isOutOfStock: null == isOutOfStock ? _self.isOutOfStock : isOutOfStock // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$HomeRecentSaleItem {
+
+ String get id; DateTime get createdAt; String get soldByName;@JsonKey(fromJson: _numToString) String get totalAmount; int get itemsCount;
+/// Create a copy of HomeRecentSaleItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HomeRecentSaleItemCopyWith<HomeRecentSaleItem> get copyWith => _$HomeRecentSaleItemCopyWithImpl<HomeRecentSaleItem>(this as HomeRecentSaleItem, _$identity);
+
+  /// Serializes this HomeRecentSaleItem to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeRecentSaleItem&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.soldByName, soldByName) || other.soldByName == soldByName)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.itemsCount, itemsCount) || other.itemsCount == itemsCount));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,createdAt,soldByName,totalAmount,itemsCount);
+
+@override
+String toString() {
+  return 'HomeRecentSaleItem(id: $id, createdAt: $createdAt, soldByName: $soldByName, totalAmount: $totalAmount, itemsCount: $itemsCount)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HomeRecentSaleItemCopyWith<$Res>  {
+  factory $HomeRecentSaleItemCopyWith(HomeRecentSaleItem value, $Res Function(HomeRecentSaleItem) _then) = _$HomeRecentSaleItemCopyWithImpl;
+@useResult
+$Res call({
+ String id, DateTime createdAt, String soldByName,@JsonKey(fromJson: _numToString) String totalAmount, int itemsCount
+});
+
+
+
+
+}
+/// @nodoc
+class _$HomeRecentSaleItemCopyWithImpl<$Res>
+    implements $HomeRecentSaleItemCopyWith<$Res> {
+  _$HomeRecentSaleItemCopyWithImpl(this._self, this._then);
+
+  final HomeRecentSaleItem _self;
+  final $Res Function(HomeRecentSaleItem) _then;
+
+/// Create a copy of HomeRecentSaleItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? createdAt = null,Object? soldByName = null,Object? totalAmount = null,Object? itemsCount = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,soldByName: null == soldByName ? _self.soldByName : soldByName // ignore: cast_nullable_to_non_nullable
+as String,totalAmount: null == totalAmount ? _self.totalAmount : totalAmount // ignore: cast_nullable_to_non_nullable
+as String,itemsCount: null == itemsCount ? _self.itemsCount : itemsCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [HomeRecentSaleItem].
+extension HomeRecentSaleItemPatterns on HomeRecentSaleItem {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _HomeRecentSaleItem value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _HomeRecentSaleItem() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _HomeRecentSaleItem value)  $default,){
+final _that = this;
+switch (_that) {
+case _HomeRecentSaleItem():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _HomeRecentSaleItem value)?  $default,){
+final _that = this;
+switch (_that) {
+case _HomeRecentSaleItem() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  DateTime createdAt,  String soldByName, @JsonKey(fromJson: _numToString)  String totalAmount,  int itemsCount)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _HomeRecentSaleItem() when $default != null:
+return $default(_that.id,_that.createdAt,_that.soldByName,_that.totalAmount,_that.itemsCount);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  DateTime createdAt,  String soldByName, @JsonKey(fromJson: _numToString)  String totalAmount,  int itemsCount)  $default,) {final _that = this;
+switch (_that) {
+case _HomeRecentSaleItem():
+return $default(_that.id,_that.createdAt,_that.soldByName,_that.totalAmount,_that.itemsCount);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  DateTime createdAt,  String soldByName, @JsonKey(fromJson: _numToString)  String totalAmount,  int itemsCount)?  $default,) {final _that = this;
+switch (_that) {
+case _HomeRecentSaleItem() when $default != null:
+return $default(_that.id,_that.createdAt,_that.soldByName,_that.totalAmount,_that.itemsCount);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _HomeRecentSaleItem implements HomeRecentSaleItem {
+  const _HomeRecentSaleItem({required this.id, required this.createdAt, required this.soldByName, @JsonKey(fromJson: _numToString) required this.totalAmount, required this.itemsCount});
+  factory _HomeRecentSaleItem.fromJson(Map<String, dynamic> json) => _$HomeRecentSaleItemFromJson(json);
+
+@override final  String id;
+@override final  DateTime createdAt;
+@override final  String soldByName;
+@override@JsonKey(fromJson: _numToString) final  String totalAmount;
+@override final  int itemsCount;
+
+/// Create a copy of HomeRecentSaleItem
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$HomeRecentSaleItemCopyWith<_HomeRecentSaleItem> get copyWith => __$HomeRecentSaleItemCopyWithImpl<_HomeRecentSaleItem>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$HomeRecentSaleItemToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeRecentSaleItem&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.soldByName, soldByName) || other.soldByName == soldByName)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.itemsCount, itemsCount) || other.itemsCount == itemsCount));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,createdAt,soldByName,totalAmount,itemsCount);
+
+@override
+String toString() {
+  return 'HomeRecentSaleItem(id: $id, createdAt: $createdAt, soldByName: $soldByName, totalAmount: $totalAmount, itemsCount: $itemsCount)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$HomeRecentSaleItemCopyWith<$Res> implements $HomeRecentSaleItemCopyWith<$Res> {
+  factory _$HomeRecentSaleItemCopyWith(_HomeRecentSaleItem value, $Res Function(_HomeRecentSaleItem) _then) = __$HomeRecentSaleItemCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, DateTime createdAt, String soldByName,@JsonKey(fromJson: _numToString) String totalAmount, int itemsCount
+});
+
+
+
+
+}
+/// @nodoc
+class __$HomeRecentSaleItemCopyWithImpl<$Res>
+    implements _$HomeRecentSaleItemCopyWith<$Res> {
+  __$HomeRecentSaleItemCopyWithImpl(this._self, this._then);
+
+  final _HomeRecentSaleItem _self;
+  final $Res Function(_HomeRecentSaleItem) _then;
+
+/// Create a copy of HomeRecentSaleItem
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? createdAt = null,Object? soldByName = null,Object? totalAmount = null,Object? itemsCount = null,}) {
+  return _then(_HomeRecentSaleItem(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,soldByName: null == soldByName ? _self.soldByName : soldByName // ignore: cast_nullable_to_non_nullable
+as String,totalAmount: null == totalAmount ? _self.totalAmount : totalAmount // ignore: cast_nullable_to_non_nullable
+as String,itemsCount: null == itemsCount ? _self.itemsCount : itemsCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$HomeSummary {
+
+ TodayReport get today; List<HomeLowStockItem> get lowStock; List<HomeRecentSaleItem> get recentSales;
+/// Create a copy of HomeSummary
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HomeSummaryCopyWith<HomeSummary> get copyWith => _$HomeSummaryCopyWithImpl<HomeSummary>(this as HomeSummary, _$identity);
+
+  /// Serializes this HomeSummary to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeSummary&&(identical(other.today, today) || other.today == today)&&const DeepCollectionEquality().equals(other.lowStock, lowStock)&&const DeepCollectionEquality().equals(other.recentSales, recentSales));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,today,const DeepCollectionEquality().hash(lowStock),const DeepCollectionEquality().hash(recentSales));
+
+@override
+String toString() {
+  return 'HomeSummary(today: $today, lowStock: $lowStock, recentSales: $recentSales)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HomeSummaryCopyWith<$Res>  {
+  factory $HomeSummaryCopyWith(HomeSummary value, $Res Function(HomeSummary) _then) = _$HomeSummaryCopyWithImpl;
+@useResult
+$Res call({
+ TodayReport today, List<HomeLowStockItem> lowStock, List<HomeRecentSaleItem> recentSales
+});
+
+
+$TodayReportCopyWith<$Res> get today;
+
+}
+/// @nodoc
+class _$HomeSummaryCopyWithImpl<$Res>
+    implements $HomeSummaryCopyWith<$Res> {
+  _$HomeSummaryCopyWithImpl(this._self, this._then);
+
+  final HomeSummary _self;
+  final $Res Function(HomeSummary) _then;
+
+/// Create a copy of HomeSummary
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? today = null,Object? lowStock = null,Object? recentSales = null,}) {
+  return _then(_self.copyWith(
+today: null == today ? _self.today : today // ignore: cast_nullable_to_non_nullable
+as TodayReport,lowStock: null == lowStock ? _self.lowStock : lowStock // ignore: cast_nullable_to_non_nullable
+as List<HomeLowStockItem>,recentSales: null == recentSales ? _self.recentSales : recentSales // ignore: cast_nullable_to_non_nullable
+as List<HomeRecentSaleItem>,
+  ));
+}
+/// Create a copy of HomeSummary
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TodayReportCopyWith<$Res> get today {
+  
+  return $TodayReportCopyWith<$Res>(_self.today, (value) {
+    return _then(_self.copyWith(today: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [HomeSummary].
+extension HomeSummaryPatterns on HomeSummary {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _HomeSummary value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _HomeSummary() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _HomeSummary value)  $default,){
+final _that = this;
+switch (_that) {
+case _HomeSummary():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _HomeSummary value)?  $default,){
+final _that = this;
+switch (_that) {
+case _HomeSummary() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TodayReport today,  List<HomeLowStockItem> lowStock,  List<HomeRecentSaleItem> recentSales)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _HomeSummary() when $default != null:
+return $default(_that.today,_that.lowStock,_that.recentSales);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TodayReport today,  List<HomeLowStockItem> lowStock,  List<HomeRecentSaleItem> recentSales)  $default,) {final _that = this;
+switch (_that) {
+case _HomeSummary():
+return $default(_that.today,_that.lowStock,_that.recentSales);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TodayReport today,  List<HomeLowStockItem> lowStock,  List<HomeRecentSaleItem> recentSales)?  $default,) {final _that = this;
+switch (_that) {
+case _HomeSummary() when $default != null:
+return $default(_that.today,_that.lowStock,_that.recentSales);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _HomeSummary implements HomeSummary {
+  const _HomeSummary({required this.today, final  List<HomeLowStockItem> lowStock = const [], final  List<HomeRecentSaleItem> recentSales = const []}): _lowStock = lowStock,_recentSales = recentSales;
+  factory _HomeSummary.fromJson(Map<String, dynamic> json) => _$HomeSummaryFromJson(json);
+
+@override final  TodayReport today;
+ final  List<HomeLowStockItem> _lowStock;
+@override@JsonKey() List<HomeLowStockItem> get lowStock {
+  if (_lowStock is EqualUnmodifiableListView) return _lowStock;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_lowStock);
+}
+
+ final  List<HomeRecentSaleItem> _recentSales;
+@override@JsonKey() List<HomeRecentSaleItem> get recentSales {
+  if (_recentSales is EqualUnmodifiableListView) return _recentSales;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_recentSales);
+}
+
+
+/// Create a copy of HomeSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$HomeSummaryCopyWith<_HomeSummary> get copyWith => __$HomeSummaryCopyWithImpl<_HomeSummary>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$HomeSummaryToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeSummary&&(identical(other.today, today) || other.today == today)&&const DeepCollectionEquality().equals(other._lowStock, _lowStock)&&const DeepCollectionEquality().equals(other._recentSales, _recentSales));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,today,const DeepCollectionEquality().hash(_lowStock),const DeepCollectionEquality().hash(_recentSales));
+
+@override
+String toString() {
+  return 'HomeSummary(today: $today, lowStock: $lowStock, recentSales: $recentSales)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$HomeSummaryCopyWith<$Res> implements $HomeSummaryCopyWith<$Res> {
+  factory _$HomeSummaryCopyWith(_HomeSummary value, $Res Function(_HomeSummary) _then) = __$HomeSummaryCopyWithImpl;
+@override @useResult
+$Res call({
+ TodayReport today, List<HomeLowStockItem> lowStock, List<HomeRecentSaleItem> recentSales
+});
+
+
+@override $TodayReportCopyWith<$Res> get today;
+
+}
+/// @nodoc
+class __$HomeSummaryCopyWithImpl<$Res>
+    implements _$HomeSummaryCopyWith<$Res> {
+  __$HomeSummaryCopyWithImpl(this._self, this._then);
+
+  final _HomeSummary _self;
+  final $Res Function(_HomeSummary) _then;
+
+/// Create a copy of HomeSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? today = null,Object? lowStock = null,Object? recentSales = null,}) {
+  return _then(_HomeSummary(
+today: null == today ? _self.today : today // ignore: cast_nullable_to_non_nullable
+as TodayReport,lowStock: null == lowStock ? _self._lowStock : lowStock // ignore: cast_nullable_to_non_nullable
+as List<HomeLowStockItem>,recentSales: null == recentSales ? _self._recentSales : recentSales // ignore: cast_nullable_to_non_nullable
+as List<HomeRecentSaleItem>,
+  ));
+}
+
+/// Create a copy of HomeSummary
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TodayReportCopyWith<$Res> get today {
+  
+  return $TodayReportCopyWith<$Res>(_self.today, (value) {
+    return _then(_self.copyWith(today: value));
+  });
+}
+}
+
 // dart format on

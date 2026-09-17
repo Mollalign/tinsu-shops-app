@@ -373,6 +373,18 @@
   },
   "analyticsPickDate": "ቀን ይምረጡ",
   "analyticsNoWorkers": "ለዚህ ወቅት የሻጭ መረጃ የለም።",
-  "analyticsOpenButton": "ትንተና"
+  "analyticsOpenButton": "ትንተና",
+
+  "todaysOverview": "የዛሬ አጠቃላይ እይታ",
+  "quickActions": "ፈጣን ተግባራት",
+  "addStock": "ክምችት ጨምር",
+  "viewAll": "ሁሉንም ይመልከቱ →",
+  "allStockLooksGood": "ሁሉም ክምችት በጥሩ ሁኔታ ላይ ነው",
+  "allStockLooksGoodDesc": "በአሁኑ ጊዜ የሚሞላ ምርት የለም።",
+  "noSalesYetHome": "እስካሁን ምንም ሽያጭ የለም",
+  "noSalesRecordedHomeDesc": "ሽያጭ ሲመዘገብ እዚህ ይታያል።",
+  "selectShopSheet": "ሱቅ ይምረጡ",
+  "couldNotLoadHome": "ዳሽቦርዱን መጫን አልተቻለም።"
 }
+
 

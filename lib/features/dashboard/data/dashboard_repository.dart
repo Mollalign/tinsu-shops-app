@@ -34,6 +34,16 @@ class DashboardRepository {
     }
   }
 
+  Future<HomeSummary> getHomeSummary(String shopId) async {
+    try {
+      final res = await _dio.get(ApiConstants.shopHomeSummary(shopId));
+      return HomeSummary.fromJson(res.data);
+    } on DioException catch (e) {
+      throw extractError(e);
+    }
+  }
+
+
   Future<WorkerTodayReport> getWorkerToday(String shopId) async {
     try {
       final res = await _dio.get(ApiConstants.workerToday(shopId));

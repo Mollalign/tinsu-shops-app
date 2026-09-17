@@ -18,6 +18,14 @@ part 'sales_history_screen.g.dart';
 Future<List<SaleListItem>> shopSales(Ref ref, String shopId) =>
     ref.watch(salesRepositoryProvider).listSales(shopId);
 
+/// Represents a chronological group of sales for a single calendar day.
+class DateGroup {
+  final DateTime date; // Local calendar date (midnight)
+  final List<SaleListItem> sales;
+
+  const DateGroup({required this.date, required this.sales});
+}
+
 class SalesHistoryScreen extends ConsumerStatefulWidget {
   const SalesHistoryScreen({super.key});
 
@@ -59,7 +67,11 @@ class _SalesHistoryScreenState extends ConsumerState<SalesHistoryScreen> {
 
   Future<void> _fetchPage(int page, {bool reset = false}) async {
     if (reset) {
-      setState(() { _loading = true; _error = null; });
+      setState(() {
+        _loading = true;
+        _error = null;
+        _items = []; // Clears old shop data immediately for shop isolation
+      });
     } else {
       setState(() => _loadingMore = true);
     }
@@ -78,7 +90,11 @@ class _SalesHistoryScreenState extends ConsumerState<SalesHistoryScreen> {
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _loading = false; _loadingMore = false; _error = e; });
+      setState(() {
+        _loading = false;
+        _loadingMore = false;
+        _error = e;
+      });
     }
   }
 
@@ -88,12 +104,34 @@ class _SalesHistoryScreenState extends ConsumerState<SalesHistoryScreen> {
     _fetchPage(1, reset: true);
   }
 
+  /// Groups sales chronologically by local date.
+  /// - Date groups are sorted descending (newest date first).
+  /// - Sales within each date group are sorted descending (newest sale first).
+  List<DateGroup> _groupSales(List<SaleListItem> items) {
+    final map = <DateTime, List<SaleListItem>>{};
+    for (final sale in items) {
+      final local = sale.createdAt.toLocal();
+      final dateKey = DateTime(local.year, local.month, local.day);
+      map.putIfAbsent(dateKey, () => []).add(sale);
+    }
+
+    // Sort date keys descending (newest date first)
+    final sortedKeys = map.keys.toList()..sort((a, b) => b.compareTo(a));
+
+    return sortedKeys.map((date) {
+      final groupSales = map[date]!;
+      // Sort sales within each group descending by createdAt (newest sale first)
+      groupSales.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return DateGroup(date: date, sales: groupSales);
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
-      authenticated: (u, shopId) => shopId ?? '',
+      authenticated: (u, sid) => sid ?? '',
       orElse: () => '',
     );
 
@@ -103,13 +141,17 @@ class _SalesHistoryScreenState extends ConsumerState<SalesHistoryScreen> {
       backgroundColor: AppTheme.background,
       appBar: AppBar(
         title: Text(l.salesHistory),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.bar_chart_outlined),
-            tooltip: l.analyticsOpenButton,
-            onPressed: () => context.push('/owner/analytics'),
-          ),
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/owner/sales');
+            }
+          },
+        ),
       ),
       body: _buildBody(context, l, shopId),
     );
@@ -139,19 +181,22 @@ class _SalesHistoryScreenState extends ConsumerState<SalesHistoryScreen> {
       );
     }
 
+    final groups = _groupSales(_items);
+    final locale = Localizations.localeOf(context).languageCode;
+
     return RefreshIndicator(
       color: AppTheme.primary,
       onRefresh: () => _fetchPage(1, reset: true),
       child: ListView.separated(
         controller: _scrollCtrl,
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 80),
         // +1 for the pagination footer slot
-        itemCount: _items.length + 1,
+        itemCount: groups.length + 1,
         separatorBuilder: (_, i) =>
-            i < _items.length - 1 ? const SizedBox(height: 8) : const SizedBox.shrink(),
+            i < groups.length - 1 ? const SizedBox(height: 16) : const SizedBox.shrink(),
         itemBuilder: (context, i) {
-          if (i >= _items.length) {
-            // Footer: loading spinner or nothing
+          if (i >= groups.length) {
+            // Footer: loading spinner or retry error
             if (_loadingMore) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
@@ -172,12 +217,67 @@ class _SalesHistoryScreenState extends ConsumerState<SalesHistoryScreen> {
             }
             return const SizedBox(height: 8);
           }
-          return _SaleRow(
-            sale: _items[i],
-            onTap: () => context.push('/owner/sales/${_items[i].id}'),
+
+          return _DateGroupSection(
+            group: groups[i],
+            l: l,
+            locale: locale,
+            onSaleTap: (sale) => context.push('/owner/sales/${sale.id}'),
           );
         },
       ),
+    );
+  }
+}
+
+class _DateGroupSection extends StatelessWidget {
+  final DateGroup group;
+  final AppLocalizations l;
+  final String locale;
+  final void Function(SaleListItem) onSaleTap;
+
+  const _DateGroupSection({
+    required this.group,
+    required this.l,
+    required this.locale,
+    required this.onSaleTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final title = Formatters.dateGroupHeader(
+      group.date,
+      todayLabel: l.today,
+      yesterdayLabel: l.yesterday,
+      locale: locale,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 6),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.onSurface,
+                  letterSpacing: 0.2,
+                ),
+          ),
+        ),
+        const Divider(color: AppTheme.divider, height: 1),
+        const SizedBox(height: 10),
+        ...group.sales.map(
+          (sale) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _SaleRow(
+              sale: sale,
+              onTap: () => onSaleTap(sale),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

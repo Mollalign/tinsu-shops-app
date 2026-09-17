@@ -8,14 +8,20 @@ import '../../../../core/errors/app_error.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
-import '../../../dashboard/data/dashboard_repository.dart';
-import '../../../dashboard/domain/dashboard_model.dart';
 import '../../../products/data/products_repository.dart';
 import '../../../products/domain/product_model.dart';
+import '../../../shops/data/shops_repository.dart';
+import '../../../shops/domain/shop_model.dart';
 import '../../../workers/data/workers_repository.dart';
 import '../../../workers/domain/worker_model.dart';
+import '../../data/dashboard_repository.dart';
+import '../../domain/dashboard_model.dart';
 
 part 'owner_dashboard_screen.g.dart';
+
+@riverpod
+Future<HomeSummary> shopHomeSummary(Ref ref, String shopId) =>
+    ref.watch(dashboardRepositoryProvider).getHomeSummary(shopId);
 
 @riverpod
 Future<TodayReport> shopTodayReport(Ref ref, String shopId) =>
@@ -29,15 +35,117 @@ Future<List<ProductModel>> dashboardLowStock(Ref ref, String shopId) =>
 Future<List<WorkerModel>> dashboardWorkers(Ref ref, String shopId) =>
     ref.watch(workersRepositoryProvider).listWorkers(shopId);
 
+@riverpod
+Future<List<ShopModel>> dashboardShops(Ref ref) =>
+    ref.watch(shopsRepositoryProvider).listShops();
+
 class OwnerDashboardScreen extends ConsumerWidget {
   const OwnerDashboardScreen({super.key});
+
+  String _greeting(BuildContext context, AppLocalizations l, String name) {
+    final h = DateTime.now().hour;
+    if (h < 12) return l.goodMorning(name);
+    if (h < 17) return l.goodAfternoon(name);
+    return l.goodEvening(name);
+  }
+
+  void _showShopSelector(
+    BuildContext context,
+    WidgetRef ref,
+    String currentShopId,
+    List<ShopModel> shops,
+    AppLocalizations l,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        l.selectShopSheet,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          context.push('/owner/shops/add');
+                        },
+                        icon: const Icon(Icons.add, size: 18),
+                        label: Text(l.addShop),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: shops.length,
+                    itemBuilder: (context, i) {
+                      final s = shops[i];
+                      final isSelected = s.id == currentShopId;
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: isSelected
+                              ? AppTheme.primary
+                              : AppTheme.primaryContainer,
+                          child: Icon(
+                            Icons.storefront,
+                            color: isSelected ? Colors.white : AppTheme.primary,
+                            size: 20,
+                          ),
+                        ),
+                        title: Text(
+                          s.name,
+                          style: TextStyle(
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            color: isSelected ? AppTheme.primary : AppTheme.onSurface,
+                          ),
+                        ),
+                        trailing: isSelected
+                            ? const Icon(Icons.check, color: AppTheme.primary)
+                            : null,
+                        onTap: () {
+                          ref.read(sessionProvider.notifier).setCurrentShop(s.id);
+                          Navigator.pop(ctx);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context)!;
     final session = ref.watch(sessionProvider);
     final shopId = session.maybeWhen(
-      authenticated: (_, shopId) => shopId ?? '',
+      authenticated: (_, sid) => sid ?? '',
+      orElse: () => '',
+    );
+    final ownerName = session.maybeWhen(
+      authenticated: (u, _) => u.name,
       orElse: () => '',
     );
 
@@ -50,86 +158,152 @@ class OwnerDashboardScreen extends ConsumerWidget {
       );
     }
 
-    final reportAsync = ref.watch(shopTodayReportProvider(shopId));
-    final lowStockAsync = ref.watch(dashboardLowStockProvider(shopId));
-    final workersAsync = ref.watch(dashboardWorkersProvider(shopId));
+    final summaryAsync = ref.watch(shopHomeSummaryProvider(shopId));
+    final shopsAsync = ref.watch(dashboardShopsProvider);
+
+    // Resolve current shop name
+    final shops = shopsAsync.value ?? [];
+    final currentShop = shops.where((s) => s.id == shopId).firstOrNull;
+    final shopName = currentShop?.name ?? l.myShops;
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(
-        title: Text(
-          session.maybeWhen(
-            authenticated: (u, _) => u.name.isNotEmpty ? u.name : l.dashboard,
-            orElse: () => l.dashboard,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.swap_horiz),
-            tooltip: l.switchShop,
-            onPressed: () => context.go('/owner/shops'),
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        color: AppTheme.primary,
-        onRefresh: () async {
-          ref.invalidate(shopTodayReportProvider(shopId));
-          ref.invalidate(dashboardLowStockProvider(shopId));
-          ref.invalidate(dashboardWorkersProvider(shopId));
-        },
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-          children: [
-            // ── Today's sales hero ──
-            reportAsync.when(
-              loading: () => _Skeleton(height: 150),
-              error: (e, _) => _InlineError(
-                message: e is AppError
-                    ? e.toUserMessage(l)
-                    : l.couldNotLoadReport,
-                onRetry: () =>
-                    ref.invalidate(shopTodayReportProvider(shopId)),
-                retryLabel: l.retry,
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: AppTheme.primary,
+          onRefresh: () async {
+            ref.invalidate(shopHomeSummaryProvider(shopId));
+            ref.invalidate(dashboardShopsProvider);
+          },
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+            children: [
+              // ── Header (Greeting + Shop Switcher) ───────────────────────
+              _HeaderSection(
+                greeting: _greeting(context, l, ownerName),
+                shopName: shopName,
+                onShopTap: () => _showShopSelector(context, ref, shopId, shops, l),
               ),
-              data: (report) => _SalesHero(report: report, l: l),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 18),
 
-            // ── Low stock ──
-            lowStockAsync.maybeWhen(
-              data: (products) {
-                if (products.isEmpty) return const SizedBox.shrink();
-                return _LowStockSection(products: products, l: l);
-              },
-              orElse: () => const SizedBox.shrink(),
-            ),
+              // ── Today's Overview ─────────────────────────────────────────
+              summaryAsync.when(
+                loading: () => const _Skeleton(height: 140),
+                error: (e, _) => _InlineError(
+                  message: e is AppError ? e.toUserMessage(l) : l.couldNotLoadHome,
+                  onRetry: () => ref.invalidate(shopHomeSummaryProvider(shopId)),
+                  retryLabel: l.retry,
+                ),
+                data: (summary) => _TodayOverviewCard(summary: summary, l: l),
+              ),
+              const SizedBox(height: 22),
 
-            // ── Workers today ──
-            workersAsync.maybeWhen(
-              data: (workers) {
-                if (workers.isEmpty) return const SizedBox.shrink();
-                return _WorkerSalesSection(workers: workers, l: l);
-              },
-              orElse: () => const SizedBox.shrink(),
-            ),
-          ],
+              // ── Quick Actions ────────────────────────────────────────────
+              _QuickActionsGrid(l: l),
+              const SizedBox(height: 24),
+
+              // ── Low Stock ────────────────────────────────────────────────
+              summaryAsync.maybeWhen(
+                data: (summary) => _LowStockSection(
+                  items: summary.lowStock,
+                  l: l,
+                  onViewAll: () => context.push('/owner/stock'),
+                  onItemTap: (id) => context.push('/owner/products/$id/restock'),
+                ),
+                orElse: () => const SizedBox.shrink(),
+              ),
+              const SizedBox(height: 24),
+
+              // ── Recent Sales ─────────────────────────────────────────────
+              summaryAsync.maybeWhen(
+                data: (summary) => _RecentSalesSection(
+                  sales: summary.recentSales,
+                  l: l,
+                  onViewAll: () => context.push('/owner/sales/history'),
+                  onSaleTap: (id) => context.push('/owner/sales/$id'),
+                ),
+                orElse: () => const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _SalesHero extends StatelessWidget {
-  final TodayReport report;
+// ─── Header Section ───────────────────────────────────────────────────────────
+
+class _HeaderSection extends StatelessWidget {
+  final String greeting;
+  final String shopName;
+  final VoidCallback onShopTap;
+
+  const _HeaderSection({
+    required this.greeting,
+    required this.shopName,
+    required this.onShopTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          greeting,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: AppTheme.outline,
+                fontWeight: FontWeight.w500,
+              ),
+        ),
+        const SizedBox(height: 4),
+        InkWell(
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+          onTap: onShopTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    shopName,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.onBackground,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                const Icon(
+                  Icons.arrow_drop_down,
+                  color: AppTheme.primary,
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Today's Overview Card ───────────────────────────────────────────────────
+
+class _TodayOverviewCard extends StatelessWidget {
+  final HomeSummary summary;
   final AppLocalizations l;
-  const _SalesHero({required this.report, required this.l});
+
+  const _TodayOverviewCard({required this.summary, required this.l});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [AppTheme.primary, AppTheme.primaryLight],
@@ -141,23 +315,36 @@ class _SalesHero extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l.todaySales,
-              style: const TextStyle(color: Colors.white70, fontSize: 14)),
+          Text(
+            l.todaySales,
+            style: const TextStyle(color: Colors.white70, fontSize: 13),
+          ),
           const SizedBox(height: 4),
           Text(
-            Formatters.currency(report.total),
+            Formatters.currency(summary.today.total),
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 34,
+              fontSize: 32,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           Row(
             children: [
-              _HeroStat('${report.numberOfSales}', l.sales),
-              const SizedBox(width: 24),
-              _HeroStat('${report.itemsSold}', l.items),
+              _StatItem(
+                value: Formatters.number(summary.today.numberOfSales),
+                label: l.sales,
+              ),
+              const SizedBox(width: 20),
+              const Text(
+                '·',
+                style: TextStyle(color: Colors.white70, fontSize: 20),
+              ),
+              const SizedBox(width: 20),
+              _StatItem(
+                value: Formatters.number(summary.today.itemsSold),
+                label: l.items,
+              ),
             ],
           ),
         ],
@@ -166,31 +353,159 @@ class _SalesHero extends StatelessWidget {
   }
 }
 
-class _HeroStat extends StatelessWidget {
+class _StatItem extends StatelessWidget {
   final String value;
   final String label;
-  const _HeroStat(this.value, this.label);
+
+  const _StatItem({required this.value, required this.label});
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(value,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700)),
-          Text(label,
-              style:
-                  const TextStyle(color: Colors.white70, fontSize: 13)),
-        ],
-      );
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 13),
+        ),
+      ],
+    );
+  }
 }
 
-class _LowStockSection extends StatelessWidget {
-  final List<ProductModel> products;
+// ─── Quick Actions ────────────────────────────────────────────────────────────
+
+class _QuickActionsGrid extends StatelessWidget {
   final AppLocalizations l;
-  const _LowStockSection({required this.products, required this.l});
+
+  const _QuickActionsGrid({required this.l});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l.quickActions,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppTheme.onSurface,
+              ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _QuickActionButton(
+                label: l.addProduct,
+                icon: Icons.add_box_outlined,
+                onTap: () => context.push('/owner/products/add'),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _QuickActionButton(
+                label: l.addStock,
+                icon: Icons.inventory_2_outlined,
+                onTap: () => context.push('/owner/stock'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _QuickActionButton(
+                label: l.addWorker,
+                icon: Icons.person_add_outlined,
+                onTap: () => context.push('/owner/workers/add'),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _QuickActionButton(
+                label: l.salesHistory,
+                icon: Icons.receipt_long_outlined,
+                onTap: () => context.push('/owner/sales/history'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _QuickActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _QuickActionButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppTheme.surface,
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            border: Border.all(color: AppTheme.divider),
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: AppTheme.primary, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Low Stock Section ────────────────────────────────────────────────────────
+
+class _LowStockSection extends StatelessWidget {
+  final List<HomeLowStockItem> items;
+  final AppLocalizations l;
+  final VoidCallback onViewAll;
+  final void Function(String id) onItemTap;
+
+  const _LowStockSection({
+    required this.items,
+    required this.l,
+    required this.onViewAll,
+    required this.onItemTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -198,12 +513,46 @@ class _LowStockSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Icon(Icons.warning_amber,
-                color: AppTheme.warning, size: 18),
-            const SizedBox(width: 6),
-            Text(l.lowStock,
-                style: Theme.of(context).textTheme.titleMedium),
+            Expanded(
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.warning_amber_rounded,
+                    color: AppTheme.warning,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      l.lowStock,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.onSurface,
+                          ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (items.isNotEmpty)
+              InkWell(
+                onTap: onViewAll,
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  child: Text(
+                    l.viewAll,
+                    style: const TextStyle(
+                      color: AppTheme.primary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
         const SizedBox(height: 10),
@@ -213,65 +562,157 @@ class _LowStockSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             border: Border.all(color: AppTheme.divider),
           ),
-          child: Column(
-            children: products
-                .take(8)
-                .map((p) => _LowStockRow(product: p, outLabel: l.outOfStock))
-                .toList(),
-          ),
+          child: items.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: AppTheme.primary,
+                        size: 26,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l.allStockLooksGood,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l.allStockLooksGoodDesc,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppTheme.outline,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: items.asMap().entries.map((e) {
+                    final p = e.value;
+                    final isLast = e.key == items.length - 1;
+                    final isOut = p.isOutOfStock || p.stockQuantity <= 0;
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () => onItemTap(p.id),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    p.name,
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: isOut
+                                        ? AppTheme.errorContainer
+                                        : AppTheme.warning.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    isOut ? l.outOfStock : l.stockLeft(p.stockQuantity),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                      color: isOut ? AppTheme.error : AppTheme.warning,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (!isLast) const Divider(height: 1),
+                      ],
+                    );
+                  }).toList(),
+                ),
         ),
-        const SizedBox(height: 20),
       ],
     );
   }
 }
 
-class _LowStockRow extends StatelessWidget {
-  final ProductModel product;
-  final String outLabel;
-  const _LowStockRow({required this.product, required this.outLabel});
+// ─── Recent Sales Section ─────────────────────────────────────────────────────
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(product.name,
-                style: Theme.of(context).textTheme.bodyMedium),
-          ),
-          Text(
-            product.isOutOfStock ? outLabel : '${product.stockQuantity}',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
-              color: product.isOutOfStock
-                  ? AppTheme.error
-                  : AppTheme.warning,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WorkerSalesSection extends StatelessWidget {
-  final List<WorkerModel> workers;
+class _RecentSalesSection extends StatelessWidget {
+  final List<HomeRecentSaleItem> sales;
   final AppLocalizations l;
-  const _WorkerSalesSection({required this.workers, required this.l});
+  final VoidCallback onViewAll;
+  final void Function(String id) onSaleTap;
+
+  const _RecentSalesSection({
+    required this.sales,
+    required this.l,
+    required this.onViewAll,
+    required this.onSaleTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final active = workers.where((w) => w.isActive).toList();
-    if (active.isEmpty) return const SizedBox.shrink();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l.workers,
-            style: Theme.of(context).textTheme.titleMedium),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.history_rounded,
+                    color: AppTheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      l.recentSales,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.onSurface,
+                          ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (sales.isNotEmpty)
+              InkWell(
+                onTap: onViewAll,
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  child: Text(
+                    l.viewAll,
+                    style: const TextStyle(
+                      color: AppTheme.primary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
         const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
@@ -279,40 +720,101 @@ class _WorkerSalesSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             border: Border.all(color: AppTheme.divider),
           ),
-          child: Column(
-            children: active.take(5).map((w) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 12),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: AppTheme.primaryContainer,
-                      child: Text(
-                        w.name.isNotEmpty
-                            ? w.name[0].toUpperCase()
-                            : '?',
-                        style: const TextStyle(
-                            color: AppTheme.primary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12),
+          child: sales.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.receipt_long_outlined,
+                        color: AppTheme.outline,
+                        size: 26,
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(w.name,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                  ],
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l.noSalesYetHome,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l.noSalesRecordedHomeDesc,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppTheme.outline,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: sales.asMap().entries.map((e) {
+                    final s = e.value;
+                    final isLast = e.key == sales.length - 1;
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () => onSaleTap(s.id),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${Formatters.time(s.createdAt)} · ${s.soldByName}',
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        '${s.itemsCount} ${l.items.toLowerCase()}',
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                              color: AppTheme.outline,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  Formatters.currency(s.total),
+                                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        color: AppTheme.primary,
+                                      ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(
+                                  Icons.chevron_right,
+                                  color: AppTheme.outline,
+                                  size: 18,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (!isLast) const Divider(height: 1),
+                      ],
+                    );
+                  }).toList(),
                 ),
-              );
-            }).toList(),
-          ),
         ),
-        const SizedBox(height: 20),
       ],
     );
   }
 }
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 class _Skeleton extends StatelessWidget {
   final double height;
@@ -344,15 +846,19 @@ class _InlineError extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(message,
-                  style: const TextStyle(
-                      color: AppTheme.error, fontSize: 13)),
+              child: Text(
+                message,
+                style: const TextStyle(color: AppTheme.error, fontSize: 13),
+              ),
             ),
             if (onRetry != null)
               TextButton(
-                  onPressed: onRetry,
-                  child: Text(retryLabel ?? 'Retry',
-                      style: const TextStyle(color: AppTheme.error))),
+                onPressed: onRetry,
+                child: Text(
+                  retryLabel ?? 'Retry',
+                  style: const TextStyle(color: AppTheme.error),
+                ),
+              ),
           ],
         ),
       );

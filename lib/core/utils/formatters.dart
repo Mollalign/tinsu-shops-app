@@ -35,6 +35,26 @@ class Formatters {
   /// "Aug 21"
   static String shortDate(DateTime dt) => _shortDate.format(dt.toLocal());
 
+  /// Returns "Today", "Yesterday", or formatted readable date e.g. "September 17, 2026"
+  static String dateGroupHeader(
+    DateTime dt, {
+    required String todayLabel,
+    required String yesterdayLabel,
+    String? locale,
+    DateTime? now,
+  }) {
+    final localDt = dt.toLocal();
+    final current = now ?? DateTime.now();
+    final today = DateTime(current.year, current.month, current.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final itemDate = DateTime(localDt.year, localDt.month, localDt.day);
+
+    if (itemDate == today) return todayLabel;
+    if (itemDate == yesterday) return yesterdayLabel;
+    return DateFormat('MMMM d, yyyy', locale).format(localDt);
+  }
+
+
   /// Greeting based on time of day
   static String greeting(String name) {
     final hour = DateTime.now().hour;

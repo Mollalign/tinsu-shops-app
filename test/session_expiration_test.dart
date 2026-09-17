@@ -4,12 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:tinsu_shops/app/locale_provider.dart';
 import 'package:tinsu_shops/app/router.dart';
 import 'package:tinsu_shops/core/network/api_client.dart' show ErrorInterceptor, attemptTokenRefresh;
 import 'package:tinsu_shops/core/storage/preferences.dart';
 import 'package:tinsu_shops/core/storage/secure_storage.dart';
-import 'package:tinsu_shops/features/auth/data/auth_repository.dart';
 import 'package:tinsu_shops/features/auth/domain/user_model.dart';
 import 'package:tinsu_shops/features/auth/presentation/session_provider.dart';
 import 'package:tinsu_shops/features/products/domain/product_model.dart';
@@ -442,7 +440,7 @@ void main() {
   group('ErrorInterceptor token refresh', () {
     /// Builds a [Dio] with [SequentialFakeAdapter] responses and the
     /// [ErrorInterceptor] wired to the given callbacks.
-    Dio _buildDio({
+    Dio buildDio({
       required List<_FakeResponse> responses,
       required Future<bool> Function() onRefreshToken,
       void Function()? onSessionExpired,
@@ -461,7 +459,7 @@ void main() {
     }
 
     test('valid access token — 200 response reaches caller', () async {
-      final dio = _buildDio(
+      final dio = buildDio(
         responses: [_FakeResponse(200, {'data': 'ok'})],
         onRefreshToken: () async => false,
       );
@@ -478,7 +476,7 @@ void main() {
         ..accessToken = 'old-access'
         ..refreshToken = 'valid-refresh';
 
-      final dio = _buildDio(
+      final dio = buildDio(
         responses: [
           // First attempt: 401 (expired access token)
           _FakeResponse(401, {'detail': 'token expired'}),
@@ -504,7 +502,7 @@ void main() {
     test('expired refresh token → onSessionExpired is called', () async {
       bool expiredCalled = false;
 
-      final dio = _buildDio(
+      final dio = buildDio(
         responses: [
           _FakeResponse(401, {'detail': 'token expired'}),
         ],
@@ -524,7 +522,7 @@ void main() {
       final storage = FakeSecureStorage()..accessToken = 'old-access';
       // refreshToken is null — not set
 
-      final dio = _buildDio(
+      final dio = buildDio(
         responses: [
           _FakeResponse(401, {'detail': 'token expired'}),
         ],
@@ -572,7 +570,7 @@ void main() {
       int refreshAttempts = 0;
       bool expiredCalled = false;
 
-      final dio = _buildDio(
+      final dio = buildDio(
         responses: [_FakeResponse(401, {'detail': 'invalid credentials'})],
         onRefreshToken: () async {
           refreshAttempts++;
@@ -626,7 +624,7 @@ void main() {
     test('already-retried request does not loop on second 401', () async {
       int expiredCount = 0;
 
-      final dio = _buildDio(
+      final dio = buildDio(
         // Two 401s: once for the original, once for the retry
         responses: [
           _FakeResponse(401, {}),
