@@ -981,4 +981,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotLoadStockHistory => 'Could not load stock history.';
+
+  @override
+  String get stockAnalytics => 'Stock Analytics';
+
+  @override
+  String get stockAnalyticsSubtitle => 'View stock additions and sales trends';
+
+  @override
+  String get stockAdded => 'Stock Added';
+
+  @override
+  String get stockSold => 'Sold';
+
+  @override
+  String get stockCurrent => 'Current Stock';
+
+  @override
+  String get stockMovementTrend => 'Stock Movement Trend';
+
+  @override
+  String get topRestockedProducts => 'Top Restocked Products';
+
+  @override
+  String get topSoldProducts => 'Top Sold Products';
+
+  @override
+  String get period7Days => '7 Days';
+
+  @override
+  String get period30Days => '30 Days';
+
+  @override
+  String get periodYear => 'Year';
+
+  @override
+  String unitsCount(int count) {
+    return '$count units';
+  }
+
+  @override
+  String get noStockAnalyticsData => 'No stock movement in this period.';
+
+  @override
+  String get couldNotLoadStockAnalytics => 'Could not load stock analytics.';
 }

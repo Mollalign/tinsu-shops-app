@@ -406,7 +406,27 @@
   "movementTypeReturn": "Return",
   "noStockHistory": "No history yet",
   "noStockHistoryDesc": "Stock movements will appear here once recorded.",
-  "couldNotLoadStockHistory": "Could not load stock history."
+  "couldNotLoadStockHistory": "Could not load stock history.",
+
+  "stockAnalytics": "Stock Analytics",
+  "stockAnalyticsSubtitle": "View stock additions and sales trends",
+  "stockAdded": "Stock Added",
+  "stockSold": "Sold",
+  "stockCurrent": "Current Stock",
+  "stockMovementTrend": "Stock Movement Trend",
+  "topRestockedProducts": "Top Restocked Products",
+  "topSoldProducts": "Top Sold Products",
+  "period7Days": "7 Days",
+  "period30Days": "30 Days",
+  "periodYear": "Year",
+  "unitsCount": "{count} units",
+  "@unitsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "noStockAnalyticsData": "No stock movement in this period.",
+  "couldNotLoadStockAnalytics": "Could not load stock analytics."
 }
 
 

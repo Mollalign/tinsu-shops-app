@@ -82,5 +82,9 @@ class ApiConstants {
       '$apiV1/shops/$shopId/analytics/sales';
   static String analyticsSalesByWorker(String shopId) =>
       '$apiV1/shops/$shopId/analytics/sales-by-worker';
+  static String analyticsShopStock(String shopId) =>
+      '$apiV1/shops/$shopId/analytics/stock';
+  static String productAnalyticsStock(String shopId, String productId) =>
+      '$apiV1/shops/$shopId/products/$productId/analytics/stock';
 }
 

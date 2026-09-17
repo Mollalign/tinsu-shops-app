@@ -973,4 +973,48 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get couldNotLoadStockHistory => 'የክምችት ታሪክ መጫን አልተቻለም።';
+
+  @override
+  String get stockAnalytics => 'የክምችት አናሊቲክስ';
+
+  @override
+  String get stockAnalyticsSubtitle => 'የክምችት ጭማሪ እና የሽያጭ አዝማሚያዎችን ይመልከቱ';
+
+  @override
+  String get stockAdded => 'የተጨመረ ክምችት';
+
+  @override
+  String get stockSold => 'የተሸጠ';
+
+  @override
+  String get stockCurrent => 'የአሁኑ ክምችት';
+
+  @override
+  String get stockMovementTrend => 'የክምችት እንቅስቃሴ አዝማሚያ';
+
+  @override
+  String get topRestockedProducts => 'በብዛት የተጨመሩባቸው ምርቶች';
+
+  @override
+  String get topSoldProducts => 'በብዛት የተሸጡ ምርቶች';
+
+  @override
+  String get period7Days => '7 ቀናት';
+
+  @override
+  String get period30Days => '30 ቀናት';
+
+  @override
+  String get periodYear => 'ዓመት';
+
+  @override
+  String unitsCount(int count) {
+    return '$count ፍሬ';
+  }
+
+  @override
+  String get noStockAnalyticsData => 'በዚህ ጊዜ ውስጥ ምንም የክምችት እንቅስቃሴ የለም።';
+
+  @override
+  String get couldNotLoadStockAnalytics => 'የክምችት አናሊቲክስ መጫን አልተቻለም።';
 }

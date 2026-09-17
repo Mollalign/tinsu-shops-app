@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/theme/app_theme.dart';
@@ -10,7 +9,7 @@ import '../../../../core/utils/paged_result.dart';
 import '../../../../core/widgets/states.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/session_provider.dart';
-import '../../../products/data/products_repository.dart';
+import '../../../products/presentation/screens/product_detail_screen.dart';
 import '../../data/inventory_repository.dart';
 import '../../domain/inventory_movement_model.dart';
 

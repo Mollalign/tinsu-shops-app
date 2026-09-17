@@ -1969,6 +1969,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load stock history.'**
   String get couldNotLoadStockHistory;
+
+  /// No description provided for @stockAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Analytics'**
+  String get stockAnalytics;
+
+  /// No description provided for @stockAnalyticsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View stock additions and sales trends'**
+  String get stockAnalyticsSubtitle;
+
+  /// No description provided for @stockAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Added'**
+  String get stockAdded;
+
+  /// No description provided for @stockSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get stockSold;
+
+  /// No description provided for @stockCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Stock'**
+  String get stockCurrent;
+
+  /// No description provided for @stockMovementTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Movement Trend'**
+  String get stockMovementTrend;
+
+  /// No description provided for @topRestockedProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Restocked Products'**
+  String get topRestockedProducts;
+
+  /// No description provided for @topSoldProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Sold Products'**
+  String get topSoldProducts;
+
+  /// No description provided for @period7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'7 Days'**
+  String get period7Days;
+
+  /// No description provided for @period30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'30 Days'**
+  String get period30Days;
+
+  /// No description provided for @periodYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get periodYear;
+
+  /// No description provided for @unitsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} units'**
+  String unitsCount(int count);
+
+  /// No description provided for @noStockAnalyticsData.
+  ///
+  /// In en, this message translates to:
+  /// **'No stock movement in this period.'**
+  String get noStockAnalyticsData;
+
+  /// No description provided for @couldNotLoadStockAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load stock analytics.'**
+  String get couldNotLoadStockAnalytics;
 }
 
 class _AppLocalizationsDelegate

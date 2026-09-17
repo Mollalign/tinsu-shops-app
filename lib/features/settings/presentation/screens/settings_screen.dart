@@ -75,6 +75,12 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => context.go('/owner/stock'),
             ),
             _SettingsTile(
+              icon: Icons.analytics_outlined,
+              title: l.stockAnalytics,
+              subtitle: l.stockAnalyticsSubtitle,
+              onTap: () => context.push('/owner/stock-analytics'),
+            ),
+            _SettingsTile(
               icon: Icons.people_outline,
               title: l.workers,
               subtitle: l.workersSubtitle,

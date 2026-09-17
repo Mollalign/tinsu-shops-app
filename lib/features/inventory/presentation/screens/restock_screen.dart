@@ -28,13 +28,6 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
   bool _success = false;
   int _previousStock = 0;
   int _newStock = 0;
-  final _reasonController = TextEditingController();
-
-  @override
-  void dispose() {
-    _reasonController.dispose();
-    super.dispose();
-  }
 
   Future<void> _confirm(String shopId, int currentStock) async {
     setState(() {
@@ -46,9 +39,6 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
             shopId: shopId,
             productId: widget.productId,
             quantity: _qty,
-            reason: _reasonController.text.trim().isEmpty
-                ? null
-                : _reasonController.text.trim(),
           );
       ref.invalidate(productDetailProvider(shopId, widget.productId));
       ref.invalidate(ownerProductsProvider(shopId));
@@ -160,31 +150,7 @@ class _RestockScreenState extends ConsumerState<RestockScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 28),
-                    Text(l.restockReason,
-                        style: Theme.of(context).textTheme.labelLarge),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _reasonController,
-                      maxLength: 500,
-                      decoration: InputDecoration(
-                        hintText: l.restockReasonHint,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.radiusMd),
-                          borderSide: BorderSide(color: AppTheme.divider),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.radiusMd),
-                          borderSide: BorderSide(color: AppTheme.divider),
-                        ),
-                        counterText: '',
-                        filled: true,
-                        fillColor: AppTheme.surface,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
                     if (_error != null) ...[
                       Container(
                         padding: const EdgeInsets.all(12),

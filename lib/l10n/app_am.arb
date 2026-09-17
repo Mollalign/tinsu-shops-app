@@ -406,7 +406,22 @@
   "movementTypeReturn": "ተመላሽ",
   "noStockHistory": "እስካሁን ታሪክ የለም",
   "noStockHistoryDesc": "የክምችት እንቅስቃሴዎች ሲመዘገቡ እዚህ ይታያሉ።",
-  "couldNotLoadStockHistory": "የክምችት ታሪክ መጫን አልተቻለም።"
+  "couldNotLoadStockHistory": "የክምችት ታሪክ መጫን አልተቻለም።",
+
+  "stockAnalytics": "የክምችት አናሊቲክስ",
+  "stockAnalyticsSubtitle": "የክምችት ጭማሪ እና የሽያጭ አዝማሚያዎችን ይመልከቱ",
+  "stockAdded": "የተጨመረ ክምችት",
+  "stockSold": "የተሸጠ",
+  "stockCurrent": "የአሁኑ ክምችት",
+  "stockMovementTrend": "የክምችት እንቅስቃሴ አዝማሚያ",
+  "topRestockedProducts": "በብዛት የተጨመሩባቸው ምርቶች",
+  "topSoldProducts": "በብዛት የተሸጡ ምርቶች",
+  "period7Days": "7 ቀናት",
+  "period30Days": "30 ቀናት",
+  "periodYear": "ዓመት",
+  "unitsCount": "{count} ፍሬ",
+  "noStockAnalyticsData": "በዚህ ጊዜ ውስጥ ምንም የክምችት እንቅስቃሴ የለም።",
+  "couldNotLoadStockAnalytics": "የክምችት አናሊቲክስ መጫን አልተቻለም።"
 }
 
 
