@@ -23,6 +23,7 @@ import '../features/sales/presentation/screens/cart_screen.dart';
 import '../features/sales/presentation/screens/sale_complete_screen.dart';
 import '../features/sales/presentation/screens/sales_history_screen.dart';
 import '../features/sales/presentation/screens/sale_detail_screen.dart';
+import '../features/sales/presentation/screens/sales_analytics_screen.dart';
 import '../features/workers/presentation/screens/workers_screen.dart';
 import '../features/workers/presentation/screens/add_worker_screen.dart';
 import '../features/workers/presentation/screens/worker_detail_screen.dart';
@@ -280,6 +281,10 @@ GoRouter router(Ref ref) {
       GoRoute(
           path: '/owner/change-pin',
           builder: (_, __) => const ChangePinScreen()),
+      GoRoute(
+          path: '/owner/analytics',
+          builder: (_, __) => const SalesAnalyticsScreen()),
     ],
   );
 }
+

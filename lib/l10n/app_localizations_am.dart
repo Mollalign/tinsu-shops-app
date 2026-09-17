@@ -836,4 +836,48 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get workerAccount => 'የሠራተኛ መለያ';
+
+  @override
+  String get salesAnalytics => 'የሽያጭ ትንተና';
+
+  @override
+  String get periodDaily => 'ዕለታዊ';
+
+  @override
+  String get periodWeekly => 'ሳምንታዊ';
+
+  @override
+  String get periodMonthly => 'ወርሃዊ';
+
+  @override
+  String get periodYearly => 'ዓመታዊ';
+
+  @override
+  String get totalSalesAmount => 'ጠቅላላ ሽያጭ';
+
+  @override
+  String get salesTrend => 'የሽያጭ አዝማሚያ';
+
+  @override
+  String get salesByWorker => 'በሠራተኛ ሽያጭ';
+
+  @override
+  String get noPeriodData => 'በዚህ ወቅት ሽያጭ የለም።';
+
+  @override
+  String get couldNotLoadAnalytics => 'ትንተናን መጫን አልተቻለም።';
+
+  @override
+  String workerSalesSummary(int sales, int items, String amount) {
+    return '$sales ሽያጭ · $items እቃ · $amount ብር';
+  }
+
+  @override
+  String get analyticsPickDate => 'ቀን ይምረጡ';
+
+  @override
+  String get analyticsNoWorkers => 'ለዚህ ወቅት የሻጭ መረጃ የለም።';
+
+  @override
+  String get analyticsOpenButton => 'ትንተና';
 }

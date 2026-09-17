@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/utils/paged_result.dart';
+import '../domain/analytics_model.dart';
 import '../domain/sale_model.dart';
 
 part 'sales_repository.g.dart';
@@ -75,4 +76,51 @@ class SalesRepository {
       throw extractError(e);
     }
   }
+
+  // ── Analytics (owner-only) ──────────────────────────────────────────────────
+
+  /// Fetch aggregated sales analytics for [shopId].
+  /// [period] is one of daily/weekly/monthly/yearly.
+  /// [date] is a YYYY-MM-DD reference date (defaults to today on server).
+  Future<SalesAnalytics> getAnalytics(
+    String shopId,
+    AnalyticsPeriod period, {
+    String? date,
+  }) async {
+    try {
+      final params = <String, dynamic>{'period': period.apiValue};
+      if (date != null) params['date'] = date;
+
+      final res = await _dio.get(
+        ApiConstants.analyticsShopSales(shopId),
+        queryParameters: params,
+      );
+      return SalesAnalytics.fromJson(res.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw extractError(e);
+    }
+  }
+
+  /// Fetch per-worker sales breakdown for [shopId].
+  /// [startDate] and [endDate] are optional YYYY-MM-DD boundaries.
+  Future<WorkerAnalytics> getWorkerAnalytics(
+    String shopId, {
+    String? startDate,
+    String? endDate,
+  }) async {
+    try {
+      final params = <String, dynamic>{};
+      if (startDate != null) params['start_date'] = startDate;
+      if (endDate != null) params['end_date'] = endDate;
+
+      final res = await _dio.get(
+        ApiConstants.analyticsSalesByWorker(shopId),
+        queryParameters: params.isNotEmpty ? params : null,
+      );
+      return WorkerAnalytics.fromJson(res.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw extractError(e);
+    }
+  }
 }
+

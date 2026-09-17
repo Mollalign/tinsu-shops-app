@@ -101,7 +101,16 @@ class _SalesHistoryScreenState extends ConsumerState<SalesHistoryScreen> {
 
     return Scaffold(
       backgroundColor: AppTheme.background,
-      appBar: AppBar(title: Text(l.salesHistory)),
+      appBar: AppBar(
+        title: Text(l.salesHistory),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart_outlined),
+            tooltip: l.analyticsOpenButton,
+            onPressed: () => context.push('/owner/analytics'),
+          ),
+        ],
+      ),
       body: _buildBody(context, l, shopId),
     );
   }

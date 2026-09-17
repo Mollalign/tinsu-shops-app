@@ -351,5 +351,28 @@
   "stockLabel": "Stock",
   "updatePin": "Update PIN",
   "profile": "Profile",
-  "workerAccount": "Worker Account"
+  "workerAccount": "Worker Account",
+
+  "salesAnalytics": "Sales Analytics",
+  "periodDaily": "Daily",
+  "periodWeekly": "Weekly",
+  "periodMonthly": "Monthly",
+  "periodYearly": "Yearly",
+  "totalSalesAmount": "Total Sales",
+  "salesTrend": "Sales Trend",
+  "salesByWorker": "Sales by Worker",
+  "noPeriodData": "No sales in this period.",
+  "couldNotLoadAnalytics": "Could not load analytics.",
+  "workerSalesSummary": "{sales} sales · {items} items · {amount} ETB",
+  "@workerSalesSummary": {
+    "placeholders": {
+      "sales": {"type": "int"},
+      "items": {"type": "int"},
+      "amount": {"type": "String"}
+    }
+  },
+  "analyticsPickDate": "Pick date",
+  "analyticsNoWorkers": "No seller data for this period.",
+  "analyticsOpenButton": "Analytics"
 }
+

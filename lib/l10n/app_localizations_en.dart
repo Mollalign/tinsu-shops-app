@@ -842,4 +842,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workerAccount => 'Worker Account';
+
+  @override
+  String get salesAnalytics => 'Sales Analytics';
+
+  @override
+  String get periodDaily => 'Daily';
+
+  @override
+  String get periodWeekly => 'Weekly';
+
+  @override
+  String get periodMonthly => 'Monthly';
+
+  @override
+  String get periodYearly => 'Yearly';
+
+  @override
+  String get totalSalesAmount => 'Total Sales';
+
+  @override
+  String get salesTrend => 'Sales Trend';
+
+  @override
+  String get salesByWorker => 'Sales by Worker';
+
+  @override
+  String get noPeriodData => 'No sales in this period.';
+
+  @override
+  String get couldNotLoadAnalytics => 'Could not load analytics.';
+
+  @override
+  String workerSalesSummary(int sales, int items, String amount) {
+    return '$sales sales · $items items · $amount ETB';
+  }
+
+  @override
+  String get analyticsPickDate => 'Pick date';
+
+  @override
+  String get analyticsNoWorkers => 'No seller data for this period.';
+
+  @override
+  String get analyticsOpenButton => 'Analytics';
 }

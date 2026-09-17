@@ -6,7 +6,7 @@ part of 'api_client.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dioHash() => r'bc7b034d617706311d7767c2de773abc20edc719';
+String _$dioHash() => r'18faad18a06c745c2e3476321c0a2a9e12d56db4';
 
 /// Central Dio client with auth injection and error normalization.
 ///

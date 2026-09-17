@@ -3,8 +3,9 @@ class ApiConstants {
   ApiConstants._();
 
   static String get baseUrl {
-    return 'http://127.0.0.1:8000';
-    // return 'https://tinsu-shops-api.vercel.app';
+    // Local Express (Chrome / desktop). Switch back to Vercel when testing production.
+    return 'http://127.0.0.1:3000';
+    // return 'https://tinsu-shops-api2.vercel.app';
   }
   static const String apiV1 = '/api/v1';
 
@@ -70,4 +71,11 @@ class ApiConstants {
       '$apiV1/shops/$shopId/categories';
   static String category(String shopId, String categoryId) =>
       '$apiV1/shops/$shopId/categories/$categoryId';
+
+  // Analytics (owner-only)
+  static String analyticsShopSales(String shopId) =>
+      '$apiV1/shops/$shopId/analytics/sales';
+  static String analyticsSalesByWorker(String shopId) =>
+      '$apiV1/shops/$shopId/analytics/sales-by-worker';
 }
+

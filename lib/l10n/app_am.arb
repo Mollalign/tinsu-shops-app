@@ -351,5 +351,28 @@
   "stockLabel": "ክምችት",
   "updatePin": "ፒን አዘምን",
   "profile": "መለያ",
-  "workerAccount": "የሠራተኛ መለያ"
+  "workerAccount": "የሠራተኛ መለያ",
+
+  "salesAnalytics": "የሽያጭ ትንተና",
+  "periodDaily": "ዕለታዊ",
+  "periodWeekly": "ሳምንታዊ",
+  "periodMonthly": "ወርሃዊ",
+  "periodYearly": "ዓመታዊ",
+  "totalSalesAmount": "ጠቅላላ ሽያጭ",
+  "salesTrend": "የሽያጭ አዝማሚያ",
+  "salesByWorker": "በሠራተኛ ሽያጭ",
+  "noPeriodData": "በዚህ ወቅት ሽያጭ የለም።",
+  "couldNotLoadAnalytics": "ትንተናን መጫን አልተቻለም።",
+  "workerSalesSummary": "{sales} ሽያጭ · {items} እቃ · {amount} ብር",
+  "@workerSalesSummary": {
+    "placeholders": {
+      "sales": {"type": "int"},
+      "items": {"type": "int"},
+      "amount": {"type": "String"}
+    }
+  },
+  "analyticsPickDate": "ቀን ይምረጡ",
+  "analyticsNoWorkers": "ለዚህ ወቅት የሻጭ መረጃ የለም።",
+  "analyticsOpenButton": "ትንተና"
 }
+

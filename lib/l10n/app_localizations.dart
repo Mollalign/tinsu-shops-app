@@ -1699,6 +1699,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Worker Account'**
   String get workerAccount;
+
+  /// No description provided for @salesAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales Analytics'**
+  String get salesAnalytics;
+
+  /// No description provided for @periodDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get periodDaily;
+
+  /// No description provided for @periodWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get periodWeekly;
+
+  /// No description provided for @periodMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get periodMonthly;
+
+  /// No description provided for @periodYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get periodYearly;
+
+  /// No description provided for @totalSalesAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Sales'**
+  String get totalSalesAmount;
+
+  /// No description provided for @salesTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales Trend'**
+  String get salesTrend;
+
+  /// No description provided for @salesByWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales by Worker'**
+  String get salesByWorker;
+
+  /// No description provided for @noPeriodData.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales in this period.'**
+  String get noPeriodData;
+
+  /// No description provided for @couldNotLoadAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load analytics.'**
+  String get couldNotLoadAnalytics;
+
+  /// No description provided for @workerSalesSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{sales} sales · {items} items · {amount} ETB'**
+  String workerSalesSummary(int sales, int items, String amount);
+
+  /// No description provided for @analyticsPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick date'**
+  String get analyticsPickDate;
+
+  /// No description provided for @analyticsNoWorkers.
+  ///
+  /// In en, this message translates to:
+  /// **'No seller data for this period.'**
+  String get analyticsNoWorkers;
+
+  /// No description provided for @analyticsOpenButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get analyticsOpenButton;
 }
 
 class _AppLocalizationsDelegate
