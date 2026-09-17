@@ -201,11 +201,15 @@ class ProductsRepository {
     required String shopId,
     required String productId,
     required int quantity,
+    String? reason,
   }) async {
     try {
       await _dio.post(
         ApiConstants.restock(shopId, productId),
-        data: {'quantity': quantity},
+        data: {
+          'quantity': quantity,
+          if (reason != null && reason.trim().isNotEmpty) 'reason': reason.trim(),
+        },
       );
     } on DioException catch (e) {
       throw extractError(e);

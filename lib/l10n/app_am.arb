@@ -388,7 +388,25 @@
   "viewAnalytics": "አናሊቲክስ ይመልከቱ →",
   "goodMorningGreeting": "እንደምን አደሩ፣",
   "goodAfternoonGreeting": "እንደምን ዋሉ፣",
-  "goodEveningGreeting": "እንደምን አመሹ፣"
+  "goodEveningGreeting": "እንደምን አመሹ፣",
+
+  "stockHistory": "የክምችት ታሪክ",
+  "restockReason": "ምክንያት (አማራጭ)",
+  "restockReasonHint": "ለምሳሌ፦ ከአቅራቢ የደረሰ",
+  "restockSuccess": "ክምችት ተመዝግቧል",
+  "previousStock": "ቀዳሚ",
+  "addedStock": "የተጨመረ",
+  "newStockResult": "አዲስ ክምችት",
+  "viewStockHistory": "የክምችት ታሪክ ይመልከቱ →",
+  "backToProduct": "ወደ ምርቱ ተመለስ",
+  "movementTypeRestock": "ክምችት ጨምር",
+  "movementTypeSale": "ሽያጭ",
+  "movementTypeAdjustment": "ማስተካከያ",
+  "movementTypeInitial": "መጀመሪያ",
+  "movementTypeReturn": "ተመላሽ",
+  "noStockHistory": "እስካሁን ታሪክ የለም",
+  "noStockHistoryDesc": "የክምችት እንቅስቃሴዎች ሲመዘገቡ እዚህ ይታያሉ።",
+  "couldNotLoadStockHistory": "የክምችት ታሪክ መጫን አልተቻለም።"
 }
 
 

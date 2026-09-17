@@ -55,6 +55,8 @@ class ApiConstants {
   // Inventory
   static String inventory(String shopId) =>
       '$apiV1/shops/$shopId/inventory';
+  static String productMovements(String shopId, String productId) =>
+      '$apiV1/shops/$shopId/products/$productId/movements';
 
   // Sales
   static String sales(String shopId) =>

@@ -1867,6 +1867,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Good evening,'**
   String get goodEveningGreeting;
+
+  /// No description provided for @stockHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock History'**
+  String get stockHistory;
+
+  /// No description provided for @restockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get restockReason;
+
+  /// No description provided for @restockReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Supplier delivery'**
+  String get restockReasonHint;
+
+  /// No description provided for @restockSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Restock recorded'**
+  String get restockSuccess;
+
+  /// No description provided for @previousStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previousStock;
+
+  /// No description provided for @addedStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get addedStock;
+
+  /// No description provided for @newStockResult.
+  ///
+  /// In en, this message translates to:
+  /// **'New stock'**
+  String get newStockResult;
+
+  /// No description provided for @viewStockHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View stock history →'**
+  String get viewStockHistory;
+
+  /// No description provided for @backToProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to product'**
+  String get backToProduct;
+
+  /// No description provided for @movementTypeRestock.
+  ///
+  /// In en, this message translates to:
+  /// **'Restock'**
+  String get movementTypeRestock;
+
+  /// No description provided for @movementTypeSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get movementTypeSale;
+
+  /// No description provided for @movementTypeAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustment'**
+  String get movementTypeAdjustment;
+
+  /// No description provided for @movementTypeInitial.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial'**
+  String get movementTypeInitial;
+
+  /// No description provided for @movementTypeReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Return'**
+  String get movementTypeReturn;
+
+  /// No description provided for @noStockHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No history yet'**
+  String get noStockHistory;
+
+  /// No description provided for @noStockHistoryDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock movements will appear here once recorded.'**
+  String get noStockHistoryDesc;
+
+  /// No description provided for @couldNotLoadStockHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load stock history.'**
+  String get couldNotLoadStockHistory;
 }
 
 class _AppLocalizationsDelegate

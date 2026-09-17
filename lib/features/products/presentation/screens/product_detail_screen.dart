@@ -139,7 +139,16 @@ class _ProductDetailBody extends StatelessWidget {
                   onPressed: () =>
                       context.push('/owner/products/${product.id}/restock'),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
+                Center(
+                  child: TextButton(
+                    onPressed: () => context
+                        .push('/owner/products/${product.id}/stock-history'),
+                    child: Text(l.viewStockHistory,
+                        style: const TextStyle(color: AppTheme.primary)),
+                  ),
+                ),
+                const SizedBox(height: 4),
                 SecondaryButton(
                   label: l.editProduct,
                   icon: Icons.edit_outlined,

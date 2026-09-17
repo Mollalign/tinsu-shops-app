@@ -18,6 +18,7 @@ import '../features/products/presentation/screens/product_detail_screen.dart';
 import '../features/inventory/presentation/screens/stock_screen.dart';
 import '../features/inventory/presentation/screens/restock_screen.dart';
 import '../features/inventory/presentation/screens/low_stock_screen.dart';
+import '../features/inventory/presentation/screens/stock_history_screen.dart';
 import '../features/sales/presentation/screens/sell_screen.dart';
 import '../features/sales/presentation/screens/cart_screen.dart';
 import '../features/sales/presentation/screens/sale_complete_screen.dart';
@@ -258,6 +259,11 @@ GoRouter router(Ref ref) {
         path: '/owner/products/:id/restock',
         builder: (_, state) =>
             RestockScreen(productId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/owner/products/:id/stock-history',
+        builder: (_, state) =>
+            StockHistoryScreen(productId: state.pathParameters['id']!),
       ),
       GoRoute(
           path: '/owner/low-stock',

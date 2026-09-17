@@ -929,4 +929,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goodEveningGreeting => 'Good evening,';
+
+  @override
+  String get stockHistory => 'Stock History';
+
+  @override
+  String get restockReason => 'Reason (optional)';
+
+  @override
+  String get restockReasonHint => 'e.g. Supplier delivery';
+
+  @override
+  String get restockSuccess => 'Restock recorded';
+
+  @override
+  String get previousStock => 'Previous';
+
+  @override
+  String get addedStock => 'Added';
+
+  @override
+  String get newStockResult => 'New stock';
+
+  @override
+  String get viewStockHistory => 'View stock history →';
+
+  @override
+  String get backToProduct => 'Back to product';
+
+  @override
+  String get movementTypeRestock => 'Restock';
+
+  @override
+  String get movementTypeSale => 'Sale';
+
+  @override
+  String get movementTypeAdjustment => 'Adjustment';
+
+  @override
+  String get movementTypeInitial => 'Initial';
+
+  @override
+  String get movementTypeReturn => 'Return';
+
+  @override
+  String get noStockHistory => 'No history yet';
+
+  @override
+  String get noStockHistoryDesc =>
+      'Stock movements will appear here once recorded.';
+
+  @override
+  String get couldNotLoadStockHistory => 'Could not load stock history.';
 }

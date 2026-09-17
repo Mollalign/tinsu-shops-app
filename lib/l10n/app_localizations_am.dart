@@ -922,4 +922,55 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get goodEveningGreeting => 'እንደምን አመሹ፣';
+
+  @override
+  String get stockHistory => 'የክምችት ታሪክ';
+
+  @override
+  String get restockReason => 'ምክንያት (አማራጭ)';
+
+  @override
+  String get restockReasonHint => 'ለምሳሌ፦ ከአቅራቢ የደረሰ';
+
+  @override
+  String get restockSuccess => 'ክምችት ተመዝግቧል';
+
+  @override
+  String get previousStock => 'ቀዳሚ';
+
+  @override
+  String get addedStock => 'የተጨመረ';
+
+  @override
+  String get newStockResult => 'አዲስ ክምችት';
+
+  @override
+  String get viewStockHistory => 'የክምችት ታሪክ ይመልከቱ →';
+
+  @override
+  String get backToProduct => 'ወደ ምርቱ ተመለስ';
+
+  @override
+  String get movementTypeRestock => 'ክምችት ጨምር';
+
+  @override
+  String get movementTypeSale => 'ሽያጭ';
+
+  @override
+  String get movementTypeAdjustment => 'ማስተካከያ';
+
+  @override
+  String get movementTypeInitial => 'መጀመሪያ';
+
+  @override
+  String get movementTypeReturn => 'ተመላሽ';
+
+  @override
+  String get noStockHistory => 'እስካሁን ታሪክ የለም';
+
+  @override
+  String get noStockHistoryDesc => 'የክምችት እንቅስቃሴዎች ሲመዘገቡ እዚህ ይታያሉ።';
+
+  @override
+  String get couldNotLoadStockHistory => 'የክምችት ታሪክ መጫን አልተቻለም።';
 }
