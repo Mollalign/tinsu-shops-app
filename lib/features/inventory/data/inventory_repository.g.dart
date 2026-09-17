@@ -7,7 +7,7 @@ part of 'inventory_repository.dart';
 // **************************************************************************
 
 String _$inventoryRepositoryHash() =>
-    r'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0';
+    r'ef0ea79bc3bb392785d88ea821c58597c11e7ea0';
 
 /// See also [inventoryRepository].
 @ProviderFor(inventoryRepository)

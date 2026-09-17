@@ -331,4 +331,87 @@ void main() {
 
     expect(repo.calls.first.shopId, _shopId);
   });
+
+  // ── 13. Recent-first ordering preservation ────────────────────────────────
+  // The controller is a pure pass-through: it does NOT reorder results.
+  // Ordering comes from the backend (last_sold_at DESC NULLS LAST).
+  // These tests verify the controller preserves whatever order the backend sends.
+
+  test('search results are returned in the order given by the backend', () async {
+    final t0 = DateTime(2026, 9, 17, 9, 0);
+    final t1 = DateTime(2026, 9, 17, 9, 5);
+
+    // Backend returns Coca-Cola first (sold most recently), then Water
+    final result = ProductSearchResult(
+      items: [
+        ProductModel(
+          id: 'p2', shopId: _shopId, name: 'Coca-Cola',
+          sellingPrice: '15', stockQuantity: 50, lastSoldAt: t1,
+        ),
+        ProductModel(
+          id: 'p1', shopId: _shopId, name: 'Water',
+          sellingPrice: '5', stockQuantity: 30, lastSoldAt: t0,
+        ),
+      ],
+    );
+    repo.whenSearch('co', result);
+    ctrl.onQueryChanged('co');
+    await Future<void>.delayed(_kAfterDebounce);
+
+    final names = state().results?.items.map((p) => p.name).toList();
+    expect(names, equals(['Coca-Cola', 'Water']));
+  });
+
+  test('never-sold products (null lastSoldAt) are received at the end', () async {
+    final t0 = DateTime(2026, 9, 17, 9, 0);
+
+    // Backend puts sold product first, never-sold product last
+    final result = ProductSearchResult(
+      items: [
+        ProductModel(
+          id: 'p1', shopId: _shopId, name: 'Bread',
+          sellingPrice: '8', stockQuantity: 100, lastSoldAt: t0,
+        ),
+        ProductModel(
+          id: 'p2', shopId: _shopId, name: 'Rice',
+          sellingPrice: '5', stockQuantity: 200,
+        ),
+      ],
+    );
+    repo.whenSearch('r', result);
+    ctrl.onQueryChanged('r');
+    await Future<void>.delayed(_kAfterDebounce);
+
+    final items = state().results!.items;
+    // Sold product comes first
+    expect(items.first.lastSoldAt, isNotNull);
+    // Never-sold product comes last
+    expect(items.last.lastSoldAt, isNull);
+  });
+
+  test('category search preserves backend ordering', () async {
+    final t0 = DateTime(2026, 9, 17, 9, 0);
+    final t1 = DateTime(2026, 9, 17, 9, 5);
+
+    // Backend returns A (newer) before B (older) because of recent ordering
+    final result = ProductSearchResult(
+      items: [
+        ProductModel(
+          id: 'pA', shopId: _shopId, name: 'CatProd A',
+          sellingPrice: '10', stockQuantity: 50, lastSoldAt: t1,
+        ),
+        ProductModel(
+          id: 'pB', shopId: _shopId, name: 'CatProd B',
+          sellingPrice: '10', stockQuantity: 50, lastSoldAt: t0,
+        ),
+      ],
+    );
+    repo.whenSearch('CatProd', result);
+    ctrl.onQueryChanged('CatProd');
+    ctrl.onCategoryChanged('cat-drinks');
+    await Future<void>.delayed(_kAfterDebounce);
+
+    final names = state().results?.items.map((p) => p.name).toList();
+    expect(names?.first, 'CatProd A');
+  });
 }

@@ -24,6 +24,11 @@ abstract class ProductModel with _$ProductModel {
     String? categoryId,
     String? categoryName,
     @Default(true) bool isActive,
+    // Denormalised cache from the backend: time of the last successful sale
+    // for this product in its shop. Null = never sold.
+    // Used for recent-first ordering on the backend; exposed here for tests
+    // and any UI indicator that may need it.
+    DateTime? lastSoldAt,
   }) = _ProductModel;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>

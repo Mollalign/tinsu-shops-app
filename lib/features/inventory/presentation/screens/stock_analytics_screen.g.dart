@@ -7,7 +7,7 @@ part of 'stock_analytics_screen.dart';
 // **************************************************************************
 
 String _$shopStockAnalyticsHash() =>
-    r'c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0';
+    r'b5951c063078d14db0daf1853bdf3110fd0f1260';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -74,30 +74,26 @@ class ShopStockAnalyticsFamily extends Family<AsyncValue<StockAnalytics>> {
 class ShopStockAnalyticsProvider
     extends AutoDisposeFutureProvider<StockAnalytics> {
   /// See also [shopStockAnalytics].
-  ShopStockAnalyticsProvider(
-    String shopId,
-    AnalyticsPeriod period,
-    String date,
-  ) : this._internal(
-          (ref) => shopStockAnalytics(
-            ref as ShopStockAnalyticsRef,
-            shopId,
-            period,
-            date,
-          ),
-          from: shopStockAnalyticsProvider,
-          name: r'shopStockAnalyticsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$shopStockAnalyticsHash,
-          dependencies: ShopStockAnalyticsFamily._dependencies,
-          allTransitiveDependencies:
-              ShopStockAnalyticsFamily._allTransitiveDependencies,
-          shopId: shopId,
-          period: period,
-          date: date,
-        );
+  ShopStockAnalyticsProvider(String shopId, AnalyticsPeriod period, String date)
+    : this._internal(
+        (ref) => shopStockAnalytics(
+          ref as ShopStockAnalyticsRef,
+          shopId,
+          period,
+          date,
+        ),
+        from: shopStockAnalyticsProvider,
+        name: r'shopStockAnalyticsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$shopStockAnalyticsHash,
+        dependencies: ShopStockAnalyticsFamily._dependencies,
+        allTransitiveDependencies:
+            ShopStockAnalyticsFamily._allTransitiveDependencies,
+        shopId: shopId,
+        period: period,
+        date: date,
+      );
 
   ShopStockAnalyticsProvider._internal(
     super._createNotifier, {
@@ -162,13 +158,13 @@ class ShopStockAnalyticsProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin ShopStockAnalyticsRef on AutoDisposeFutureProviderRef<StockAnalytics> {
-  /// The class holding the arguments of [shopStockAnalytics].
+  /// The parameter `shopId` of this provider.
   String get shopId;
 
-  /// The class holding the arguments of [shopStockAnalytics].
+  /// The parameter `period` of this provider.
   AnalyticsPeriod get period;
 
-  /// The class holding the arguments of [shopStockAnalytics].
+  /// The parameter `date` of this provider.
   String get date;
 }
 
@@ -184,5 +180,6 @@ class _ShopStockAnalyticsProviderElement
   @override
   String get date => (origin as ShopStockAnalyticsProvider).date;
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

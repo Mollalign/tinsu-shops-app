@@ -137,6 +137,10 @@ void main() {
 
   group('StockAnalyticsScreen Widget', () {
     testWidgets('renders summary cards, metric items, and top products', (tester) async {
+      tester.view.physicalSize = const Size(1000, 2000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
       final mockData = StockAnalytics(
         period: 'weekly',
         startDate: '2026-09-11',

@@ -18,6 +18,9 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
       categoryId: json['category_id'] as String?,
       categoryName: json['category_name'] as String?,
       isActive: json['is_active'] as bool? ?? true,
+      lastSoldAt: json['last_sold_at'] == null
+          ? null
+          : DateTime.parse(json['last_sold_at'] as String),
     );
 
 Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
@@ -32,4 +35,5 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
       'category_id': instance.categoryId,
       'category_name': instance.categoryName,
       'is_active': instance.isActive,
+      'last_sold_at': instance.lastSoldAt?.toIso8601String(),
     };

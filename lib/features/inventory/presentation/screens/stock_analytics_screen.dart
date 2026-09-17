@@ -94,7 +94,7 @@ class _StockAnalyticsScreenState extends ConsumerState<StockAnalyticsScreen> {
           IconButton(
             icon: const Icon(Icons.warehouse_outlined),
             tooltip: l.stock,
-            onPressed: () => context.push('/owner/stock'),
+            onPressed: () => context.go('/owner/stock'),
           ),
           if (_period != AnalyticsPeriod.yearly)
             IconButton(

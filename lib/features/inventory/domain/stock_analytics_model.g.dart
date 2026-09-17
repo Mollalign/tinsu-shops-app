@@ -47,9 +47,8 @@ _StockAnalytics _$StockAnalyticsFromJson(Map<String, dynamic> json) =>
       data:
           (json['data'] as List<dynamic>?)
               ?.map(
-                (e) => StockAnalyticsDataPoint.fromJson(
-                  e as Map<String, dynamic>,
-                ),
+                (e) =>
+                    StockAnalyticsDataPoint.fromJson(e as Map<String, dynamic>),
               )
               .toList() ??
           const [],

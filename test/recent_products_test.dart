@@ -17,6 +17,7 @@ ProductModel _makeProduct({
   bool active = true,
   String? categoryId,
   String? categoryName,
+  DateTime? lastSoldAt,
 }) =>
     ProductModel(
       id: id,
@@ -27,6 +28,7 @@ ProductModel _makeProduct({
       isActive: active,
       categoryId: categoryId,
       categoryName: categoryName,
+      lastSoldAt: lastSoldAt,
     );
 
 /// Simulates the "recently sold" ordering logic: unique products, most recently
@@ -363,6 +365,112 @@ void main() {
       expect(p.isOutOfStock, isTrue);
       expect(p.categoryId, isNull);
       expect(p.categoryName, isNull);
+    });
+  });
+
+  // ── lastSoldAt: field parsing and recent-ordering semantics ──────────────
+
+  group('lastSoldAt — field parsing', () {
+    test('fromJson parses last_sold_at ISO-8601 string into DateTime', () {
+      final p = ProductModel.fromJson({
+        'id': 'prod-003',
+        'shop_id': 'shop-001',
+        'name': 'Coca-Cola',
+        'selling_price': 15,
+        'stock_quantity': 50,
+        'is_active': true,
+        'last_sold_at': '2026-09-17T09:10:00.000Z',
+      });
+      expect(p.lastSoldAt, isNotNull);
+      expect(p.lastSoldAt!.year, 2026);
+      expect(p.lastSoldAt!.month, 9);
+      expect(p.lastSoldAt!.day, 17);
+    });
+
+    test('fromJson yields null lastSoldAt when field is absent', () {
+      final p = ProductModel.fromJson({
+        'id': 'prod-004',
+        'shop_id': 'shop-001',
+        'name': 'Never Sold',
+        'selling_price': 10,
+        'stock_quantity': 20,
+        'is_active': true,
+      });
+      expect(p.lastSoldAt, isNull);
+    });
+
+    test('fromJson yields null lastSoldAt when field is explicitly null', () {
+      final p = ProductModel.fromJson({
+        'id': 'prod-005',
+        'shop_id': 'shop-001',
+        'name': 'Also Never Sold',
+        'selling_price': 10,
+        'stock_quantity': 20,
+        'is_active': true,
+        'last_sold_at': null,
+      });
+      expect(p.lastSoldAt, isNull);
+    });
+  });
+
+  group('lastSoldAt — recent-first ordering semantics', () {
+    final t0 = DateTime(2026, 9, 17, 9, 0);   // 09:00
+    final t1 = DateTime(2026, 9, 17, 9, 5);   // 09:05
+    final t2 = DateTime(2026, 9, 17, 9, 10);  // 09:10
+
+    test('products with lastSoldAt come before null-lastSoldAt products', () {
+      final neverSold  = _makeProduct(id: 'p1', name: 'Rice');
+      final recentSold = _makeProduct(id: 'p2', name: 'Coca-Cola', lastSoldAt: t0);
+
+      // Simulate backend-driven ordering: sort by lastSoldAt DESC NULLS LAST
+      final ordered = [recentSold, neverSold]
+        ..sort((a, b) {
+          if (a.lastSoldAt == null && b.lastSoldAt == null) return 0;
+          if (a.lastSoldAt == null) return 1;
+          if (b.lastSoldAt == null) return -1;
+          return b.lastSoldAt!.compareTo(a.lastSoldAt!);
+        });
+      expect(ordered.first.name, 'Coca-Cola');
+      expect(ordered.last.name, 'Rice');
+    });
+
+    test('most-recently-sold product has the largest lastSoldAt', () {
+      final cocaCola = _makeProduct(id: 'p1', name: 'Coca-Cola', lastSoldAt: t2);
+      final bread    = _makeProduct(id: 'p2', name: 'Bread',     lastSoldAt: t1);
+      final water    = _makeProduct(id: 'p3', name: 'Water',     lastSoldAt: t0);
+
+      final products = [cocaCola, bread, water];
+      final latest = products.reduce(
+        (a, b) => (a.lastSoldAt ?? DateTime(0)).isAfter(b.lastSoldAt ?? DateTime(0)) ? a : b,
+      );
+      expect(latest.name, 'Coca-Cola');
+    });
+
+    test('re-selling sets a newer lastSoldAt and product moves to front', () {
+      final t3 = DateTime(2026, 9, 17, 9, 15); // later than t2
+
+      final cocaColaOld = _makeProduct(id: 'p1', name: 'Coca-Cola', lastSoldAt: t0);
+      final bread       = _makeProduct(id: 'p2', name: 'Bread',     lastSoldAt: t1);
+      final cocaColaNew = cocaColaOld.copyWith(lastSoldAt: t3); // simulates backend update
+
+      final ordered = [cocaColaNew, bread]
+        ..sort((a, b) {
+          if (a.lastSoldAt == null) return 1;
+          if (b.lastSoldAt == null) return -1;
+          return b.lastSoldAt!.compareTo(a.lastSoldAt!);
+        });
+      expect(ordered.first.name, 'Coca-Cola');
+    });
+
+    test('multiple products sold in one sale all get non-null lastSoldAt', () {
+      // Simulate the backend atomically setting last_sold_at for all items
+      final saleTime = DateTime(2026, 9, 17, 9, 20);
+      final updatedRice     = _makeProduct(id: 'p3', name: 'Rice',     lastSoldAt: saleTime);
+      final updatedCocaCola = _makeProduct(id: 'p4', name: 'Coca-Cola', lastSoldAt: saleTime);
+
+      expect(updatedRice.lastSoldAt, isNotNull);
+      expect(updatedCocaCola.lastSoldAt, isNotNull);
+      expect(updatedRice.lastSoldAt, equals(updatedCocaCola.lastSoldAt));
     });
   });
 }

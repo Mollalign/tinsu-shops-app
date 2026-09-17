@@ -6,7 +6,7 @@ part of 'stock_history_screen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productMovementsHash() => r'b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1';
+String _$productMovementsHash() => r'2190d08015071f88302946ce2d45777756d669ca';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -72,8 +72,8 @@ class ProductMovementsProvider
   /// See also [productMovements].
   ProductMovementsProvider(String shopId, String productId)
     : this._internal(
-        (ref) => productMovements(
-            ref as ProductMovementsRef, shopId, productId),
+        (ref) =>
+            productMovements(ref as ProductMovementsRef, shopId, productId),
         from: productMovementsProvider,
         name: r'productMovementsProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -103,8 +103,9 @@ class ProductMovementsProvider
   @override
   Override overrideWith(
     FutureOr<PagedResult<InventoryMovementModel>> Function(
-            ProductMovementsRef provider)
-        create,
+      ProductMovementsRef provider,
+    )
+    create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -123,7 +124,7 @@ class ProductMovementsProvider
 
   @override
   AutoDisposeFutureProviderElement<PagedResult<InventoryMovementModel>>
-      createElement() {
+  createElement() {
     return _ProductMovementsProviderElement(this);
   }
 
@@ -156,7 +157,8 @@ mixin ProductMovementsRef
 }
 
 class _ProductMovementsProviderElement
-    extends AutoDisposeFutureProviderElement<PagedResult<InventoryMovementModel>>
+    extends
+        AutoDisposeFutureProviderElement<PagedResult<InventoryMovementModel>>
     with ProductMovementsRef {
   _ProductMovementsProviderElement(super.provider);
 
