@@ -1843,6 +1843,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load dashboard.'**
   String get couldNotLoadHome;
+
+  /// No description provided for @viewAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'View analytics →'**
+  String get viewAnalytics;
+
+  /// No description provided for @goodMorningGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning,'**
+  String get goodMorningGreeting;
+
+  /// No description provided for @goodAfternoonGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon,'**
+  String get goodAfternoonGreeting;
+
+  /// No description provided for @goodEveningGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening,'**
+  String get goodEveningGreeting;
 }
 
 class _AppLocalizationsDelegate

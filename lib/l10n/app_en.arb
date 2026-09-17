@@ -384,7 +384,11 @@
   "noSalesYetHome": "No sales yet",
   "noSalesRecordedHomeDesc": "Once sales are recorded, they will appear here.",
   "selectShopSheet": "Select Shop",
-  "couldNotLoadHome": "Could not load dashboard."
+  "couldNotLoadHome": "Could not load dashboard.",
+  "viewAnalytics": "View analytics →",
+  "goodMorningGreeting": "Good morning,",
+  "goodAfternoonGreeting": "Good afternoon,",
+  "goodEveningGreeting": "Good evening,"
 }
 
 

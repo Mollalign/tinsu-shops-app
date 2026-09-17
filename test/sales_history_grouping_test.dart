@@ -190,12 +190,14 @@ void main() {
       bool hasOwnerSales = false;
       bool hasSalesHistory = false;
       bool hasAnalyticsRedirect = false;
+      bool hasMoreRedirect = false;
 
       void inspectRoute(RouteBase r) {
         if (r is GoRoute) {
           if (r.path == '/owner/sales') hasOwnerSales = true;
           if (r.path == '/owner/sales/history') hasSalesHistory = true;
           if (r.path == '/owner/analytics') hasAnalyticsRedirect = true;
+          if (r.path == '/owner/more') hasMoreRedirect = true;
           for (final sub in r.routes) {
             inspectRoute(sub);
           }
@@ -213,6 +215,7 @@ void main() {
       expect(hasOwnerSales, isTrue, reason: '/owner/sales must exist in router');
       expect(hasSalesHistory, isTrue, reason: '/owner/sales/history must exist in router');
       expect(hasAnalyticsRedirect, isTrue, reason: '/owner/analytics must exist in router');
+      expect(hasMoreRedirect, isTrue, reason: '/owner/more must exist in router');
     });
   });
 }

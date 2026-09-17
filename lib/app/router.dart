@@ -289,6 +289,10 @@ GoRouter router(Ref ref) {
         path: '/owner/analytics',
         redirect: (_, __) => '/owner/sales',
       ),
+      GoRoute(
+        path: '/owner/more',
+        redirect: (_, __) => '/owner/settings',
+      ),
     ],
   );
 }

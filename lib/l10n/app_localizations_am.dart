@@ -910,4 +910,16 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get couldNotLoadHome => 'ዳሽቦርዱን መጫን አልተቻለም።';
+
+  @override
+  String get viewAnalytics => 'አናሊቲክስ ይመልከቱ →';
+
+  @override
+  String get goodMorningGreeting => 'እንደምን አደሩ፣';
+
+  @override
+  String get goodAfternoonGreeting => 'እንደምን ዋሉ፣';
+
+  @override
+  String get goodEveningGreeting => 'እንደምን አመሹ፣';
 }

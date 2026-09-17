@@ -189,6 +189,8 @@ void main() {
       await tester.pumpWidget(buildHomeScreen(currentShopId: 'shop-1', summary: summary));
       await tester.pumpAndSettle();
 
+      await tester.scrollUntilVisible(find.text('Recent Sales'), 200);
+
       expect(find.text('Recent Sales'), findsOneWidget);
       expect(find.textContaining('Hana'), findsOneWidget);
       expect(find.textContaining('Abebe'), findsOneWidget);
@@ -204,6 +206,8 @@ void main() {
 
       await tester.pumpWidget(buildHomeScreen(currentShopId: 'shop-1', summary: summary));
       await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(find.text('No sales yet'), 200);
 
       expect(find.text('No sales yet'), findsOneWidget);
       expect(find.text('Once sales are recorded, they will appear here.'), findsOneWidget);
@@ -248,6 +252,41 @@ void main() {
       expect(find.text('ፈጣን ተግባራት'), findsOneWidget);
       expect(find.text('የዛሬ ሽያጭ'), findsOneWidget);
       expect(find.text('ሁሉንም ይመልከቱ →'), findsWidgets);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('displays view analytics link on today sales hero card', (tester) async {
+      final summary = HomeSummary(
+        today: mockToday,
+        lowStock: mockLowStock,
+        recentSales: mockRecentSales,
+      );
+
+      await tester.pumpWidget(buildHomeScreen(currentShopId: 'shop-1', summary: summary));
+      await tester.pumpAndSettle();
+
+      expect(find.text('View analytics →'), findsOneWidget);
+    });
+
+    testWidgets('renders without overflow on tablet device (800x1280)', (tester) async {
+      tester.view.physicalSize = const Size(800, 1280);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final summary = HomeSummary(
+        today: mockToday,
+        lowStock: mockLowStock,
+        recentSales: mockRecentSales,
+      );
+
+      await tester.pumpWidget(buildHomeScreen(currentShopId: 'shop-1', summary: summary));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Quick Actions'), findsOneWidget);
+      expect(find.text('Add Product'), findsOneWidget);
+      expect(find.text('Add Stock'), findsOneWidget);
+      expect(find.text('Add Worker'), findsOneWidget);
+      expect(find.text('Sales History'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

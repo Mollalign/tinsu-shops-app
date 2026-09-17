@@ -384,7 +384,11 @@
   "noSalesYetHome": "እስካሁን ምንም ሽያጭ የለም",
   "noSalesRecordedHomeDesc": "ሽያጭ ሲመዘገብ እዚህ ይታያል።",
   "selectShopSheet": "ሱቅ ይምረጡ",
-  "couldNotLoadHome": "ዳሽቦርዱን መጫን አልተቻለም።"
+  "couldNotLoadHome": "ዳሽቦርዱን መጫን አልተቻለም።",
+  "viewAnalytics": "አናሊቲክስ ይመልከቱ →",
+  "goodMorningGreeting": "እንደምን አደሩ፣",
+  "goodAfternoonGreeting": "እንደምን ዋሉ፣",
+  "goodEveningGreeting": "እንደምን አመሹ፣"
 }
 
 

@@ -917,4 +917,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotLoadHome => 'Could not load dashboard.';
+
+  @override
+  String get viewAnalytics => 'View analytics →';
+
+  @override
+  String get goodMorningGreeting => 'Good morning,';
+
+  @override
+  String get goodAfternoonGreeting => 'Good afternoon,';
+
+  @override
+  String get goodEveningGreeting => 'Good evening,';
 }
